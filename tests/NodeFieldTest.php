@@ -1,0 +1,53 @@
+<?php
+
+use Nuclear\Hierarchy\NodeField;
+
+class NodeFieldTest extends TestBase {
+
+    protected function getNodeField($attributes = [])
+    {
+        $attributes = !empty($attributes) ? $attributes : [
+            'name' => 'area',
+            'label' => 'Area',
+            'description' => '',
+            'type' => 'text',
+            'position' => 1.0
+        ];
+
+        return NodeField::create($attributes);
+    }
+
+    /** @test */
+    function it_is_related_to_parent_node_type()
+    {
+        $nodeField = $this->getNodeField();
+
+        $this->assertInstanceOf(
+            'Illuminate\Database\Eloquent\Relations\BelongsTo',
+            $nodeField->nodeType()
+        );
+    }
+
+    /** @test */
+    function it_gets_the_node_field_name()
+    {
+        $nodeField = $this->getNodeField();
+
+        $this->assertEquals(
+            'area',
+            $nodeField->getName()
+        );
+    }
+
+    /** @test */
+    function it_gets_the_node_field_type()
+    {
+        $nodeField = $this->getNodeField();
+
+        $this->assertEquals(
+            'text',
+            $nodeField->getType()
+        );
+    }
+
+}

@@ -1,0 +1,54 @@
+{
+    "name": "nuclear/hierarchy",
+    "description": "Polymorphic content management with node structure.",
+    "license": "MIT",
+    "keywords": [
+        "kenarkose",
+        "nuclear",
+        "nuclearcms",
+        "hierarchy",
+        "node",
+        "polymorphic",
+        "management",
+        "laravel",
+        "laravel5"
+    ],
+    "version": "1.0.0",
+    "authors": [
+        {
+            "name": "Hyleeh",
+            "email": "egemen@kenarkose.com",
+            "homepage": "http://egemenkizilcan.com",
+            "role": "Developer / Designer"
+        }
+    ],
+    "require": {
+        "php": ">=5.4.0",
+        "baum/baum": "~1.1",
+        "doctrine/dbal": "~2.5"
+    },
+    "require-dev": {
+        "orchestra/testbench": "~3.0",
+        "phpunit/phpunit": "~4.0",
+        "mikey179/vfsStream": "~1.5",
+        "mockery/mockery": "0.9.*"
+    },
+    "autoload": {
+        "psr-4": {
+            "Nuclear\\Hierarchy\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "classmap": [
+            "tests"
+        ]
+    },
+    "suggest": {
+        "laravel/framework": "This package requires Laravel 5."
+    },
+    "extra": {
+        "branch-alias": {
+            "dev-master": "1.1-dev"
+        }
+    }
+}

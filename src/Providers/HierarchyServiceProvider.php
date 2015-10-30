@@ -1,0 +1,107 @@
+<?php
+
+namespace Nuclear\Hierarchy\Providers;
+
+
+use Illuminate\Support\ServiceProvider;
+
+class HierarchyServiceProvider extends ServiceProvider {
+
+    const version = '1.0.0';
+
+    /**
+     * Register the service provider.
+     *
+     * @return void
+     */
+    public function register()
+    {
+        $this->registerSourcePath();
+
+        $this->registerExternalServices();
+
+        $this->registerModelBuilder();
+        $this->registerMigrationBuilder();
+        $this->registerBuilderService();
+    }
+
+    /**
+     * Register the generated sources path
+     *
+     * @return void
+     */
+    protected function registerSourcePath()
+    {
+        $this->app['path.generated'] = base_path(config('hierarchy.gen_path', 'gen'));
+    }
+
+    /**
+     * Registers external services needed for the package
+     *
+     * @return void
+     */
+    protected function registerExternalServices()
+    {
+        $this->app->register('Baum\Providers\BaumServiceProvider');
+    }
+
+    /**
+     * Registers the model builder
+     *
+     * @return void
+     */
+    protected function registerModelBuilder()
+    {
+        $this->app->bind(
+            'Nuclear\Hierarchy\Contract\Builders\ModelBuilderContract',
+            'Nuclear\Hierarchy\Builders\ModelBuilder'
+        );
+    }
+
+    /**
+     * Registers the migration builder
+     *
+     * @return void
+     */
+    protected function registerMigrationBuilder()
+    {
+        $this->app->bind(
+            'Nuclear\Hierarchy\Contract\Builders\MigrationBuilderContract',
+            'Nuclear\Hierarchy\Builders\MigrationBuilder'
+        );
+    }
+
+    /**
+     * Registers the builder service
+     *
+     * @return void
+     */
+    protected function registerBuilderService()
+    {
+        $this->app->bind(
+            'Nuclear\Hierarchy\Contract\Builders\BuilderServiceContract',
+            'Nuclear\Hierarchy\Builders\BuilderService'
+        );
+    }
+
+    /**
+     * Boot the service provider.
+     */
+    public function boot()
+    {
+        // This is for model and migration templates
+        // we use blade engine to generate these files
+        $this->loadViewsFrom(dirname(__DIR__) . '/Support/templates', '_hierarchy');
+
+        $this->publishes([
+            dirname(__DIR__) . '/Support/config.php' => config_path('hierarchy.php')
+        ]);
+
+        $this->publishes([
+            dirname(__DIR__) . '/Support/migrations/' => database_path('/migrations')
+        ], 'migrations');
+
+        require dirname(__DIR__) . '/Support/helpers.php';
+    }
+
+}
