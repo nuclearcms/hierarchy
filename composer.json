@@ -25,7 +25,8 @@
     "require": {
         "php": ">=5.5.9",
         "baum/baum": "~1.1",
-        "doctrine/dbal": "~2.5"
+        "doctrine/dbal": "~2.5",
+        "dimsav/laravel-translatable": "^5.3"
     },
     "require-dev": {
         "orchestra/testbench": "~3.0",

@@ -2,6 +2,7 @@
 
 use Nuclear\Hierarchy\NodeType;
 use Nuclear\Hierarchy\Repositories\NodeTypeRepository;
+use Prophecy\Argument;
 
 class NodeTypeRepositoryTest extends TestBase {
 
@@ -9,7 +10,7 @@ class NodeTypeRepositoryTest extends TestBase {
     function it_created_a_node_type()
     {
         $builderService = $this->prophesize('Nuclear\Hierarchy\Contract\Builders\BuilderServiceContract');
-        $builderService->buildTable('project')
+        $builderService->buildTable('project', Argument::type('int'))
             ->shouldBeCalled();
 
         $repository = new NodeTypeRepository(
@@ -34,10 +35,8 @@ class NodeTypeRepositoryTest extends TestBase {
     function it_destroys_a_node_type()
     {
         $builderService = $this->prophesize('Nuclear\Hierarchy\Contract\Builders\BuilderServiceContract');
-        $builderService->buildTable('project')
-            ->shouldBeCalled();
-
-        $builderService->destroyTable('project', [])
+        // This part is for the sake of setting the test up
+        $builderService->buildTable('project', Argument::type('int'))
             ->shouldBeCalled();
 
         $repository = new NodeTypeRepository(
@@ -52,6 +51,9 @@ class NodeTypeRepositoryTest extends TestBase {
             1,
             NodeType::count()
         );
+
+        $builderService->destroyTable('project', [], $nodeType->getKey())
+            ->shouldBeCalled();
 
         $repository->destroy($nodeType->getKey());
 

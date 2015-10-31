@@ -3,8 +3,9 @@
 use Nuclear\Hierarchy\NodeField;
 use Nuclear\Hierarchy\NodeType;
 use Nuclear\Hierarchy\Repositories\NodeFieldRepository;
+use Prophecy\Argument;
 
-class NodeFieldsRepositoryTest extends TestBase {
+class NodeFieldRepositoryTest extends TestBase {
 
     protected function getNodeType($attributes = [])
     {
@@ -33,14 +34,14 @@ class NodeFieldsRepositoryTest extends TestBase {
     /** @test */
     function it_creates_a_node_field()
     {
+        $nodeType = $this->getNodeType();
+
         $builderService = $this->prophesize('Nuclear\Hierarchy\Contract\Builders\BuilderServiceContract');
-        $builderService->buildField('area', 'text', 'project', ['area'])
+        $builderService->buildField('area', 'text', 'project', ['area'], Argument::type('Nuclear\Hierarchy\Contract\NodeTypeContract'))
             ->shouldBeCalled();
 
         $repository = new NodeFieldRepository(
             $builderService->reveal());
-
-        $nodeType = $this->getNodeType();
 
         $repository->create($nodeType->getKey(), [
             'name' => 'area',
@@ -57,10 +58,11 @@ class NodeFieldsRepositoryTest extends TestBase {
         $nodeType = $this->getNodeType();
 
         $builderService = $this->prophesize('Nuclear\Hierarchy\Contract\Builders\BuilderServiceContract');
-        $builderService->buildField('area', 'text', 'project', ['area'])
+        // This part is for the sake of creating the test env
+        $builderService->buildField('area', 'text', 'project', ['area'], Argument::type('Nuclear\Hierarchy\Contract\NodeTypeContract'))
             ->shouldBeCalled();
 
-        $builderService->destroyField('area', 'project', [])
+        $builderService->destroyField('area', 'project', [], Argument::type('Nuclear\Hierarchy\Contract\NodeTypeContract'))
             ->shouldBeCalled();
 
         $repository = new NodeFieldRepository(

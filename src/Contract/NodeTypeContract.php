@@ -35,4 +35,11 @@ interface NodeTypeContract {
      */
     public function getFieldKeys();
 
+    /**
+     * Returns the primary key of the model
+     *
+     * @return int
+     */
+    public function getKey();
+
 }

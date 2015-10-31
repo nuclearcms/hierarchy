@@ -12,4 +12,9 @@ class NsProject extends Eloquent {
      */
     protected $fillable = ['date', 'area', 'location'];
 
+    /*
+     * Timestamps for the model.
+     */
+    public $timestamps = false;
+
 }

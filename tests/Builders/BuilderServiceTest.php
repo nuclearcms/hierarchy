@@ -12,16 +12,25 @@ class BuilderServiceTest extends TestBase {
             ->willReturn(null)
             ->shouldBeCalled();
 
+        $cacheBuilder = $this->prophesize('Nuclear\Hierarchy\Contract\Builders\CacheBuilderContract');
+        $cacheBuilder->build(1, [])
+            ->willReturn(null)
+            ->shouldBeCalled();
+
         $migrationBuilder = $this->prophesize('Nuclear\Hierarchy\Contract\Builders\MigrationBuilderContract');
         $migrationBuilder->buildSourceTableMigration('project')
             ->willReturn('TestMigration')
             ->shouldBeCalled();
 
-        $service = new BuilderService($modelBuilder->reveal(), $migrationBuilder->reveal());
+        $service = new BuilderService(
+            $modelBuilder->reveal(),
+            $migrationBuilder->reveal(),
+            $cacheBuilder->reveal()
+        );
 
         try
         {
-            $service->buildTable('project');
+            $service->buildTable('project', 1);
         } catch(\Exception $e)
         {
             if($e->getMessage() === 'up')
@@ -41,22 +50,38 @@ class BuilderServiceTest extends TestBase {
             ->willReturn(null)
             ->shouldBeCalled();
 
+        $model = $this->prophesize('Nuclear\Hierarchy\Contract\NodeTypeContract');
+        $model->getKey()
+            ->willReturn(1)
+            ->shouldBeCalled();
+
+        $cacheBuilder = $this->prophesize('Nuclear\Hierarchy\Contract\Builders\CacheBuilderContract');
+        $cacheBuilder->build(1, ['description'])
+            ->willReturn(null)
+            ->shouldBeCalled();
+
         $migrationBuilder = $this->prophesize('Nuclear\Hierarchy\Contract\Builders\MigrationBuilderContract');
         $migrationBuilder->buildFieldMigrationForTable('description', 'text', 'project')
             ->willReturn('TestMigration')
             ->shouldBeCalled();
 
-        $service = new BuilderService($modelBuilder->reveal(), $migrationBuilder->reveal());
+        $service = new BuilderService(
+            $modelBuilder->reveal(),
+            $migrationBuilder->reveal(),
+            $cacheBuilder->reveal()
+        );
 
         try
         {
-            $service->buildField('description', 'text', 'project', ['description']);
+            $service->buildField('description', 'text', 'project', ['description'], $model->reveal());
         } catch(\Exception $e)
         {
             if($e->getMessage() === 'up')
             {
                 return;
             }
+
+            throw $e;
         }
 
         $this->fail('The migration did not run');
@@ -70,6 +95,11 @@ class BuilderServiceTest extends TestBase {
             ->willReturn(null)
             ->shouldBeCalled();
 
+        $cacheBuilder = $this->prophesize('Nuclear\Hierarchy\Contract\Builders\CacheBuilderContract');
+        $cacheBuilder->destroy(1)
+            ->willReturn(null)
+            ->shouldBeCalled();
+
         $migrationBuilder = $this->prophesize('Nuclear\Hierarchy\Contract\Builders\MigrationBuilderContract');
         $migrationBuilder->getMigrationClassPathByKey('project')
             ->willReturn('TestMigration')
@@ -78,7 +108,11 @@ class BuilderServiceTest extends TestBase {
         $migrationBuilder->destroySourceTableMigration('project', [])
             ->shouldBeCalled();
 
-        $service = new BuilderService($modelBuilder->reveal(), $migrationBuilder->reveal());
+        $service = new BuilderService(
+            $modelBuilder->reveal(),
+            $migrationBuilder->reveal(),
+            $cacheBuilder->reveal()
+        );
 
         // At this time it is kind of impossible
         // to test if the migration did run like we do
@@ -86,7 +120,7 @@ class BuilderServiceTest extends TestBase {
         // the destroySourceTableMigration method
         // We assume if the destroySourceTableMigration is
         // called, the method reached to the end without any problem
-        $service->destroyTable('project', []);
+        $service->destroyTable('project', [], 1);
     }
 
     /** @test */
@@ -94,6 +128,16 @@ class BuilderServiceTest extends TestBase {
     {
         $modelBuilder = $this->prophesize('Nuclear\Hierarchy\Contract\Builders\ModelBuilderContract');
         $modelBuilder->build('project', [])
+            ->willReturn(null)
+            ->shouldBeCalled();
+
+        $model = $this->prophesize('Nuclear\Hierarchy\Contract\NodeTypeContract');
+        $model->getKey()
+            ->willReturn(1)
+            ->shouldBeCalled();
+
+        $cacheBuilder = $this->prophesize('Nuclear\Hierarchy\Contract\Builders\CacheBuilderContract');
+        $cacheBuilder->build(1, [])
             ->willReturn(null)
             ->shouldBeCalled();
 
@@ -105,7 +149,11 @@ class BuilderServiceTest extends TestBase {
         $migrationBuilder->destroyFieldMigrationForTable('description', 'project')
             ->shouldBeCalled();
 
-        $service = new BuilderService($modelBuilder->reveal(), $migrationBuilder->reveal());
+        $service = new BuilderService(
+            $modelBuilder->reveal(),
+            $migrationBuilder->reveal(),
+            $cacheBuilder->reveal()
+        );
 
         // At this time it is kind of impossible
         // to test if the migration did run like we do
@@ -113,7 +161,7 @@ class BuilderServiceTest extends TestBase {
         // the destroyFieldMigrationForTable method
         // We assume if the destroyFieldMigrationForTable is
         // called, the method reached to the end without any problem
-        $service->destroyField('description', 'project', []);
+        $service->destroyField('description', 'project', [], $model->reveal());
     }
 
 }

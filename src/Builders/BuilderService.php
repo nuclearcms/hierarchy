@@ -4,9 +4,11 @@ namespace Nuclear\Hierarchy\Builders;
 
 
 use Nuclear\Hierarchy\Contract\Builders\BuilderServiceContract;
+use Nuclear\Hierarchy\Contract\Builders\CacheBuilderContract;
 use Nuclear\Hierarchy\Contract\Builders\MigrationBuilderContract;
 use Nuclear\Hierarchy\Contract\Builders\ModelBuilderContract;
 use Nuclear\Hierarchy\Contract\Migration\MigratorContract;
+use Nuclear\Hierarchy\Contract\NodeTypeContract;
 
 class BuilderService implements BuilderServiceContract {
 
@@ -15,33 +17,40 @@ class BuilderService implements BuilderServiceContract {
      *
      * @var ModelBuilderContract
      * @var MigrationBuilderContract
+     * @var CacheBuilderContract
      */
     protected $modelBuilder;
     protected $migrationBuilder;
+    protected $cacheBuilder;
 
     /**
      * Constructor
      *
      * @param ModelBuilderContract $modelBuilder
      * @param MigrationBuilderContract $migrationBuilder
+     * @param CacheBuilderContract $cacheBuilder
      */
     public function __construct(
         ModelBuilderContract $modelBuilder,
-        MigrationBuilderContract $migrationBuilder
+        MigrationBuilderContract $migrationBuilder,
+        CacheBuilderContract $cacheBuilder
     )
     {
         $this->modelBuilder = $modelBuilder;
         $this->migrationBuilder = $migrationBuilder;
+        $this->cacheBuilder = $cacheBuilder;
     }
 
     /**
      * Builds a source table and associated entities
      *
      * @param string $name
+     * @param int $id
      */
-    public function buildTable($name)
+    public function buildTable($name, $id)
     {
         $this->modelBuilder->build($name, []);
+        $this->cacheBuilder->build($id, []);
         $migration = $this->migrationBuilder->buildSourceTableMigration($name);
 
         $this->migrateUp($migration);
@@ -54,10 +63,12 @@ class BuilderService implements BuilderServiceContract {
      * @param string $type
      * @param string $tableName
      * @param array $fields
+     * @param NodeTypeContract $nodeType
      */
-    public function buildField($name, $type, $tableName, array $fields)
+    public function buildField($name, $type, $tableName, array $fields, NodeTypeContract $nodeType)
     {
         $this->modelBuilder->build($tableName, $fields);
+        $this->cacheBuilder->build($nodeType->getKey(), $fields);
         $migration = $this->migrationBuilder->buildFieldMigrationForTable($name, $type, $tableName);
 
         $this->migrateUp($migration);
@@ -68,10 +79,12 @@ class BuilderService implements BuilderServiceContract {
      *
      * @param string $name
      * @param array $fields
+     * @param int $id
      */
-    public function destroyTable($name, array $fields)
+    public function destroyTable($name, array $fields, $id)
     {
         $this->modelBuilder->destroy($name);
+        $this->cacheBuilder->destroy($id);
 
         $migration = $this->migrationBuilder
             ->getMigrationClassPathByKey($name);
@@ -87,10 +100,12 @@ class BuilderService implements BuilderServiceContract {
      * @param string $name
      * @param string $tableName
      * @param array $fields
+     * @param NodeTypeContract $nodeType
      */
-    public function destroyField($name, $tableName, array $fields)
+    public function destroyField($name, $tableName, array $fields, NodeTypeContract $nodeType)
     {
         $this->modelBuilder->build($tableName, $fields);
+        $this->cacheBuilder->build($nodeType->getKey(), $fields);
 
         $migration = $this->migrationBuilder
             ->getMigrationClassPathByKey($tableName, $name);

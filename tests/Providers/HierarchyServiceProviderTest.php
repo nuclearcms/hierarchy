@@ -12,6 +12,15 @@ class HierarchyServiceProviderTest extends TestBase {
     }
 
     /** @test */
+    function it_registers_cache_accessor()
+    {
+        $this->assertInstanceOf(
+            'Nuclear\Hierarchy\Cache\Accessor',
+            $this->app['hierarchy.cache']
+        );
+    }
+
+    /** @test */
     function it_registers_model_builder()
     {
         $this->assertInstanceOf(
@@ -26,6 +35,15 @@ class HierarchyServiceProviderTest extends TestBase {
         $this->assertInstanceOf(
             'Nuclear\Hierarchy\Builders\MigrationBuilder',
             $this->app->make('Nuclear\Hierarchy\Contract\Builders\MigrationBuilderContract')
+        );
+    }
+
+    /** @test */
+    function it_registers_cache_builder()
+    {
+        $this->assertInstanceOf(
+            'Nuclear\Hierarchy\Builders\CacheBuilder',
+            $this->app->make('Nuclear\Hierarchy\Contract\Builders\CacheBuilderContract')
         );
     }
 

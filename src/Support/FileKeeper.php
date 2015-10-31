@@ -6,6 +6,23 @@ namespace Nuclear\Hierarchy\Support;
 class FileKeeper {
 
     /**
+     * Reads contents from given path
+     *
+     * @param string $path
+     * @return mixed
+     * @throws RuntimeException
+     */
+    public static function read($path)
+    {
+        if ( ! $file = @file_get_contents($path))
+        {
+            throw new \RuntimeException('File could not be read.');
+        }
+
+        return $file;
+    }
+
+    /**
      * Writes contents to given path
      *
      * @param string $path
@@ -14,7 +31,7 @@ class FileKeeper {
      */
     public static function write($path, $contents)
     {
-        if ( ! file_put_contents($path, $contents))
+        if ( ! @file_put_contents($path, $contents))
         {
             throw new \RuntimeException('File could not be written.');
         }
@@ -73,11 +90,14 @@ class FileKeeper {
     {
         $success = true;
 
-        try {
-            if (! @unlink($path)) {
+        try
+        {
+            if ( ! @unlink($path))
+            {
                 $success = false;
             }
-        } catch (ErrorException $e) {
+        } catch (ErrorException $e)
+        {
             $success = false;
         }
 

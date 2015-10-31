@@ -18,7 +18,8 @@ class NodeTypeRepository extends Repository {
         $nodeType = $model::create($attributes);
 
         $this->builderService->buildTable(
-            $nodeType->getName()
+            $nodeType->getName(),
+            $nodeType->getKey()
         );
 
         return $nodeType;
@@ -38,7 +39,8 @@ class NodeTypeRepository extends Repository {
 
         $this->builderService->destroyTable(
             $nodeType->getName(),
-            $nodeType->getFieldKeys()
+            $nodeType->getFieldKeys(),
+            $nodeType->getKey()
         );
 
         $nodeType->delete();

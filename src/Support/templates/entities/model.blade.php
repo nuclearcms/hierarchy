@@ -13,4 +13,9 @@ class {{ $name }} extends Eloquent {
      */
     protected $fillable = [{!! $fields !!}];
 
+    /*
+     * Timestamps for the model.
+     */
+    public $timestamps = false;
+
 }

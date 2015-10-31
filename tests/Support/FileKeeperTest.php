@@ -6,6 +6,21 @@ use org\bovigo\vfs\vfsStream;
 class FileKeeperTest extends TestBase {
 
     /** @test */
+    function it_reads_a_file()
+    {
+        $path = vfsStream::url('gen/text.txt');
+
+        FileKeeper::write($path, 'foo');
+
+        $this->assertFileExists($path);
+
+        $this->assertEquals(
+            FileKeeper::read($path),
+            'foo'
+        );
+    }
+
+    /** @test */
     function it_writes_a_file()
     {
         $path = vfsStream::url('gen/text.txt');

@@ -4,6 +4,7 @@ namespace Nuclear\Hierarchy\Providers;
 
 
 use Illuminate\Support\ServiceProvider;
+use Nuclear\Hierarchy\Cache\Accessor;
 
 class HierarchyServiceProvider extends ServiceProvider {
 
@@ -18,10 +19,23 @@ class HierarchyServiceProvider extends ServiceProvider {
     {
         $this->registerSourcePath();
 
+        $this->registerCacheAccessor();
+
         $this->registerExternalServices();
 
+        $this->registerBuilders();
+    }
+
+    /**
+     * Registers builders
+     *
+     * @return void
+     */
+    protected function registerBuilders()
+    {
         $this->registerModelBuilder();
         $this->registerMigrationBuilder();
+        $this->registerCacheBuilder();
         $this->registerBuilderService();
     }
 
@@ -36,6 +50,19 @@ class HierarchyServiceProvider extends ServiceProvider {
     }
 
     /**
+     * Registers the cache accessor
+     *
+     * @return void
+     */
+    protected function registerCacheAccessor()
+    {
+        $this->app['hierarchy.cache'] = $this->app->share(function ()
+        {
+            return new Accessor;
+        });
+    }
+
+    /**
      * Registers external services needed for the package
      *
      * @return void
@@ -43,6 +70,7 @@ class HierarchyServiceProvider extends ServiceProvider {
     protected function registerExternalServices()
     {
         $this->app->register('Baum\Providers\BaumServiceProvider');
+        $this->app->register('Dimsav\Translatable\TranslatableServiceProvider');
     }
 
     /**
@@ -68,6 +96,19 @@ class HierarchyServiceProvider extends ServiceProvider {
         $this->app->bind(
             'Nuclear\Hierarchy\Contract\Builders\MigrationBuilderContract',
             'Nuclear\Hierarchy\Builders\MigrationBuilder'
+        );
+    }
+
+    /**
+     * Registers the migration builder
+     *
+     * @return void
+     */
+    protected function registerCacheBuilder()
+    {
+        $this->app->bind(
+            'Nuclear\Hierarchy\Contract\Builders\CacheBuilderContract',
+            'Nuclear\Hierarchy\Builders\CacheBuilder'
         );
     }
 
