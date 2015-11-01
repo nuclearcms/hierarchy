@@ -19,9 +19,15 @@ class HierarchyCreateNodeFieldsTable extends Migration {
 
             $table->string('name');
             $table->string('label');
-            $table->text('description');
+            $table->text('description')->nullable();
             $table->double('position')->unsigned();
             $table->string('type');
+            $table->boolean('visible')->default(1);
+
+            $table->text('rules')->nullable();
+            $table->text('default_value')->nullable();
+            $table->text('value')->nullable();
+            $table->text('options')->nullable();
 
             $table->timestamps();
 

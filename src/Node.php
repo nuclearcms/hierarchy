@@ -12,12 +12,13 @@ class Node extends BaumNode {
      */
     use Translatable {
         isTranslationAttribute as _isTranslationAttribute;
+        getLocaleKey as _getLocaleKey;
     }
 
     /**
      * The translated fields for the model.
      */
-    protected $translatedAttributes = ['title', 'node_name', 'source_type'];
+    protected $translatedAttributes = ['title', 'node_name'];
 
     /**
      * The translation model is the NodeSource for us
@@ -42,6 +43,14 @@ class Node extends BaumNode {
     {
         return $this->_isTranslationAttribute($key);
         // @todo implement isTranslationAttribute() method.
+    }
+
+    /**
+     * @return string
+     */
+    public function getLocaleKey()
+    {
+        return 'locale';
     }
 
 }

@@ -56,7 +56,14 @@ class MigrationBuilder implements MigrationBuilderContract, WriterContract {
             'select'   => 'string',
             'textarea' => 'text',
             'text'     => 'string',
-            'integer'   => 'integer'
+            'number'   => 'double',
+            'color'    => 'string',
+            'markdown' => 'longtext',
+            'file'     => 'unsignedInteger',
+            'gallery'  => 'text',
+            'slug'     => 'string',
+            'tag'      => 'text',
+            'password' => 'string'
         ]);
 
         $this->defaultType = config('hierarchy.default_type', 'string');
@@ -74,7 +81,7 @@ class MigrationBuilder implements MigrationBuilderContract, WriterContract {
         $migration = $this->getTableMigrationName($name);
 
         $contents = view('_hierarchy::migrations.table', [
-            'table'     => MigrationBuilder::TABLE_PREFIX . $name,
+            'table'     => str_plural(MigrationBuilder::TABLE_PREFIX . $name),
             'migration' => $migration
         ])->render();
 
@@ -116,7 +123,7 @@ class MigrationBuilder implements MigrationBuilderContract, WriterContract {
 
         $contents = view('_hierarchy::migrations.field', [
             'field'     => $name,
-            'table'     => MigrationBuilder::TABLE_PREFIX . $tableName,
+            'table'     => str_plural(MigrationBuilder::TABLE_PREFIX . $tableName),
             'migration' => $migration,
             'type'      => $this->getColumnType($type)
         ])->render();

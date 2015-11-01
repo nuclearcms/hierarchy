@@ -16,7 +16,7 @@ class FileKeeper {
     {
         if ( ! $file = @file_get_contents($path))
         {
-            throw new \RuntimeException('File could not be read.');
+            throw new \RuntimeException('File "' . $path . '" could not be read.');
         }
 
         return $file;
@@ -33,7 +33,7 @@ class FileKeeper {
     {
         if ( ! @file_put_contents($path, $contents))
         {
-            throw new \RuntimeException('File could not be written.');
+            throw new \RuntimeException('File "' . $path . '" could not be written.');
         }
     }
 

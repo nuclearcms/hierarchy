@@ -22,8 +22,14 @@ class HierarchyCreateNodesTable extends Migration {
             $table->integer('rgt')->nullable();
             $table->integer('depth')->nullable();
 
-            $table->string('children_order');
-            $table->string('children_order_direction', 4);
+            $table->boolean('visible')->default(1);
+            $table->boolean('locked')->default(0);
+            $table->integer('status')->default(30);
+            $table->boolean('hides_nodes')->default(0);
+            $table->double('priority')->unsigned()->default(1);
+
+            $table->string('children_order')->default('lft');
+            $table->string('children_order_direction', 4)->default('asc');
 
             $table->timestamps();
 

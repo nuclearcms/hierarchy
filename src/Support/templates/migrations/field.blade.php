@@ -15,7 +15,7 @@ class {{ $migration }} extends Migration implements MigrationContract {
      */
     public function up()
     {
-        Schema::table('{{ $table }}', function (Blueprint $table)
+        \Schema::table('{{ $table }}', function (Blueprint $table)
         {
             $table->{{ $type }}('{{ $field }}')->nullable();
         });
@@ -26,7 +26,7 @@ class {{ $migration }} extends Migration implements MigrationContract {
      */
     public function down()
     {
-        Schema::table('{{ $table }}', function (Blueprint $table)
+        \Schema::table('{{ $table }}', function (Blueprint $table)
         {
             $table->dropColumn('{{ $field }}');
         });

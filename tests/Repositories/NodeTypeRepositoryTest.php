@@ -7,7 +7,7 @@ use Prophecy\Argument;
 class NodeTypeRepositoryTest extends TestBase {
 
     /** @test */
-    function it_created_a_node_type()
+    function it_creates_a_node_type()
     {
         $builderService = $this->prophesize('Nuclear\Hierarchy\Contract\Builders\BuilderServiceContract');
         $builderService->buildTable('project', Argument::type('int'))

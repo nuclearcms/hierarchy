@@ -48,7 +48,7 @@ class ModelBuilder implements ModelBuilderContract, WriterContract {
      */
     public function getClassName($name)
     {
-        return studly_case(MigrationBuilder::TABLE_PREFIX . $name);
+        return source_model_name($name);
     }
 
     /**

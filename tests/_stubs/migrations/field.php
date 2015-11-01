@@ -14,7 +14,7 @@ class HierarchyCreateDescriptionFieldForProjectSourceTable extends Migration imp
      */
     public function up()
     {
-        Schema::table('ns_project', function (Blueprint $table)
+        \Schema::table('ns_projects', function (Blueprint $table)
         {
             $table->text('description')->nullable();
         });
@@ -25,7 +25,7 @@ class HierarchyCreateDescriptionFieldForProjectSourceTable extends Migration imp
      */
     public function down()
     {
-        Schema::table('ns_project', function (Blueprint $table)
+        \Schema::table('ns_projects', function (Blueprint $table)
         {
             $table->dropColumn('description');
         });

@@ -24,6 +24,8 @@ class Accessor implements AccessorContract {
     {
         if (is_null($this->fields))
         {
+            $this->createCacheIfNotExists();
+
             $contents = FileKeeper::read(
                 $this->getCacheFilePath()
             );
@@ -33,6 +35,19 @@ class Accessor implements AccessorContract {
 
 
         return $this->fields;
+    }
+
+    /**
+     * Creates cache file if it does not exist
+     */
+    protected function createCacheIfNotExists()
+    {
+        if ( ! FileKeeper::exists(
+            $this->getCacheFilePath()
+        ))
+        {
+            $this->write([]);
+        }
     }
 
     /**

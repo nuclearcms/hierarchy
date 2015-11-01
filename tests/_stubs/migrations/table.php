@@ -14,9 +14,9 @@ class HierarchyCreateProjectSourceTable extends Migration implements MigrationCo
      */
     public function up()
     {
-        Schema::create('ns_project', function (Blueprint $table)
+        \Schema::create('ns_projects', function (Blueprint $table)
         {
-            $table->increments('id');
+            $table->integer('id')->unsigned();
 
             $table->foreign('id')
                 ->references('id')
@@ -30,7 +30,7 @@ class HierarchyCreateProjectSourceTable extends Migration implements MigrationCo
      */
     public function down()
     {
-        Schema::drop('ns_project');
+        \Schema::drop('ns_projects');
     }
 
 }

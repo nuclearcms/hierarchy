@@ -15,9 +15,9 @@ class {{ $migration }} extends Migration implements MigrationContract {
      */
     public function up()
     {
-        Schema::create('{{ $table }}', function (Blueprint $table)
+        \Schema::create('{{ $table }}', function (Blueprint $table)
         {
-            $table->increments('id');
+            $table->integer('id')->unsigned();
 
             $table->foreign('id')
                 ->references('id')
@@ -31,7 +31,7 @@ class {{ $migration }} extends Migration implements MigrationContract {
      */
     public function down()
     {
-        Schema::drop('{{ $table }}');
+        \Schema::drop('{{ $table }}');
     }
 
 }
