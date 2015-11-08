@@ -1,6 +1,8 @@
 <?php
 
+use Illuminate\Database\Eloquent\Collection;
 use Nuclear\Hierarchy\Builders\BuilderService;
+use Prophecy\Argument;
 
 class BuilderServiceTest extends TestBase {
 
@@ -17,6 +19,11 @@ class BuilderServiceTest extends TestBase {
             ->willReturn(null)
             ->shouldBeCalled();
 
+        $formBuilder = $this->prophesize('Nuclear\Hierarchy\Contract\Builders\FormBuilderContract');
+        $formBuilder->build('project')
+            ->willReturn(null)
+            ->shouldBeCalled();
+
         $migrationBuilder = $this->prophesize('Nuclear\Hierarchy\Contract\Builders\MigrationBuilderContract');
         $migrationBuilder->buildSourceTableMigration('project')
             ->willReturn('TestMigration')
@@ -25,6 +32,7 @@ class BuilderServiceTest extends TestBase {
         $service = new BuilderService(
             $modelBuilder->reveal(),
             $migrationBuilder->reveal(),
+            $formBuilder->reveal(),
             $cacheBuilder->reveal()
         );
 
@@ -60,6 +68,16 @@ class BuilderServiceTest extends TestBase {
             ->willReturn(null)
             ->shouldBeCalled();
 
+        $collection = new Collection();
+        $model->getFields()
+            ->willReturn($collection)
+            ->shouldBeCalled();
+
+        $formBuilder = $this->prophesize('Nuclear\Hierarchy\Contract\Builders\FormBuilderContract');
+        $formBuilder->build('project', $collection)
+            ->willReturn(null)
+            ->shouldBeCalled();
+
         $migrationBuilder = $this->prophesize('Nuclear\Hierarchy\Contract\Builders\MigrationBuilderContract');
         $migrationBuilder->buildFieldMigrationForTable('description', 'text', 'project')
             ->willReturn('TestMigration')
@@ -68,6 +86,7 @@ class BuilderServiceTest extends TestBase {
         $service = new BuilderService(
             $modelBuilder->reveal(),
             $migrationBuilder->reveal(),
+            $formBuilder->reveal(),
             $cacheBuilder->reveal()
         );
 
@@ -95,6 +114,11 @@ class BuilderServiceTest extends TestBase {
             ->willReturn(null)
             ->shouldBeCalled();
 
+        $formBuilder = $this->prophesize('Nuclear\Hierarchy\Contract\Builders\FormBuilderContract');
+        $formBuilder->destroy('project')
+            ->willReturn(null)
+            ->shouldBeCalled();
+
         $cacheBuilder = $this->prophesize('Nuclear\Hierarchy\Contract\Builders\CacheBuilderContract');
         $cacheBuilder->destroy(1)
             ->willReturn(null)
@@ -111,6 +135,7 @@ class BuilderServiceTest extends TestBase {
         $service = new BuilderService(
             $modelBuilder->reveal(),
             $migrationBuilder->reveal(),
+            $formBuilder->reveal(),
             $cacheBuilder->reveal()
         );
 
@@ -132,6 +157,16 @@ class BuilderServiceTest extends TestBase {
             ->shouldBeCalled();
 
         $model = $this->prophesize('Nuclear\Hierarchy\Contract\NodeTypeContract');
+        $collection = new Collection();
+        $model->getFields()
+            ->willReturn($collection)
+            ->shouldBeCalled();
+
+        $formBuilder = $this->prophesize('Nuclear\Hierarchy\Contract\Builders\FormBuilderContract');
+        $formBuilder->build('project', $collection)
+            ->willReturn(null)
+            ->shouldBeCalled();
+
         $model->getKey()
             ->willReturn(1)
             ->shouldBeCalled();
@@ -152,6 +187,7 @@ class BuilderServiceTest extends TestBase {
         $service = new BuilderService(
             $modelBuilder->reveal(),
             $migrationBuilder->reveal(),
+            $formBuilder->reveal(),
             $cacheBuilder->reveal()
         );
 

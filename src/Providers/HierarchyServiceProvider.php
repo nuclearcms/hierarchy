@@ -35,6 +35,7 @@ class HierarchyServiceProvider extends ServiceProvider {
     {
         $this->registerModelBuilder();
         $this->registerMigrationBuilder();
+        $this->registerFormBuilder();
         $this->registerCacheBuilder();
         $this->registerBuilderService();
     }
@@ -96,6 +97,19 @@ class HierarchyServiceProvider extends ServiceProvider {
         $this->app->bind(
             'Nuclear\Hierarchy\Contract\Builders\MigrationBuilderContract',
             'Nuclear\Hierarchy\Builders\MigrationBuilder'
+        );
+    }
+
+    /**
+     * Registers the form builder
+     *
+     * @return void
+     */
+    protected function registerFormBuilder()
+    {
+        $this->app->bind(
+            'Nuclear\Hierarchy\Contract\Builders\FormBuilderContract',
+            'Nuclear\Hierarchy\Builders\FormBuilder'
         );
     }
 

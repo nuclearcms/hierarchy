@@ -39,6 +39,15 @@ class HierarchyServiceProviderTest extends TestBase {
     }
 
     /** @test */
+    function it_registers_form_builder()
+    {
+        $this->assertInstanceOf(
+            'Nuclear\Hierarchy\Builders\FormBuilder',
+            $this->app->make('Nuclear\Hierarchy\Contract\Builders\FormBuilderContract')
+        );
+    }
+
+    /** @test */
     function it_registers_cache_builder()
     {
         $this->assertInstanceOf(
