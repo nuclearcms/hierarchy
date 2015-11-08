@@ -17,6 +17,28 @@ class NodeType extends Eloquent implements NodeTypeContract {
     protected $fillable = ['name', 'label', 'description'];
 
     /**
+     * Nodes relation
+     *
+     * @return HasMany
+     */
+    public function nodes()
+    {
+        return $this->hasMany(
+            $this->getNodeModelPath()
+        );
+    }
+
+    /**
+     * Getter for node model path
+     *
+     * @return string
+     */
+    protected function getNodeModelPath()
+    {
+        return $this->nodeModelName ?: Node::class;
+    }
+
+    /**
      * Fields relation
      *
      * @return HasMany
@@ -72,4 +94,5 @@ class NodeType extends Eloquent implements NodeTypeContract {
     {
         return $this->getFields()->lists('name')->toArray();
     }
+
 }

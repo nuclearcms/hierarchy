@@ -16,6 +16,17 @@ class NodeTypeTest extends TestBase {
     }
 
     /** @test */
+    function it_is_related_to_child_nodes()
+    {
+        $nodeType = $this->getNodeType();
+
+        $this->assertInstanceOf(
+            'Illuminate\Database\Eloquent\Relations\HasMany',
+            $nodeType->nodes()
+        );
+    }
+
+    /** @test */
     function it_is_related_to_child_fields()
     {
         $nodeType = $this->getNodeType();

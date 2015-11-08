@@ -12,7 +12,9 @@ class NodeSource extends Eloquent implements NodeSourceContract {
     /**
      * The fillable fields for the model.
      */
-    protected $fillable = ['title', 'node_name'];
+    protected $fillable = ['title', 'node_name',
+        'meta_title', 'meta_keywords', 'meta_description'];
+
     protected $baseAttributesAndRelations = [
         'id', 'node_id', 'title', 'node_name', 'locale', 'source_type',
         'meta_title', 'meta_keywords', 'meta_description',
@@ -210,7 +212,7 @@ class NodeSource extends Eloquent implements NodeSourceContract {
 
             $this->tempSource = null;
 
-            return $saved;
+            return ! is_null($saved);
         }
 
         return $this->source->save();
@@ -266,13 +268,13 @@ class NodeSource extends Eloquent implements NodeSourceContract {
     /**
      * Determine if the model or given attribute(s) have been modified.
      *
-     * @param  array|string|null  $attributes
+     * @param  array|string|null $attributes
      * @return bool
      */
     public function isDirty($attributes = null)
     {
         return parent::isDirty($attributes) or
-            $this->getSource()->isDirty($attributes);
+        $this->getSource()->isDirty($attributes);
     }
 
     /**

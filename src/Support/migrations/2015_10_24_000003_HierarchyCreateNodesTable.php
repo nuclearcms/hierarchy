@@ -15,7 +15,7 @@ class HierarchyCreateNodesTable extends Migration {
         Schema::create('nodes', function (Blueprint $table)
         {
             $table->increments('id');
-            $table->integer('node_type_id')->unsigned()->nullable();
+            $table->integer('node_type_id')->unsigned();
 
             $table->integer('parent_id')->nullable();
             $table->integer('lft')->nullable();
@@ -23,11 +23,12 @@ class HierarchyCreateNodesTable extends Migration {
             $table->integer('depth')->nullable();
 
             $table->boolean('visible')->default(1);
-            $table->boolean('locked')->default(0);
+            $table->boolean('sterile')->default(0);
             $table->integer('status')->default(30);
-            $table->boolean('hides_nodes')->default(0);
+            $table->boolean('hides_children')->default(0);
             $table->double('priority')->unsigned()->default(1);
 
+            $table->timestamp('published_at')->nullable();
             $table->string('children_order')->default('lft');
             $table->string('children_order_direction', 4)->default('asc');
 
