@@ -29,3 +29,17 @@ if ( ! function_exists('source_model_name'))
         return studly_case(MigrationBuilder::TABLE_PREFIX . $key);
     }
 }
+
+if ( ! function_exists('source_form_name'))
+{
+    /**
+     * Returns the name of the source form by key
+     *
+     * @param string $key
+     * @return string
+     */
+    function source_form_name($key)
+    {
+        return 'CreateEdit' . ucfirst($key) . 'Form';
+    }
+}

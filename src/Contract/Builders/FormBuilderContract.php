@@ -22,4 +22,20 @@ interface FormBuilderContract {
      */
     public function destroy($name);
 
+    /**
+     * Creates a class name from table name
+     *
+     * @param string $name
+     * @return string
+     */
+    public function getClassName($name);
+
+    /**
+     * Gets the class file path for given name
+     *
+     * @param string $name
+     * @return string
+     */
+    public function getClassFilePath($name);
+
 }
