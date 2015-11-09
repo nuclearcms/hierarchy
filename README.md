@@ -2,10 +2,10 @@
 Polymorphic content management with node structure.
 
 ---
-[![Build Status](https://travis-ci.org/NuclearCMS/Hierarchy.svg?branch=master)](https://travis-ci.org/NuclearCMS/Hierarchy)
-[![Total Downloads](https://poser.pugx.org/NuclearCMS/Hierarchy/downloads)](https://packagist.org/packages/NuclearCMS/Hierarchy)
-[![Latest Stable Version](https://poser.pugx.org/NuclearCMS/Hierarchy/version)](https://packagist.org/packages/NuclearCMS/Hierarchy)
-[![License](https://poser.pugx.org/NuclearCMS/Hierarchy/license)](https://packagist.org/packages/NuclearCMS/Hierarchy)
+[![Build Status](https://travis-ci.org/Nuclear/Hierarchy.svg?branch=master)](https://travis-ci.org/Nuclear/Hierarchy)
+[![Total Downloads](https://poser.pugx.org/Nuclear/Hierarchy/downloads)](https://packagist.org/packages/Nuclear/Hierarchy)
+[![Latest Stable Version](https://poser.pugx.org/Nuclear/Hierarchy/version)](https://packagist.org/packages/Nuclear/Hierarchy)
+[![License](https://poser.pugx.org/Nuclear/Hierarchy/license)](https://packagist.org/packages/Nuclear/Hierarchy)
 
 This package is intended for [Nuclear CMS](https://github.com/NuclearCMS/Nuclear) and it constitutes its main content management and content type management functionality. It is developed separately to enable individual development and possible reuse.
 
