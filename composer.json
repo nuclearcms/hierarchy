@@ -13,7 +13,7 @@
         "laravel",
         "laravel5"
     ],
-    "version": "1.0.3",
+    "version": "1.0.4",
     "authors": [
         {
             "name": "Hyleeh",
@@ -26,7 +26,7 @@
         "php": ">=5.5.9",
         "baum/baum": "~1.1",
         "doctrine/dbal": "~2.5",
-        "dimsav/laravel-translatable": "dev-master#3381f271f6f273a27481ec5d2649e9508a6a5e84 as 0.0.0",
+        "dimsav/laravel-translatable": "dev-master as 0.0.0",
         "kris/laravel-form-builder": "^1.6"
     },
     "require-dev": {
