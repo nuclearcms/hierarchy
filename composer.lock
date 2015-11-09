@@ -4,8 +4,8 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "4d523d4cef186f8cf8711db392ccc519",
-    "content-hash": "e1e3277781421973a6bad3e0f4cbbb60",
+    "hash": "313e2a0419eda5e20a820d6a5adfaf4b",
+    "content-hash": "b388043861170de768fa71ecf4f01feb",
     "packages": [
         {
             "name": "baum/baum",
@@ -3608,7 +3608,14 @@
             "time": "2015-10-11 09:39:48"
         }
     ],
-    "aliases": [],
+    "aliases": [
+        {
+            "alias": "0.0.0",
+            "alias_normalized": "0.0.0.0",
+            "version": "9999999-dev",
+            "package": "dimsav/laravel-translatable"
+        }
+    ],
     "minimum-stability": "stable",
     "stability-flags": {
         "dimsav/laravel-translatable": 20
