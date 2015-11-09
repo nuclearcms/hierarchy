@@ -26,7 +26,8 @@
         "php": ">=5.5.9",
         "baum/baum": "~1.1",
         "doctrine/dbal": "~2.5",
-        "dimsav/laravel-translatable": "^5.3"
+        "dimsav/laravel-translatable": "dev-master",
+        "kris/laravel-form-builder": "^1.6"
     },
     "require-dev": {
         "orchestra/testbench": "~3.0",
@@ -42,9 +43,6 @@
     "autoload-dev": {
         "classmap": [
             "tests"
-        ],
-        "exclude-from-classmap": [
-            "/tests/_stubs/"
         ]
     },
     "suggest": {

@@ -3,6 +3,8 @@
 namespace Nuclear\Hierarchy\Http\Forms;
 
 
+use Kris\LaravelFormBuilder\Form;
+
 class NodeSourceForm extends Form {
 
     public function buildForm()

@@ -172,29 +172,6 @@ class Node extends BaumNode {
     }
 
     /**
-     * We are overloading Translatable's setAttribute method
-     * until the pull PR is implemented.
-     *
-     * @param string $key
-     * @param mixed $value
-     * @return mixed
-     */
-    public function setAttribute($key, $value)
-    {
-        if (str_contains($key, ':')) {
-            list($key, $locale) = explode(':', $key);
-        } else {
-            $locale = $this->locale();
-        }
-
-        if ($this->isTranslationAttribute($key)) {
-            $this->getTranslationOrNew($locale)->$key = $value;
-        } else {
-            parent::setAttribute($key, $value);
-        }
-    }
-
-    /**
      * Overloading default Translatable functionality for
      * creating a new translation
      *
@@ -211,18 +188,6 @@ class Node extends BaumNode {
         $this->translations->add($nodeSource);
 
         return $nodeSource;
-    }
-
-    /**
-     * Overloading the Translatable __isset method
-     * This will be removed when the PR is implemented
-     *
-     * @param $key
-     * @return bool
-     */
-    public function __isset($key)
-    {
-        return ($this->isTranslationAttribute($key) || parent::__isset($key));
     }
 
     /**

@@ -26,7 +26,6 @@ class HierarchyCreateNodeFieldsTable extends Migration {
 
             $table->text('rules')->nullable();
             $table->text('default_value')->nullable();
-            $table->text('value')->nullable();
             $table->text('options')->nullable();
 
             $table->timestamps();

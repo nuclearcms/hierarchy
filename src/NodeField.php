@@ -12,7 +12,8 @@ class NodeField extends Eloquent {
      *
      * @var array
      */
-    protected $fillable = ['name', 'label', 'description', 'position', 'type'];
+    protected $fillable = ['name', 'label', 'description', 'position', 'type',
+        'visible', 'rules', 'default_value', 'options'];
 
     /**
      * Parent node type relation

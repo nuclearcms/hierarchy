@@ -19,7 +19,14 @@ class FormBuilder implements FormBuilderContract, WriterContract {
      */
     public function build($name, Collection $fields = null)
     {
-        // TODO: Implement build() method.
+        $path = $this->getClassFilePath($name);
+
+        $contents = view('_hierarchy::entities.form', [
+            'name'   => $this->getClassName($name),
+            'fields' => $fields ?: []
+        ])->render();
+
+        $this->write($path, $contents);
     }
 
     /**
@@ -29,7 +36,9 @@ class FormBuilder implements FormBuilderContract, WriterContract {
      */
     public function destroy($name)
     {
-        // TODO: Implement destroy() method.
+        $path = $this->getClassFilePath($name);
+
+        $this->delete($path);
     }
 
     /**
