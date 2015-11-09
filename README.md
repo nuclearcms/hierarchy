@@ -2,7 +2,7 @@
 Polymorphic content management with node structure.
 
 ---
-[![Build Status](https://travis-ci.org/Nuclear/Hierarchy.svg?branch=master)](https://travis-ci.org/Nuclear/Hierarchy)
+[![Build Status](https://travis-ci.org/NuclearCMS/Hierarchy.svg?branch=master)](https://travis-ci.org/NuclearCMS/Hierarchy)
 [![Total Downloads](https://poser.pugx.org/Nuclear/Hierarchy/downloads)](https://packagist.org/packages/Nuclear/Hierarchy)
 [![Latest Stable Version](https://poser.pugx.org/Nuclear/Hierarchy/version)](https://packagist.org/packages/Nuclear/Hierarchy)
 [![License](https://poser.pugx.org/Nuclear/Hierarchy/license)](https://packagist.org/packages/Nuclear/Hierarchy)
