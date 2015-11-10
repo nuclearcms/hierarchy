@@ -21,14 +21,14 @@ Installing Hierarchy is simple.
     }
     ```
 
-2. In order to register Hierarchy Service Provider add `'Nuclear\Hierarchy\Provider\HierarchyServiceProvider'` to the end of `providers` array in your `config/app.php` file.
+2. In order to register Hierarchy Service Provider add `'Nuclear\Hierarchy\Providers\HierarchyServiceProvider'` to the end of `providers` array in your `config/app.php` file.
     ```php
     'providers' => array(
     
         'Illuminate\Foundation\Providers\ArtisanServiceProvider',
         'Illuminate\Auth\AuthServiceProvider',
         ...
-        'Nuclear\Hierarchy\Provider\HierarchyServiceProvider',
+        'Nuclear\Hierarchy\Providers\HierarchyServiceProvider',
     
     ),
     ```
