@@ -16,11 +16,11 @@ class {{ $name }} extends Form {
             'label' => '{{ $field->label }}',
             'help_block' => ['text' => '{{ $field->description }}'],
 
-            @unless(is_null($field->rules))
+            @unless(empty($field->rules))
             'rules' => {!! $field->rules !!},
             @endunless
 
-            @unless(is_null($field->default_value))
+            @unless(empty($field->default_value))
             'default_value' => {!! $field->default_value !!},
             @endunless
 
