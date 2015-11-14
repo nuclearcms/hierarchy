@@ -1,5 +1,6 @@
 <?php echo '<?php'; ?>
 
+// WARNING! THIS IS A GENERATED FILE, PLEASE DO NOT EDIT!
 
 namespace gen\Migrations;
 
