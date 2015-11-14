@@ -142,6 +142,7 @@ class Node extends BaumNode {
     {
         return in_array($key, [
             $this->nodeTypeKey,
+            $this->getKeyName(),
             'translationForeignKey'
         ]);
     }
