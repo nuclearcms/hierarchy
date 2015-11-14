@@ -40,6 +40,6 @@ if ( ! function_exists('source_form_name'))
      */
     function source_form_name($key)
     {
-        return 'CreateEdit' . ucfirst($key) . 'Form';
+        return 'Edit' . ucfirst($key) . 'Form';
     }
 }

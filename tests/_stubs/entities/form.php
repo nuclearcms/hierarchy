@@ -5,11 +5,11 @@ namespace gen\Forms;
 
 use Kris\LaravelFormBuilder\Form;
 
-class CreateEditCategoryForm extends Form {
+class EditCategoryForm extends Form {
 
     public function buildForm()
     {
-        $this->compose('Nuclear\Hierarchy\Http\Forms\NodeSourceForm');
+        $this->compose(new \Nuclear\Hierarchy\Http\Forms\NodeSourceForm);
             }
 
 }

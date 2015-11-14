@@ -91,7 +91,7 @@ class FormBuilderTest extends TestBase {
         $builder = $this->getBuilder();
 
         $this->assertEquals(
-            'CreateEditProjectForm',
+            'EditProjectForm',
             $builder->getClassName('project')
         );
     }
@@ -113,7 +113,7 @@ class FormBuilderTest extends TestBase {
         $builder = $this->getBuilder();
 
         $this->assertEquals(
-            generated_path() . '/Forms/CreateEditProjectForm.php',
+            generated_path() . '/Forms/EditProjectForm.php',
             $builder->getClassFilePath('project')
         );
     }

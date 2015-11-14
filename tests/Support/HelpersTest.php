@@ -24,7 +24,7 @@ class HelpersTest extends TestBase {
     function it_registers_source_form_name_helpers()
     {
         $this->assertEquals(
-            'CreateEditProjectForm',
+            'EditProjectForm',
             source_form_name('project')
         );
     }
