@@ -101,6 +101,21 @@ class Node extends BaumNode {
     }
 
     /**
+     * Sets the node type by key and validates it
+     *
+     * @param int $id
+     * @return NodeType
+     */
+    public function setNodeTypeByKey($id)
+    {
+        $this->nodeType()->associate(
+            NodeType::findOrFail($id)
+        );
+
+        return $this->save();
+    }
+
+    /**
      * Checks if key is a translation attribute
      *
      * @param string $key

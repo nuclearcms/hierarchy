@@ -12,7 +12,7 @@ class NodeSourceForm extends Form {
         $this->add('title', 'text', [
             'rules' => 'required|max:255'
         ]);
-        $this->add('slug', 'slug', [
+        $this->add('node_name', 'slug', [
             'rules' => 'max:255|alpha_dash'
         ]);
     }

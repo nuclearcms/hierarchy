@@ -1,5 +1,6 @@
 <?php
 
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Nuclear\Hierarchy\Node;
 use Nuclear\Hierarchy\NodeSource;
 
@@ -32,26 +33,26 @@ class NodeTest extends TestBase {
         $fieldRepository = $this->app->make('Nuclear\Hierarchy\Repositories\NodeFieldRepository');
 
         $nodeType = $typeRepository->create([
-            'name' => 'project',
+            'name'  => 'project',
             'label' => 'Project'
         ]);
 
         $fieldArea = $fieldRepository->create(
             $nodeType->getKey(), [
-            'name' => 'area',
-            'label' => 'Area',
+            'name'        => 'area',
+            'label'       => 'Area',
             'description' => '',
-            'type' => 'integer',
-            'position' => 0.1
+            'type'        => 'integer',
+            'position'    => 0.1
         ]);
 
         $fieldDescription = $fieldRepository->create(
             $nodeType->getKey(), [
-            'name' => 'description',
-            'label' => 'Description',
+            'name'        => 'description',
+            'label'       => 'Description',
             'description' => '',
-            'type' => 'text',
-            'position' => 0.2
+            'type'        => 'text',
+            'position'    => 0.2
         ]);
     }
 
@@ -87,6 +88,26 @@ class NodeTest extends TestBase {
             $node->getNodeTypeKey(),
             2
         );
+    }
+
+    /** @test */
+    function it_sets_node_type_by_key()
+    {
+        $node = $this->getNode();
+
+        $this->assertTrue(
+            $node->setNodeTypeByKey(1)
+        );
+
+        try
+        {
+            $node->setNodeTypeByKey(1337);
+        } catch (ModelNotFoundException $e)
+        {
+            return;
+        }
+
+        $this->fail('Something went wrong. Test fails!');
     }
 
     /** @test */
@@ -375,12 +396,12 @@ class NodeTest extends TestBase {
 
         $node->fill([
             'visible' => 0,
-            'en' => [
-                'title' => 'English Title',
+            'en'      => [
+                'title'       => 'English Title',
                 'description' => 'English Description'
             ],
-            'tr' => [
-                'title' => 'Türkçe Başlık',
+            'tr'      => [
+                'title'       => 'Türkçe Başlık',
                 'description' => 'Türkçe Açıklama'
             ]
         ]);
@@ -404,12 +425,12 @@ class NodeTest extends TestBase {
 
         $node->fill([
             'visible' => 0,
-            'en' => [
-                'title' => 'English Title',
+            'en'      => [
+                'title'       => 'English Title',
                 'description' => 'English Description'
             ],
-            'tr' => [
-                'title' => 'Türkçe Başlık',
+            'tr'      => [
+                'title'       => 'Türkçe Başlık',
                 'description' => 'Türkçe Açıklama'
             ]
         ]);
