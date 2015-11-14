@@ -123,7 +123,7 @@ class Node extends BaumNode {
      */
     public function isTranslationAttribute($key)
     {
-        if ($this->isNodeTypeKey($key))
+        if ($this->isSpecialKey($key))
         {
             return false;
         }
@@ -132,15 +132,18 @@ class Node extends BaumNode {
     }
 
     /**
-     * Checks if the given key is a node type key
-     * (This key requires special protection)
+     * Checks if the given key is a special key
+     * (These keys requires special protection)
      *
      * @param $key
      * @return bool
      */
-    protected function isNodeTypeKey($key)
+    protected function isSpecialKey($key)
     {
-        return $key === $this->nodeTypeKey;
+        return in_array($key, [
+            $this->nodeTypeKey,
+            'translationForeignKey'
+        ]);
     }
 
     /**
