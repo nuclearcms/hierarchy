@@ -6,13 +6,12 @@ namespace gen\Forms;
 
 
 use Kris\LaravelFormBuilder\Form;
-use Nuclear\Hierarchy\Http\Forms\NodeSourceForm;
 
 class {{ $name }} extends Form {
 
     public function buildForm()
     {
-        $this->compose(new NodeSourceForm);
+        $this->compose('Nuclear\Hierarchy\Http\Forms\NodeSourceForm');
         @foreach($fields as $field)
         $this->add('{{ $field->name }}', '{{ $field->type }}', [
             'label' => '{{ $field->label }}',
