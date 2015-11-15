@@ -26,7 +26,7 @@ class Node extends BaumNode {
      */
     protected $fillable = ['title', 'node_name',
         'meta_title', 'meta_keywords', 'meta_description',
-        'visible', 'sterile', 'status', 'hides_children', 'priority',
+        'visible', 'sterile', 'home', 'locked', 'status', 'hides_children', 'priority',
         'published_at', 'children_order', 'children_order_direction'];
 
     /**
