@@ -8,6 +8,13 @@ use Kris\LaravelFormBuilder\Form;
 
 class EditCategoryForm extends Form {
 
+    /**
+     * Form options
+     */
+    protected $formOptions = [
+        'method' => 'PUT'
+    ];
+
     public function buildForm()
     {
         $this->compose('Nuclear\Hierarchy\Http\Forms\NodeSourceForm');
