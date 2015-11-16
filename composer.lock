@@ -4,8 +4,8 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "b7daea139d21d0154affd817f470be8b",
-    "content-hash": "34e337bd0890d936b030f85ea0e0b83b",
+    "hash": "184beb4871d7215fb173abe58b8a1f51",
+    "content-hash": "050542836fb8d22a13895ea3160680ff",
     "packages": [
         {
             "name": "baum/baum",
@@ -174,16 +174,16 @@
         },
         {
             "name": "dimsav/laravel-translatable",
-            "version": "dev-master",
+            "version": "v5.4",
             "source": {
                 "type": "git",
                 "url": "https://github.com/dimsav/laravel-translatable.git",
-                "reference": "3381f271f6f273a27481ec5d2649e9508a6a5e84"
+                "reference": "222d8ab86c7529e644bd819930e22ad9dd0527b1"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/dimsav/laravel-translatable/zipball/3381f271f6f273a27481ec5d2649e9508a6a5e84",
-                "reference": "3381f271f6f273a27481ec5d2649e9508a6a5e84",
+                "url": "https://api.github.com/repos/dimsav/laravel-translatable/zipball/222d8ab86c7529e644bd819930e22ad9dd0527b1",
+                "reference": "222d8ab86c7529e644bd819930e22ad9dd0527b1",
                 "shasum": ""
             },
             "require": {
@@ -221,7 +221,7 @@
                 "laravel",
                 "translation"
             ],
-            "time": "2015-11-09 17:01:40"
+            "time": "2015-11-15 20:32:59"
         },
         {
             "name": "dnoegel/php-xdg-base-dir",
@@ -872,16 +872,16 @@
         },
         {
             "name": "kris/laravel-form-builder",
-            "version": "1.6.30",
+            "version": "1.6.31",
             "source": {
                 "type": "git",
                 "url": "https://github.com/kristijanhusak/laravel-form-builder.git",
-                "reference": "9b2a8dddb4ff99766cdfd8ca4b85b1ae2e691a1a"
+                "reference": "b02fea98d078515c84dcda451892688e492029fd"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/kristijanhusak/laravel-form-builder/zipball/9b2a8dddb4ff99766cdfd8ca4b85b1ae2e691a1a",
-                "reference": "9b2a8dddb4ff99766cdfd8ca4b85b1ae2e691a1a",
+                "url": "https://api.github.com/repos/kristijanhusak/laravel-form-builder/zipball/b02fea98d078515c84dcda451892688e492029fd",
+                "reference": "b02fea98d078515c84dcda451892688e492029fd",
                 "shasum": ""
             },
             "require": {
@@ -922,7 +922,7 @@
                 }
             ],
             "description": "Laravel form builder - symfony like",
-            "time": "2015-09-22 11:12:40"
+            "time": "2015-11-16 13:40:04"
         },
         {
             "name": "laravel/framework",
@@ -3613,9 +3613,7 @@
     ],
     "aliases": [],
     "minimum-stability": "stable",
-    "stability-flags": {
-        "dimsav/laravel-translatable": 20
-    },
+    "stability-flags": [],
     "prefer-stable": false,
     "prefer-lowest": false,
     "platform": {
