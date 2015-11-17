@@ -229,11 +229,14 @@ class Node extends BaumNode {
                 // an error has occurred. Therefore we shouldn't save the translations.
                 if (parent::save($options)) {
                     // Put the translations back so that they can be saved
-                    return $this->saveTranslations($translations);
+                    $this->setRelation('translations', $translations);
+                    return $this->saveTranslations();
                 }
 
                 return false;
             } else {
+                // Put the translations back so that they can be saved
+                $this->setRelation('translations', $translations);
                 // If $this->exists and not dirty, parent::save() skips saving and returns
                 // false. So we have to save the translations
                 if ($saved = $this->saveTranslations($translations)) {
@@ -243,32 +246,13 @@ class Node extends BaumNode {
                 return $saved;
             }
         } elseif (parent::save($options)) {
+            // Put the translations back so that they can be saved
+            $this->setRelation('translations', $translations);
             // We save the translations only if the instance is saved in the database.
             return $this->saveTranslations($translations);
         }
 
         return false;
-    }
-
-    /**
-     * Made a minor modification to the original translatable method
-     * We accept translations as a parameter instead of calling $this->translations
-     * in the foreach statement.
-     *
-     * @param Collection $translations
-     * @return bool
-     */
-    protected function saveTranslations(Collection $translations)
-    {
-        $saved = true;
-        foreach ($translations as $translation) {
-            if ($saved && $this->isTranslationDirty($translation)) {
-                $translation->setAttribute($this->getRelationKey(), $this->getKey());
-                $saved = $translation->save();
-            }
-        }
-
-        return $saved;
     }
 
     /**
