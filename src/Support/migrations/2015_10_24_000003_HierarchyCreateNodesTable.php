@@ -29,7 +29,7 @@ class HierarchyCreateNodesTable extends Migration {
             $table->double('priority')->unsigned()->default(1);
 
             $table->timestamp('published_at')->nullable();
-            $table->string('children_order')->default('lft');
+            $table->string('children_order')->default('_lft');
             $table->string('children_order_direction', 4)->default('asc');
 
             $table->timestamps();
