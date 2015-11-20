@@ -95,9 +95,7 @@ class NodeTest extends TestBase {
     {
         $node = $this->getNode();
 
-        $this->assertTrue(
-            $node->setNodeTypeByKey(1)
-        );
+        $node->setNodeTypeByKey(1);
 
         try
         {

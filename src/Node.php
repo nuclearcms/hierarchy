@@ -111,8 +111,6 @@ class Node extends BaseNode {
         $this->nodeType()->associate(
             NodeType::findOrFail($id)
         );
-
-        return $this->save();
     }
 
     /**
