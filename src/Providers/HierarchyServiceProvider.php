@@ -8,7 +8,7 @@ use Nuclear\Hierarchy\Cache\Accessor;
 
 class HierarchyServiceProvider extends ServiceProvider {
 
-    const version = '1.0.15';
+    const version = '1.1.0';
 
     /**
      * Register the service provider.
@@ -70,7 +70,6 @@ class HierarchyServiceProvider extends ServiceProvider {
      */
     protected function registerExternalServices()
     {
-        $this->app->register('Baum\Providers\BaumServiceProvider');
         $this->app->register('Dimsav\Translatable\TranslatableServiceProvider');
     }
 

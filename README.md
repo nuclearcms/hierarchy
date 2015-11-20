@@ -16,7 +16,7 @@ Installing Hierarchy is simple.
     ```js
     {
         "require": {
-            "nuclear/hierarchy": "1.0.*"
+            "nuclear/hierarchy": "1.1.*"
         }
     }
     ```

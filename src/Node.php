@@ -3,13 +3,13 @@
 namespace Nuclear\Hierarchy;
 
 
-use Baum\Node as BaumNode;
+use Kalnoy\Nestedset\Node as BaseNode;
 use Carbon\Carbon;
 use Dimsav\Translatable\Translatable;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Collection;
 
-class Node extends BaumNode {
+class Node extends BaseNode {
 
     /**
      * The translatable trait requires some modification
@@ -207,52 +207,6 @@ class Node extends BaumNode {
         $this->translations->add($nodeSource);
 
         return $nodeSource;
-    }
-
-    /**
-     * A dirty work-through to be able to keep
-     * Baum and Translatable play well
-     * @link https://github.com/dimsav/laravel-translatable/issues/25
-     *
-     * @param array $options
-     * @return bool
-     */
-    public function save(array $options = [])
-    {
-        // We get the translations before they disappear
-        // and we feed it to the overloaded saveTranslations method
-        $translations = $this->translations;
-
-        if ($this->exists) {
-            if (count($this->getDirty()) > 0) {
-                // If $this->exists and dirty, parent::save() has to return true. If not,
-                // an error has occurred. Therefore we shouldn't save the translations.
-                if (parent::save($options)) {
-                    // Put the translations back so that they can be saved
-                    $this->setRelation('translations', $translations);
-                    return $this->saveTranslations();
-                }
-
-                return false;
-            } else {
-                // Put the translations back so that they can be saved
-                $this->setRelation('translations', $translations);
-                // If $this->exists and not dirty, parent::save() skips saving and returns
-                // false. So we have to save the translations
-                if ($saved = $this->saveTranslations($translations)) {
-                    $this->fireModelEvent('saved', false);
-                }
-
-                return $saved;
-            }
-        } elseif (parent::save($options)) {
-            // Put the translations back so that they can be saved
-            $this->setRelation('translations', $translations);
-            // We save the translations only if the instance is saved in the database.
-            return $this->saveTranslations($translations);
-        }
-
-        return false;
     }
 
     /**

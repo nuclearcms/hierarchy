@@ -227,12 +227,12 @@ class NodeTest extends TestBase {
     {
         $node = $this->getNode();
 
-        $this->assertEquals(
+        $this->assertNull(
             $node->visible,
             1
         );
 
-        $this->assertEquals(
+        $this->assertNull(
             $node->getAttribute('visible'),
             1
         );
@@ -383,9 +383,8 @@ class NodeTest extends TestBase {
     {
         $node = $this->getNode();
 
-        $this->assertEquals(
-            $node->visible,
-            1
+        $this->assertNull(
+            $node->visible
         );
 
         $this->assertNull($node->title);
@@ -449,7 +448,7 @@ class NodeTest extends TestBase {
             $node->save()
         );
 
-        $node->reload();
+        $node->load('translations');
 
         $this->assertCount(
             2,

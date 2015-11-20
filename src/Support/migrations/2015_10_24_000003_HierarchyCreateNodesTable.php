@@ -2,6 +2,7 @@
 
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
+use Kalnoy\Nestedset\NestedSet;
 
 class HierarchyCreateNodesTable extends Migration {
 
@@ -17,10 +18,7 @@ class HierarchyCreateNodesTable extends Migration {
             $table->increments('id');
             $table->integer('node_type_id')->unsigned();
 
-            $table->integer('parent_id')->nullable();
-            $table->integer('lft')->nullable();
-            $table->integer('rgt')->nullable();
-            $table->integer('depth')->nullable();
+            NestedSet::columns($table);
 
             $table->boolean('visible')->default(1);
             $table->boolean('sterile')->default(0);
