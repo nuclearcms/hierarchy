@@ -232,6 +232,16 @@ class NodeTest extends TestBase {
     }
 
     /** @test */
+    function it_checks_if_hides_children()
+    {
+        $node = $this->getNode();
+
+        $this->assertFalse(
+            $node->hidesChildren()
+        );
+    }
+
+    /** @test */
     function it_sets_and_gets_base_attributes()
     {
         $node = $this->getNode();

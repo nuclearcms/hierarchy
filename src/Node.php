@@ -272,4 +272,14 @@ class Node extends BaseNode {
             ->defaultOrder()->get();
     }
 
+    /**
+     * Checks if node hides children
+     *
+     * @return bool
+     */
+    public function hidesChildren()
+    {
+        return $this->hides_children || $this->nodeType->hides_children;
+    }
+
 }
