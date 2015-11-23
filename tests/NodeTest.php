@@ -221,6 +221,17 @@ class NodeTest extends TestBase {
     }
 
     /** @test */
+    function it_gets_position_ordered_children()
+    {
+        $node = $this->getNode();
+
+        $this->assertInstanceOf(
+            'Illuminate\Database\Eloquent\Collection',
+            $node->getPositionOrderedChildren()
+        );
+    }
+
+    /** @test */
     function it_sets_and_gets_base_attributes()
     {
         $node = $this->getNode();

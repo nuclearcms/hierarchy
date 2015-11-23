@@ -71,6 +71,16 @@ class Node extends BaseNode {
     protected $with = ['translations'];
 
     /**
+     * Status codes
+     *
+     * @var int
+     */
+    const DRAFT = 30;
+    const PENDING = 40;
+    const PUBLISHED = 50;
+    const ARCHIVED = 60;
+
+    /**
      * The node type relation
      *
      * @return BelongsTo
@@ -214,9 +224,13 @@ class Node extends BaseNode {
      */
     public function scopePublished($query)
     {
-        return $query->where(
-            'published_at', '<=', Carbon::now()
-        );
+        return $query
+            ->where('status' >= Node::PUBLISHED)
+            ->orWhere(function ($query)
+            {
+                $query->where('status' >= Node::PENDING)
+                    ->where('published_at', '<=', Carbon::now());
+            });
     }
 
     /**
@@ -245,6 +259,17 @@ class Node extends BaseNode {
                 $this->children_order,
                 $this->children_order_direction)
             ->paginate();
+    }
+
+    /**
+     * Returns all children ordered by position
+     *
+     * @return Collection
+     */
+    public function getPositionOrderedChildren()
+    {
+        return $this->children()
+            ->defaultOrder()->get();
     }
 
 }
