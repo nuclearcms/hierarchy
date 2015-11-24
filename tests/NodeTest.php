@@ -199,6 +199,17 @@ class NodeTest extends TestBase {
     }
 
     /** @test */
+    function it_gets_children()
+    {
+        $node = $this->getNode();
+
+        $this->assertInstanceOf(
+            'Illuminate\Database\Eloquent\Collection',
+            $node->getChildren()
+        );
+    }
+
+    /** @test */
     function it_gets_ordered_children()
     {
         $node = $this->getNode();

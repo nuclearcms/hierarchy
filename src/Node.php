@@ -3,6 +3,7 @@
 namespace Nuclear\Hierarchy;
 
 
+use Illuminate\Pagination\LengthAwarePaginator;
 use Kalnoy\Nestedset\Node as BaseNode;
 use Carbon\Carbon;
 use Dimsav\Translatable\Translatable;
@@ -234,37 +235,65 @@ class Node extends BaseNode {
     }
 
     /**
-     * Get ordered children
+     * Children accessor
      *
-     * @param int|null $limit
      * @return Collection
      */
-    public function getOrderedChildren($limit = null)
+    public function getChildren()
     {
-        $children = $this->children()
-            ->orderBy(
-                $this->children_order,
-                $this->children_order_direction);
+        return $this->children;
+    }
 
-        return is_null($limit) ?
-            $children->get() :
-            $children->paginate($limit);
+    /**
+     * Get ordered children
+     *
+     * @param int|null $perPage
+     * @param int|null $page
+     * @return Collection
+     */
+    public function getOrderedChildren($perPage = null, $page = 1)
+    {
+        $children = $this->getChildren()->sortBy(
+            $this->children_order, SORT_REGULAR,
+            ($this->children_order_direction === 'asc') ? true : false
+        );
+
+        return $this->determinePagination($perPage, $page, $children);
     }
 
     /**
      * Returns all children ordered by position
      *
-     * @param int|null $limit
+     * @param int|null $perPage
+     * @param int|null $page
      * @return Collection
      */
-    public function getPositionOrderedChildren($limit = null)
+    public function getPositionOrderedChildren($perPage = null, $page = 1)
     {
-        $children = $this->children()
-            ->defaultOrder();
+        $children = $this->getChildren()
+            ->sortBy($this->getLftName());
 
-        return is_null($limit) ?
-            $children->get() :
-            $children->paginate($limit);
+        return $this->determinePagination($perPage, $page, $children);
+    }
+
+    /**
+     * Creates a paginator instance if needed
+     *
+     * @param $perPage
+     * @param $page
+     * @param $children
+     * @return LengthAwarePaginator
+     */
+    protected function determinePagination($perPage, $page, $children)
+    {
+        if (is_null($perPage))
+        {
+            return $children;
+        }
+
+        return new LengthAwarePaginator(
+            $children->forPage($page, $perPage),
+            count($children), $perPage, $page);
     }
 
     /**
