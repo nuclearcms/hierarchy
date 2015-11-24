@@ -64,8 +64,7 @@ class MigrationBuilder implements MigrationBuilderContract, WriterContract {
             'slug'     => 'string',
             'tag'      => 'text',
             'password' => 'string',
-            'datetime' => 'timestamp',
-            'tag'      => 'text'
+            'datetime' => 'timestamp'
         ]);
 
         $this->defaultType = config('hierarchy.default_type', 'string');

@@ -37,8 +37,7 @@ return [
 		'slug'     => 'string',
 		'tag'      => 'text',
 		'password' => 'string',
-		'datetime' => 'timestamp',
-		'tag'      => 'text'
+		'datetime' => 'timestamp'
     ],
     'default_type' => 'string',
 
