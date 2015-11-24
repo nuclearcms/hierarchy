@@ -306,7 +306,7 @@ class Node extends BaseNode {
     {
         $children = $this->getChildren()->filter(function ($item) use ($locale)
         {
-            return $item->locale === $locale;
+            return $item->hasTranslation($locale);
         });
 
         return (count($children) > 0);
