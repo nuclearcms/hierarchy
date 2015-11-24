@@ -302,12 +302,14 @@ class Node extends BaseNode {
      * @param string $locale
      * @return Collection
      */
-    public function getTranslatedChildren($locale)
+    public function hasTranslatedChildren($locale)
     {
-        return $this->getChildren()->filter(function ($item) use ($locale)
+        $children = $this->getChildren()->filter(function ($item) use ($locale)
         {
             return $item->locale === $locale;
         });
+
+        return (count($children) > 0);
     }
 
     /**

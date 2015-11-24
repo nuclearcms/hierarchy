@@ -242,13 +242,12 @@ class NodeTest extends TestBase {
     }
 
     /** @test */
-    function it_gets_translated_children()
+    function it_checks_translated_children()
     {
         $node = $this->getNode();
 
-        $this->assertInstanceOf(
-            'Illuminate\Database\Eloquent\Collection',
-            $node->getTranslatedChildren('en')
+        $this->assertFalse(
+            $node->hasTranslatedChildren('en')
         );
     }
 
