@@ -28,7 +28,7 @@ return [
 		'text'     => 'string',
 		'textarea' => 'text',
 		'markdown' => 'longtext',
-		'file'     => 'unsignedInteger',
+		'document'     => 'unsignedInteger',
 		'gallery'  => 'text',
 		'checkbox' => 'boolean',
 		'select'   => 'string',
@@ -36,7 +36,9 @@ return [
 		'color'    => 'string',
 		'slug'     => 'string',
 		'tag'      => 'text',
-		'password' => 'string'
+		'password' => 'string',
+		'datetime' => 'timestamp',
+		'tag'      => 'text'
     ],
     'default_type' => 'string',
 

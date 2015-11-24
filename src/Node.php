@@ -297,6 +297,20 @@ class Node extends BaseNode {
     }
 
     /**
+     * Filters children by locale
+     *
+     * @param string $locale
+     * @return Collection
+     */
+    public function getTranslatedChildren($locale)
+    {
+        return $this->getChildren()->filter(function ($item) use ($locale)
+        {
+            return $item->locale === $locale;
+        });
+    }
+
+    /**
      * Checks if node hides children
      *
      * @return bool
