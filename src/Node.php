@@ -236,40 +236,35 @@ class Node extends BaseNode {
     /**
      * Get ordered children
      *
+     * @param int|null $limit
      * @return Collection
      */
-    public function getOrderedChildren()
+    public function getOrderedChildren($limit = null)
     {
-        return $this->children()
+        $children = $this->children()
             ->orderBy(
                 $this->children_order,
-                $this->children_order_direction)
-            ->get();
-    }
+                $this->children_order_direction);
 
-    /**
-     * Get ordered children paginated
-     *
-     * @return Collection
-     */
-    public function getOrderedChildrenPaginated()
-    {
-        return $this->children()
-            ->orderBy(
-                $this->children_order,
-                $this->children_order_direction)
-            ->paginate();
+        return is_null($limit) ?
+            $children->get() :
+            $children->paginate($limit);
     }
 
     /**
      * Returns all children ordered by position
      *
+     * @param int|null $limit
      * @return Collection
      */
-    public function getPositionOrderedChildren()
+    public function getPositionOrderedChildren($limit = null)
     {
-        return $this->children()
-            ->defaultOrder()->get();
+        $children = $this->children()
+            ->defaultOrder();
+
+        return is_null($limit) ?
+            $children->get() :
+            $children->paginate($limit);
     }
 
     /**

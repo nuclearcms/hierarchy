@@ -207,16 +207,10 @@ class NodeTest extends TestBase {
             'Illuminate\Database\Eloquent\Collection',
             $node->getOrderedChildren()
         );
-    }
-
-    /** @test */
-    function it_gets_ordered_children_paginated()
-    {
-        $node = $this->getNode();
 
         $this->assertInstanceOf(
             'Illuminate\Pagination\LengthAwarePaginator',
-            $node->getOrderedChildrenPaginated()
+            $node->getOrderedChildren(15)
         );
     }
 
@@ -228,6 +222,11 @@ class NodeTest extends TestBase {
         $this->assertInstanceOf(
             'Illuminate\Database\Eloquent\Collection',
             $node->getPositionOrderedChildren()
+        );
+
+        $this->assertInstanceOf(
+            'Illuminate\Pagination\LengthAwarePaginator',
+            $node->getPositionOrderedChildren(15)
         );
     }
 
