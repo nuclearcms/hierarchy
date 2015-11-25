@@ -331,6 +331,16 @@ class NodeSource extends Eloquent implements NodeSourceContract {
     }
 
     /**
+     * Convert the model instance to an array.
+     *
+     * @return array
+     */
+    public function toArray()
+    {
+        return array_merge(parent::toArray(), $this->source->toArray());
+    }
+
+    /**
      * Getter for node model name
      *
      * @return string

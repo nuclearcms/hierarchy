@@ -433,4 +433,23 @@ class NodeSourceTest extends TestBase {
         );
     }
 
+    /** @test */
+    function it_converts_model_to_array()
+    {
+        $nodeSource = $this->getNodeSource();
+        $this->populateNodeSource($nodeSource);
+
+        $nodeSource->save();
+
+        $this->assertArrayHasKey(
+            'title',
+            $nodeSource->toArray()
+        );
+
+        $this->assertArrayHasKey(
+            'description',
+            $nodeSource->toArray()
+        );
+    }
+
 }
