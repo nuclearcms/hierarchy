@@ -226,10 +226,10 @@ class Node extends BaseNode {
     public function scopePublished($query)
     {
         return $query
-            ->where('status' >= Node::PUBLISHED)
+            ->where('status', '>=', Node::PUBLISHED)
             ->orWhere(function ($query)
             {
-                $query->where('status' >= Node::PENDING)
+                $query->where('status', '>=', Node::PENDING)
                     ->where('published_at', '<=', Carbon::now());
             });
     }
