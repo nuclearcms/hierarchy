@@ -249,7 +249,7 @@ class Node extends BaseNode {
      *
      * @param int|null $perPage
      * @param int|null $page
-     * @return Collection
+     * @return Collection|LengthAwarePaginator
      */
     public function getOrderedChildren($perPage = null, $page = 1)
     {
@@ -266,7 +266,7 @@ class Node extends BaseNode {
      *
      * @param int|null $perPage
      * @param int|null $page
-     * @return Collection
+     * @return Collection|LengthAwarePaginator
      */
     public function getPositionOrderedChildren($perPage = null, $page = 1)
     {
@@ -275,6 +275,41 @@ class Node extends BaseNode {
 
         return $this->determinePagination($perPage, $page, $children);
     }
+
+    /**
+     * Returns all published children with parameter ordered
+     *
+     * @param int|null $perPage
+     * @return Collection|LengthAwarePaginator
+     */
+    public function getPublishedOrderedChildren($perPage = null)
+    {
+        $children = $this->children()
+            ->published()
+            ->orderBy($this->children_order, $this->children_order_direction);
+
+        return is_null($perPage) ?
+            $children->get() :
+            $children->paginate($perPage);
+    }
+
+    /**
+     * Returns all published children position ordered
+     *
+     * @param int|null $perPage
+     * @return Collection|LengthAwarePaginator
+     */
+    public function getPublishedPositionOrderedChildren($perPage = null)
+    {
+        $children = $this->children()
+            ->published()
+            ->defaultOrder();
+
+        return is_null($perPage) ?
+            $children->get() :
+            $children->paginate($perPage);
+    }
+
 
     /**
      * Creates a paginator instance if needed

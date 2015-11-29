@@ -242,6 +242,38 @@ class NodeTest extends TestBase {
     }
 
     /** @test */
+    function it_gets_published_ordered_children()
+    {
+        $node = $this->getNode();
+
+        $this->assertInstanceOf(
+            'Illuminate\Database\Eloquent\Collection',
+            $node->getPublishedOrderedChildren()
+        );
+
+        $this->assertInstanceOf(
+            'Illuminate\Pagination\LengthAwarePaginator',
+            $node->getPublishedOrderedChildren(15)
+        );
+    }
+
+    /** @test */
+    function it_gets_published_position_ordered_children()
+    {
+        $node = $this->getNode();
+
+        $this->assertInstanceOf(
+            'Illuminate\Database\Eloquent\Collection',
+            $node->getPublishedPositionOrderedChildren()
+        );
+
+        $this->assertInstanceOf(
+            'Illuminate\Pagination\LengthAwarePaginator',
+            $node->getPublishedPositionOrderedChildren(15)
+        );
+    }
+
+    /** @test */
     function it_checks_translated_children()
     {
         $node = $this->getNode();
