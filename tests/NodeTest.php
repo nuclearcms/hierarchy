@@ -274,6 +274,24 @@ class NodeTest extends TestBase {
     }
 
     /** @test */
+    function it_gets_locale_for_node_name()
+    {
+        $node = $this->getNode();
+        $node->{'node_name:en'} = 'about';
+        $node->{'node_name:tr'} = 'hakkinda';
+
+        $this->assertEquals(
+            $node->getLocaleForNodeName('about'),
+            'en'
+        );
+
+        $this->assertEquals(
+            $node->getLocaleForNodeName('hakkinda'),
+            'tr'
+        );
+    }
+
+    /** @test */
     function it_checks_translated_children()
     {
         $node = $this->getNode();

@@ -348,6 +348,25 @@ class Node extends BaseNode {
     }
 
     /**
+     * Returns locale for name
+     *
+     * @param string $name
+     * @return string
+     */
+    public function getLocaleForNodeName($name)
+    {
+        foreach($this->translations as $translation)
+        {
+            if($translation->node_name === $name)
+            {
+                return $translation->locale;
+            }
+        }
+
+        return null;
+    }
+
+    /**
      * Checks if node hides children
      *
      * @return bool
