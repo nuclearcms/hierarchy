@@ -8,7 +8,7 @@ use Nuclear\Hierarchy\Cache\Accessor;
 
 class HierarchyServiceProvider extends ServiceProvider {
 
-    const version = '1.1.15';
+    const version = '1.1.16';
 
     /**
      * Register the service provider.

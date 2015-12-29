@@ -225,13 +225,15 @@ class Node extends BaseNode {
      */
     public function scopePublished($query)
     {
-        return $query
-            ->where('status', '>=', Node::PUBLISHED)
-            ->orWhere(function ($query)
-            {
-                $query->where('status', '>=', Node::PENDING)
-                    ->where('published_at', '<=', Carbon::now());
-            });
+        return $query->where(function ($query)
+        {
+            $query->where('status', '>=', Node::PUBLISHED)
+                ->orWhere(function ($query)
+                {
+                    $query->where('status', '>=', Node::PENDING)
+                        ->where('published_at', '<=', Carbon::now());
+                });
+        });
     }
 
     /**
@@ -355,9 +357,9 @@ class Node extends BaseNode {
      */
     public function getLocaleForNodeName($name)
     {
-        foreach($this->translations as $translation)
+        foreach ($this->translations as $translation)
         {
-            if($translation->node_name === $name)
+            if ($translation->node_name === $name)
             {
                 return $translation->locale;
             }
