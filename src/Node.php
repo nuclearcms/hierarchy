@@ -219,6 +219,34 @@ class Node extends BaseNode {
     }
 
     /**
+     * Returns a translation attribute
+     * (optionally with fallback)
+     *
+     * @param string $key
+     * @param string $locale
+     * @param bool $fallback
+     * @return string|null
+     */
+    public function getTranslationAttribute($key, $locale = null, $fallback = true)
+    {
+        if ($this->isTranslationAttribute($key))
+        {
+            $locale = $locale ?: $this->locale();
+
+            $attribute = $this->translate($locale)->$key;
+
+            if (empty($attribute) && $fallback)
+            {
+                $attribute = $this->translate($this->getFallbackLocale())->$key;
+            }
+
+            return $attribute;
+        }
+
+        return null;
+    }
+
+    /**
      * Published scope
      *
      * @param Builder $query

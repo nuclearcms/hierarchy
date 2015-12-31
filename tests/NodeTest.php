@@ -292,6 +292,47 @@ class NodeTest extends TestBase {
     }
 
     /** @test */
+    function it_gets_translated_attributes_with_fallback()
+    {
+        $node = $this->getNode();
+        $node->{'node_name:en'} = 'about';
+        $node->{'node_name:tr'} = '';
+
+        $this->assertEquals(
+            $node->getTranslationAttribute('node_name'),
+            'about'
+        );
+
+        $this->assertEquals(
+            $node->getTranslationAttribute('node_name', 'tr'),
+            'about'
+        );
+
+        $this->assertEquals(
+            $node->getTranslationAttribute('node_name', 'tr', false),
+            ''
+        );
+
+        $this->assertNull(
+            $node->getTranslationAttribute('created_at', 'tr', false)
+        );
+
+        app()->setLocale('tr');
+
+        $this->assertEquals(
+            $node->getTranslationAttribute('node_name'),
+            'about'
+        );
+
+        $node->{'node_name:tr'} = 'hakkinda';
+
+        $this->assertEquals(
+            $node->getTranslationAttribute('node_name'),
+            'hakkinda'
+        );
+    }
+
+    /** @test */
     function it_checks_translated_children()
     {
         $node = $this->getNode();
