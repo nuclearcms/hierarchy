@@ -233,7 +233,9 @@ class Node extends BaseNode {
         {
             $locale = $locale ?: $this->locale();
 
-            $attribute = $this->translate($locale)->$key;
+            $translation = $this->translate($locale);
+
+            $attribute = ($translation) ? $translation->$key : null;
 
             if (empty($attribute) && $fallback)
             {
