@@ -8,7 +8,14 @@ use Nuclear\Hierarchy\Cache\Accessor;
 
 class HierarchyServiceProvider extends ServiceProvider {
 
-    const version = '1.1.18';
+    const version = '1.1.19';
+
+    /**
+     * Indicates if loading of the provider is deferred.
+     *
+     * @var bool
+     */
+    protected $defer = false;
 
     /**
      * Register the service provider.
@@ -154,8 +161,6 @@ class HierarchyServiceProvider extends ServiceProvider {
         $this->publishes([
             dirname(__DIR__) . '/Support/migrations/' => database_path('/migrations')
         ], 'migrations');
-
-        require dirname(__DIR__) . '/Support/helpers.php';
     }
 
 }

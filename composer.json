@@ -13,7 +13,7 @@
         "laravel",
         "laravel5"
     ],
-    "version": "1.1.18",
+    "version": "1.1.19",
     "authors": [
         {
             "name": "Hyleeh",
@@ -38,7 +38,10 @@
     "autoload": {
         "psr-4": {
             "Nuclear\\Hierarchy\\": "src/"
-        }
+        },
+        "files": [
+            "src/Support/helpers.php"
+        ]
     },
     "autoload-dev": {
         "classmap": [
