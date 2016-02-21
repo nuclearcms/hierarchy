@@ -271,7 +271,7 @@ class Node extends BaseNode {
      * @param string $direction
      * @return Builder
      */
-    public function scopeSortedBySourceAttribute(Builder $query, $attribute, $direction = 'ASC', $locale = null)
+    public function scopeSortedBySourceAttribute($query, $attribute, $direction = 'ASC', $locale = null)
     {
         $key = $this->getTable() . '.' . $this->getKey();
 
