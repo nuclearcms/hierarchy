@@ -94,8 +94,7 @@ class NodeSource extends Eloquent implements NodeSourceContract {
     {
         $nodeSource = new static();
 
-        $sourceModelName = $nodeSource->getSourceModelName($type);
-        $sourceModel = new $sourceModelName();
+        $sourceModel = $nodeSource->getNewSourceModel($type);
 
         // We temporarily cache the model since Eloquent does not
         // have a way to attach hasOne relations without saving them.
@@ -113,6 +112,17 @@ class NodeSource extends Eloquent implements NodeSourceContract {
     }
 
     /**
+     * @param $type
+     * @return mixed
+     */
+    public function getNewSourceModel($type)
+    {
+        $sourceModelName = $this->getSourceModelName($type);
+
+        return new $sourceModelName();
+    }
+
+    /**
      * Setter for temporary source
      *
      * @param Model $source
@@ -120,6 +130,14 @@ class NodeSource extends Eloquent implements NodeSourceContract {
     public function setTemporarySource(Model $source)
     {
         $this->tempSource = $source;
+    }
+
+    /**
+     * Flush temporary source
+     */
+    public function flushTemporarySource()
+    {
+        $this->tempSource = null;
     }
 
     /**
@@ -210,7 +228,7 @@ class NodeSource extends Eloquent implements NodeSourceContract {
             // Reload the relation
             $this->load('source');
 
-            $this->tempSource = null;
+            $this->flushTemporarySource();
 
             return ! is_null($saved);
         }

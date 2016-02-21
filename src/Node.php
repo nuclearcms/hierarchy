@@ -44,11 +44,13 @@ class Node extends BaseNode {
     protected $dates = ['published_at'];
 
     /**
-     * The translation model is the NodeSource for us
+     * The translation model is the NodeSource for use
+     * and the table name
      *
      * @var string
      */
     protected $translationModel = 'Nuclear\Hierarchy\NodeSource';
+    protected $sourcesTable = 'node_sources';
 
     /**
      * The locale key
@@ -80,6 +82,19 @@ class Node extends BaseNode {
     const PENDING = 40;
     const PUBLISHED = 50;
     const ARCHIVED = 60;
+
+    /**
+     * Boot model events
+     */
+    protected static function boot()
+    {
+        parent::boot();
+
+        static::creating(function ($node)
+        {
+            $node->published_at = Carbon::now();
+        });
+    }
 
     /**
      * The node type relation
@@ -249,6 +264,25 @@ class Node extends BaseNode {
     }
 
     /**
+     * Sorts by source attribute
+     *
+     * @param Builder $query
+     * @param string $attribute
+     * @param string $direction
+     * @return Builder
+     */
+    public function scopeSortedBySourceAttribute(Builder $query, $attribute, $direction = 'ASC', $locale = null)
+    {
+        $key = $this->getTable() . '.' . $this->getKey();
+
+        return $query->join($this->sourcesTable . ' as t', 't.node_id', '=', $key)
+            ->where($this->getLocaleKey(), ($locale) ?: $this->locale())
+            ->groupBy($key)
+            ->orderBy('t.' . $attribute, $direction)
+            ->with('translations');
+    }
+
+    /**
      * Published scope
      *
      * @param Builder $query
@@ -267,6 +301,76 @@ class Node extends BaseNode {
     }
 
     /**
+     * Not published scope
+     *
+     * @param Builder $query
+     */
+    public function scopeNotPublished($query)
+    {
+        return $query->where(function ($query)
+        {
+            $query->where('status', '<=', Node::DRAFT)
+                ->orWhere(function ($query)
+                {
+                    $query->where('status', '<=', Node::PENDING)
+                        ->where('published_at', '>', Carbon::now());
+                });
+        });
+    }
+
+    /**
+     * Draft scope
+     *
+     * @param Builder $query
+     */
+    public function scopeDraft($query)
+    {
+        return $query->where('status', Node::PENDING);
+    }
+
+    /**
+     * Pending scope
+     *
+     * @param Builder $query
+     */
+    public function scopePending($query)
+    {
+        return $query->where('status', Node::PENDING)
+            ->where('published_at', '>', Carbon::now());
+    }
+
+    /**
+     * Archived scope
+     *
+     * @param Builder $query
+     */
+    public function scopeArchived($query)
+    {
+        return $query->where('status', Node::ARCHIVED);
+    }
+
+
+    /**
+     * Scope invisible
+     *
+     * @param Builder $query
+     */
+    public function scopeInvisible($query)
+    {
+        return $query->whereVisible(0);
+    }
+
+    /**
+     * Scope locked
+     *
+     * @param Builder $query
+     */
+    public function scopeLocked($query)
+    {
+        return $query->whereLocked(1);
+    }
+
+    /**
      * Children accessor
      *
      * @return Collection
@@ -280,49 +384,84 @@ class Node extends BaseNode {
      * Get ordered children
      *
      * @param int|null $perPage
-     * @param int|null $page
+     * @param string|null $locale
      * @return Collection|LengthAwarePaginator
      */
-    public function getOrderedChildren($perPage = null, $page = 1)
+    public function getOrderedChildren($perPage = null, $locale = null)
     {
-        $children = $this->getChildren()->sortBy(
-            $this->children_order, SORT_REGULAR,
-            ($this->children_order_direction === 'asc') ? true : false
-        );
+        $children = $this->children();
 
-        return $this->determinePagination($perPage, $page, $children);
-    }
+        $this->determineChildrenSorting($children, $locale);
 
-    /**
-     * Returns all children ordered by position
-     *
-     * @param int|null $perPage
-     * @param int|null $page
-     * @return Collection|LengthAwarePaginator
-     */
-    public function getPositionOrderedChildren($perPage = null, $page = 1)
-    {
-        $children = $this->getChildren()
-            ->sortBy($this->getLftName());
-
-        return $this->determinePagination($perPage, $page, $children);
+        return $this->determineChildrenPagination($perPage, $children);
     }
 
     /**
      * Returns all published children with parameter ordered
      *
      * @param int|null $perPage
+     * @param string|null $locale
      * @return Collection|LengthAwarePaginator
      */
-    public function getPublishedOrderedChildren($perPage = null)
+    public function getPublishedOrderedChildren($perPage = null, $locale = null)
     {
         $children = $this->children()
-            ->published()
-            ->orderBy($this->children_order, $this->children_order_direction);
+            ->published();
 
+        $this->determineChildrenSorting($children, $locale);
+
+        return $this->determineChildrenPagination($perPage, $children);
+    }
+
+    /**
+     * Determines the children sorting
+     *
+     * @param $children
+     * @param $locale
+     */
+    public function determineChildrenSorting($children, $locale)
+    {
+        if (in_array($this->children_order, $this->translatedAttributes))
+        {
+            $children->sortedBySourceAttribute(
+                $this->children_order,
+                $this->children_order_direction,
+                $locale
+            );
+        } else
+        {
+            $children->orderBy(
+                $this->children_order, $this->children_order_direction
+            );
+        };
+    }
+
+    /**
+     * Determines the pagination of children
+     *
+     * @param $perPage
+     * @param $children
+     * @return mixed
+     */
+    public function determineChildrenPagination($perPage, $children)
+    {
         return is_null($perPage) ?
             $children->get() :
             $children->paginate($perPage);
+    }
+
+    /**
+     * Returns all children ordered by position
+     *
+     * @param int|null $perPage
+     * @return Collection|LengthAwarePaginator
+     */
+    public function getPositionOrderedChildren($perPage = null)
+    {
+        $children = $this->children()
+            ->defaultOrder();
+
+        return $this->determineChildrenPagination($perPage, $children);
     }
 
     /**
@@ -337,30 +476,7 @@ class Node extends BaseNode {
             ->published()
             ->defaultOrder();
 
-        return is_null($perPage) ?
-            $children->get() :
-            $children->paginate($perPage);
-    }
-
-
-    /**
-     * Creates a paginator instance if needed
-     *
-     * @param $perPage
-     * @param $page
-     * @param $children
-     * @return LengthAwarePaginator
-     */
-    protected function determinePagination($perPage, $page, $children)
-    {
-        if (is_null($perPage))
-        {
-            return $children;
-        }
-
-        return new LengthAwarePaginator(
-            $children->forPage($page, $perPage),
-            count($children), $perPage, $page);
+        return $this->determineChildrenPagination($perPage, $children);
     }
 
     /**
@@ -377,6 +493,27 @@ class Node extends BaseNode {
         });
 
         return (count($children) > 0);
+    }
+
+    /**
+     * Deletes a translation
+     *
+     * @param string $locale
+     * @return bool
+     */
+    public function deleteTranslation($locale)
+    {
+        if ($this->hasTranslation($locale))
+        {
+            if ($deleted = $this->getTranslation($locale)->delete())
+            {
+                $this->load('translations');
+
+                return true;
+            }
+        }
+
+        return false;
     }
 
     /**
@@ -399,6 +536,42 @@ class Node extends BaseNode {
     }
 
     /**
+     * Sets the node status to published
+     *
+     * @return $this
+     */
+    public function publish()
+    {
+        $this->status = Node::PUBLISHED;
+
+        return $this;
+    }
+
+    /**
+     * Sets the node status to unpublished
+     *
+     * @return $this
+     */
+    public function unpublish()
+    {
+        $this->status = Node::DRAFT;
+
+        return $this;
+    }
+
+    /**
+     * Sets the node status to archived
+     *
+     * @return $this
+     */
+    public function archive()
+    {
+        $this->status = Node::ARCHIVED;
+
+        return $this;
+    }
+
+    /**
      * Checks if node hides children
      *
      * @return bool
@@ -406,6 +579,115 @@ class Node extends BaseNode {
     public function hidesChildren()
     {
         return $this->hides_children || $this->nodeType->hides_children;
+    }
+
+    /**
+     * Checks if node can have children
+     *
+     * @return bool
+     */
+    public function canHaveChildren()
+    {
+        return ! (bool)$this->sterile;
+    }
+
+    /**
+     * Checks if a node is published
+     *
+     * @return bool
+     */
+    public function isPublished()
+    {
+        return ($this->status >= Node::PUBLISHED)
+        || ($this->status >= Node::PENDING && $this->published_at <= Carbon::now());
+    }
+
+    /**
+     * Transforms the node type with to given type
+     *
+     * @param int $id
+     * @throws \RuntimeException
+     */
+    public function transformInto($id)
+    {
+        $newType = NodeType::find($id);
+
+        if (is_null($newType))
+        {
+            throw new \RuntimeException('Node type does not exist');
+        }
+
+        $sourceAttributes = $this->parseSourceAttributes();
+
+        $this->flushSources();
+
+        $this->transformNodeType($newType);
+
+        $this->remakeSources($newType);
+
+        $this->fill($sourceAttributes);
+
+        $this->save();
+    }
+
+    /**
+     * Parses source attributes
+     *
+     * @return array
+     */
+    public function parseSourceAttributes()
+    {
+        $attributes = [];
+
+        foreach ($this->translations as $translation)
+        {
+            $attributes[$translation->locale] = $translation->source->toArray();
+        }
+
+        return $attributes;
+    }
+
+    /**
+     * Flushes the source attributes
+     */
+    protected function flushSources()
+    {
+        foreach ($this->translations as $translation)
+        {
+            $translation->source->delete();
+            $translation->flushTemporarySource();
+
+            unset($translation->relations['source']);
+        }
+    }
+
+    /**
+     * Transforms the node type
+     *
+     * @param NodeType $nodeType
+     */
+    protected function transformNodeType(NodeType $nodeType)
+    {
+        $this->setNodeTypeByKey($nodeType->getKey());
+
+        foreach ($this->translations as $translation)
+        {
+            $translation->source_type = $nodeType->name;
+        }
+    }
+
+    /**
+     * Remakes sources
+     */
+    protected function remakeSources(NodeType $nodeType)
+    {
+        foreach ($this->translations as $translation)
+        {
+            $source = $translation->getNewSourceModel($nodeType->name);
+            $source->id = $translation->getKey();
+
+            $translation->relations['source'] = $source;
+        }
     }
 
 }

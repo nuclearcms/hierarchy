@@ -13,7 +13,7 @@
         "laravel",
         "laravel5"
     ],
-    "version": "1.1.19",
+    "version": "1.2.0",
     "authors": [
         {
             "name": "Hyleeh",
@@ -53,7 +53,7 @@
     },
     "extra": {
         "branch-alias": {
-            "dev-master": "1.1-dev"
+            "dev-master": "1.2-dev"
         }
     }
 }

@@ -54,6 +54,47 @@ class NodeTest extends TestBase {
             'type'        => 'text',
             'position'    => 0.2
         ]);
+
+        $nodeType = $typeRepository->create([
+            'name'  => 'category',
+            'label' => 'Category'
+        ]);
+
+        $fieldDescription = $fieldRepository->create(
+            $nodeType->getKey(), [
+            'name'        => 'description',
+            'label'       => 'Description',
+            'description' => '',
+            'type'        => 'text',
+            'position'    => 0.2
+        ]);
+
+        $fieldContent = $fieldRepository->create(
+            $nodeType->getKey(), [
+            'name'        => 'content',
+            'label'       => 'Content',
+            'description' => '',
+            'type'        => 'text',
+            'position'    => 0.3
+        ]);
+    }
+
+    /** @test */
+    function it_sets_published_at_date()
+    {
+        $node = $this->getNode();
+
+        $this->assertInstanceOf(
+            'Carbon\Carbon',
+            $node->published_at
+        );
+
+        $node->save();
+
+        $this->assertRegExp(
+            '/^(((\d{4})(-)(0[13578]|10|12)(-)(0[1-9]|[12][0-9]|3[01]))|((\d{4})(-)(0[469]|1‌​1)(-)([0][1-9]|[12][0-9]|30))|((\d{4})(-)(02)(-)(0[1-9]|1[0-9]|2[0-8]))|(([02468]‌​[048]00)(-)(02)(-)(29))|(([13579][26]00)(-)(02)(-)(29))|(([0-9][0-9][0][48])(-)(0‌​2)(-)(29))|(([0-9][0-9][2468][048])(-)(02)(-)(29))|(([0-9][0-9][13579][26])(-)(02‌​)(-)(29)))(\s([0-1][0-9]|2[0-4]):([0-5][0-9]):([0-5][0-9]))$/',
+            $node->published_at->toDateTimeString()
+        );
     }
 
     /** @test */
@@ -226,22 +267,6 @@ class NodeTest extends TestBase {
     }
 
     /** @test */
-    function it_gets_position_ordered_children()
-    {
-        $node = $this->getNode();
-
-        $this->assertInstanceOf(
-            'Illuminate\Database\Eloquent\Collection',
-            $node->getPositionOrderedChildren()
-        );
-
-        $this->assertInstanceOf(
-            'Illuminate\Pagination\LengthAwarePaginator',
-            $node->getPositionOrderedChildren(15)
-        );
-    }
-
-    /** @test */
     function it_gets_published_ordered_children()
     {
         $node = $this->getNode();
@@ -254,6 +279,22 @@ class NodeTest extends TestBase {
         $this->assertInstanceOf(
             'Illuminate\Pagination\LengthAwarePaginator',
             $node->getPublishedOrderedChildren(15)
+        );
+    }
+
+    /** @test */
+    function it_gets_position_ordered_children()
+    {
+        $node = $this->getNode();
+
+        $this->assertInstanceOf(
+            'Illuminate\Database\Eloquent\Collection',
+            $node->getPositionOrderedChildren()
+        );
+
+        $this->assertInstanceOf(
+            'Illuminate\Pagination\LengthAwarePaginator',
+            $node->getPositionOrderedChildren(15)
         );
     }
 
@@ -343,12 +384,133 @@ class NodeTest extends TestBase {
     }
 
     /** @test */
+    function it_deletes_a_translation()
+    {
+        $node = $this->getNode();
+        $node->title = 'Test';
+        $node->save();
+
+        $this->assertTrue(
+            $node->hasTranslation('en')
+        );
+
+        $this->assertFalse(
+            $node->hasTranslation('tr')
+        );
+
+        $this->assertFalse(
+            $node->deleteTranslation('tr')
+        );
+
+        $this->assertTrue(
+            $node->deleteTranslation('en')
+        );
+
+        $this->assertFalse(
+            $node->hasTranslation('en')
+        );
+    }
+
+    /** @test */
+    function it_publishes_the_node()
+    {
+        $node = $this->getNode();
+
+        $this->assertNull(
+            $node->status
+        );
+
+        $node->publish();
+
+        $this->assertEquals(
+            $node->status,
+            Node::PUBLISHED
+        );
+    }
+
+    /** @test */
+    function it_unpublishes_the_node()
+    {
+        $node = $this->getNode();
+
+        $node->status = Node::PUBLISHED;
+
+        $this->assertEquals(
+            $node->status,
+            Node::PUBLISHED
+        );
+
+        $node->unpublish();
+
+        $this->assertEquals(
+            $node->status,
+            Node::DRAFT
+        );
+    }
+
+    /** @test */
+    function it_archives_the_node()
+    {
+        $node = $this->getNode();
+
+        $this->assertNull(
+            $node->status
+        );
+
+        $node->archive();
+
+        $this->assertEquals(
+            $node->status,
+            Node::ARCHIVED
+        );
+    }
+
+    /** @test */
     function it_checks_if_hides_children()
     {
         $node = $this->getNode();
 
         $this->assertFalse(
             $node->hidesChildren()
+        );
+
+        $node->hides_children = 1;
+        $node->save();
+
+        $this->assertTrue(
+            $node->hidesChildren()
+        );
+    }
+
+    /** @test */
+    function it_checks_if_it_can_have_children()
+    {
+        $node = $this->getNode();
+
+        $this->assertTrue(
+            $node->canHaveChildren()
+        );
+
+        $node->sterile = 1;
+
+        $this->assertFalse(
+            $node->canHaveChildren()
+        );
+    }
+
+    /** @test */
+    function it_checks_if_node_is_published()
+    {
+        $node = $this->getNode();
+
+        $this->assertFalse(
+            $node->isPublished()
+        );
+
+        $node->publish()->save();
+
+        $this->assertTrue(
+            $node->isPublished()
         );
     }
 
@@ -588,6 +750,101 @@ class NodeTest extends TestBase {
         $this->assertCount(
             2,
             NodeSource::all()
+        );
+    }
+
+    /** @test */
+    function it_fails_to_transform_to_unexisting_type()
+    {
+        $node = $this->getNode();
+
+        try
+        {
+            $node->transformInto(1337);
+        } catch (\RuntimeException $e)
+        {
+            return;
+        }
+
+        $this->fail('Exception was not thrown. Test fails.');
+    }
+
+    /** @test */
+    function it_transforms_the_node_type()
+    {
+        $node = $this->getNode();
+
+        $node->fill([
+            'en'      => [
+                'title'       => 'English Title',
+                'description' => 'English Description',
+                'area' => 100000
+            ],
+            'tr'      => [
+                'title'       => 'Türkçe Başlık',
+                'description' => 'Türkçe Açıklama',
+                'area' => 30000
+            ]
+        ]);
+
+        $node->save();
+
+        $this->assertEquals(
+            'English Title',
+            $node->title
+        );
+
+        $this->assertEquals(
+            'English Description',
+            $node->description
+        );
+
+        $this->assertEquals(
+            100000,
+            $node->area
+        );
+
+        $this->assertNull(
+            $node->content
+        );
+
+        $this->assertEquals(
+            'Türkçe Açıklama',
+            $node->translate('tr')->description
+        );
+
+        $node->transformInto(2);
+
+        $this->assertEquals(
+            'English Title',
+            $node->title
+        );
+
+        $this->assertEquals(
+            'English Description',
+            $node->description
+        );
+
+        $this->assertNull(
+            $node->area
+        );
+
+        $this->assertEquals(
+            'Türkçe Açıklama',
+            $node->translate('tr')->description
+        );
+
+        $this->assertNull(
+            $node->content
+        );
+
+        $node->content = 'Content';
+
+        $node->save();
+
+        $this->assertEquals(
+            'Content',
+            $node->content
         );
     }
 

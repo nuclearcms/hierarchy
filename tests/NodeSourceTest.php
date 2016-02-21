@@ -452,4 +452,15 @@ class NodeSourceTest extends TestBase {
         );
     }
 
+    /** @test */
+    function it_gets_a_new_source_model()
+    {
+        $nodeSource = $this->getNodeSource();
+
+        $this->assertInstanceOf(
+            'gen\\Entities\\NsProject',
+            $nodeSource->getNewSourceModel('project')
+        );
+    }
+
 }
