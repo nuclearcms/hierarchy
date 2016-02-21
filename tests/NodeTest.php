@@ -449,6 +449,80 @@ class NodeTest extends TestBase {
     }
 
     /** @test */
+    function it_locks_the_node()
+    {
+        $node = $this->getNode();
+
+        $this->assertNull(
+            $node->locked
+        );
+
+        $node->lock();
+
+        $this->assertEquals(
+            $node->locked,
+            1
+        );
+    }
+
+    /** @test */
+    function it_unlocks_the_node()
+    {
+        $node = $this->getNode();
+
+        $node->locked = 1;
+
+        $this->assertEquals(
+            $node->locked,
+            1
+        );
+
+        $node->unlock();
+
+        $this->assertEquals(
+            $node->locked,
+            0
+        );
+    }
+
+    /** @test */
+    function it_hides_the_node()
+    {
+        $node = $this->getNode();
+
+        $this->assertNull(
+            $node->visible
+        );
+
+        $node->hide();
+
+        $this->assertEquals(
+            $node->visible,
+            0
+        );
+    }
+
+    /** @test */
+    function it_shows_the_node()
+    {
+        $node = $this->getNode();
+
+        $node->visible = 0;
+
+        $this->assertEquals(
+            $node->visible,
+            0
+        );
+
+        $node->show();
+
+        $this->assertEquals(
+            $node->visible,
+            1
+        );
+    }
+
+    /** @test */
     function it_archives_the_node()
     {
         $node = $this->getNode();
@@ -511,6 +585,38 @@ class NodeTest extends TestBase {
 
         $this->assertTrue(
             $node->isPublished()
+        );
+    }
+
+    /** @test */
+    function it_checks_if_node_is_locked()
+    {
+        $node = $this->getNode();
+
+        $this->assertFalse(
+            $node->isLocked()
+        );
+
+        $node->lock()->save();
+
+        $this->assertTrue(
+            $node->isLocked()
+        );
+    }
+
+    /** @test */
+    function it_checks_if_node_is_visible()
+    {
+        $node = $this->getNode();
+
+        $this->assertFalse(
+            $node->isVisible()
+        );
+
+        $node->show()->save();
+
+        $this->assertTrue(
+            $node->isVisible()
         );
     }
 

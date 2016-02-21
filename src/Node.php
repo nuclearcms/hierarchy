@@ -575,6 +575,54 @@ class Node extends BaseNode {
     }
 
     /**
+     * Sets the node status to locked
+     *
+     * @return $this
+     */
+    public function lock()
+    {
+        $this->locked = 1;
+
+        return $this;
+    }
+
+    /**
+     * Sets the node status to unlocked
+     *
+     * @return $this
+     */
+    public function unlock()
+    {
+        $this->locked = 0;
+
+        return $this;
+    }
+
+    /**
+     * Sets the node status to hidden
+     *
+     * @return $this
+     */
+    public function hide()
+    {
+        $this->visible = 0;
+
+        return $this;
+    }
+
+    /**
+     * Sets the node status to visible
+     *
+     * @return $this
+     */
+    public function show()
+    {
+        $this->setAttribute('visible', 1);
+
+        return $this;
+    }
+
+    /**
      * Checks if node hides children
      *
      * @return bool
@@ -603,6 +651,26 @@ class Node extends BaseNode {
     {
         return ($this->status >= Node::PUBLISHED)
         || ($this->status >= Node::PENDING && $this->published_at <= Carbon::now());
+    }
+
+    /**
+     * Checks if a node is locked
+     *
+     * @return bool
+     */
+    public function isLocked()
+    {
+        return (bool)$this->locked;
+    }
+
+    /**
+     * Checks if a node is locked
+     *
+     * @return bool
+     */
+    public function isVisible()
+    {
+        return (bool)$this->getAttribute('visible');
     }
 
     /**
