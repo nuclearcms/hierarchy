@@ -3,6 +3,7 @@
 namespace Nuclear\Hierarchy;
 
 
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Kalnoy\Nestedset\Node as BaseNode;
 use Carbon\Carbon;
@@ -271,9 +272,9 @@ class Node extends BaseNode {
      * @param string $direction
      * @return Builder
      */
-    public function scopeSortedBySourceAttribute($query, $attribute, $direction = 'ASC', $locale = null)
+    public function scopeSortedBySourceAttribute(Builder $query, $attribute, $direction = 'ASC', $locale = null)
     {
-        $key = $this->getTable() . '.' . $this->getKey();
+        $key = $this->getTable() . '.' . $this->getKeyName();
 
         return $query->join($this->sourcesTable . ' as t', 't.node_id', '=', $key)
             ->where($this->getLocaleKey(), ($locale) ?: $this->locale())
