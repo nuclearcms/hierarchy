@@ -4,6 +4,7 @@ namespace Nuclear\Hierarchy;
 
 
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Kalnoy\Nestedset\Node as BaseNode;
 use Carbon\Carbon;
@@ -272,23 +273,22 @@ class Node extends BaseNode {
      * @param string $direction
      * @return Builder
      */
-    public function scopeSortedBySourceAttribute(Builder $query, $attribute, $direction = 'ASC', $locale = null)
+    public function scopeSortedBySourceAttribute(Builder $query, $attribute, $direction = 'ASC')
     {
         $key = $this->getTable() . '.' . $this->getKeyName();
 
         return $query->join($this->sourcesTable . ' as t', 't.node_id', '=', $key)
-            ->where($this->getLocaleKey(), ($locale) ?: $this->locale())
             ->groupBy($key)
-            ->orderBy('t.' . $attribute, $direction)
-            ->with('translations');
+            ->orderBy('t.' . $attribute, $direction);
     }
 
     /**
      * Published scope
      *
      * @param Builder $query
+     * @return Builder
      */
-    public function scopePublished($query)
+    public function scopePublished(Builder $query)
     {
         return $query->where(function ($query)
         {
@@ -305,8 +305,9 @@ class Node extends BaseNode {
      * Not published scope
      *
      * @param Builder $query
+     * @return Builder
      */
-    public function scopeNotPublished($query)
+    public function scopeNotPublished(Builder $query)
     {
         return $query->where(function ($query)
         {
@@ -323,8 +324,9 @@ class Node extends BaseNode {
      * Draft scope
      *
      * @param Builder $query
+     * @return Builder
      */
-    public function scopeDraft($query)
+    public function scopeDraft(Builder $query)
     {
         return $query->where('status', Node::PENDING);
     }
@@ -333,8 +335,9 @@ class Node extends BaseNode {
      * Pending scope
      *
      * @param Builder $query
+     * @return Builder
      */
-    public function scopePending($query)
+    public function scopePending(Builder $query)
     {
         return $query->where('status', Node::PENDING)
             ->where('published_at', '>', Carbon::now());
@@ -344,8 +347,9 @@ class Node extends BaseNode {
      * Archived scope
      *
      * @param Builder $query
+     * @return Builder
      */
-    public function scopeArchived($query)
+    public function scopeArchived(Builder $query)
     {
         return $query->where('status', Node::ARCHIVED);
     }
@@ -355,8 +359,9 @@ class Node extends BaseNode {
      * Scope invisible
      *
      * @param Builder $query
+     * @return Builder
      */
-    public function scopeInvisible($query)
+    public function scopeInvisible(Builder $query)
     {
         return $query->whereVisible(0);
     }
@@ -365,8 +370,9 @@ class Node extends BaseNode {
      * Scope locked
      *
      * @param Builder $query
+     * @return Builder
      */
-    public function scopeLocked($query)
+    public function scopeLocked(Builder $query)
     {
         return $query->whereLocked(1);
     }
@@ -385,14 +391,13 @@ class Node extends BaseNode {
      * Get ordered children
      *
      * @param int|null $perPage
-     * @param string|null $locale
      * @return Collection|LengthAwarePaginator
      */
-    public function getOrderedChildren($perPage = null, $locale = null)
+    public function getOrderedChildren($perPage = null)
     {
         $children = $this->children();
 
-        $this->determineChildrenSorting($children, $locale);
+        $this->determineChildrenSorting($children);
 
         return $this->determineChildrenPagination($perPage, $children);
     }
@@ -401,15 +406,14 @@ class Node extends BaseNode {
      * Returns all published children with parameter ordered
      *
      * @param int|null $perPage
-     * @param string|null $locale
      * @return Collection|LengthAwarePaginator
      */
-    public function getPublishedOrderedChildren($perPage = null, $locale = null)
+    public function getPublishedOrderedChildren($perPage = null)
     {
         $children = $this->children()
             ->published();
 
-        $this->determineChildrenSorting($children, $locale);
+        $this->determineChildrenSorting($children);
 
         return $this->determineChildrenPagination($perPage, $children);
     }
@@ -417,17 +421,15 @@ class Node extends BaseNode {
     /**
      * Determines the children sorting
      *
-     * @param $children
-     * @param $locale
+     * @param HasMany $children
      */
-    public function determineChildrenSorting($children, $locale)
+    public function determineChildrenSorting(HasMany $children)
     {
         if (in_array($this->children_order, $this->translatedAttributes))
         {
             $children->sortedBySourceAttribute(
                 $this->children_order,
-                $this->children_order_direction,
-                $locale
+                $this->children_order_direction
             );
         } else
         {
