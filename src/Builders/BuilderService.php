@@ -75,10 +75,20 @@ class BuilderService implements BuilderServiceContract {
     {
         $this->modelBuilder->build($tableName, $fields);
         $this->cacheBuilder->build($nodeType->getKey(), $fields);
-        $this->formBuilder->build($tableName, $nodeType->getFields());
+        $this->buildForm($nodeType);
         $migration = $this->migrationBuilder->buildFieldMigrationForTable($name, $type, $tableName);
 
         $this->migrateUp($migration);
+    }
+
+    /**
+     * (Re)builds a form for given NodeType
+     *
+     * @param NodeTypeContract $nodeType
+     */
+    public function buildForm(NodeTypeContract $nodeType)
+    {
+        $this->formBuilder->build($nodeType->getName(), $nodeType->getFields());
     }
 
     /**

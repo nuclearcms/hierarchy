@@ -20,6 +20,7 @@ class {{ $name }} extends Form {
     {
         $this->compose('Nuclear\Hierarchy\Http\Forms\NodeSourceForm');
         @foreach($fields as $field)
+        @if($field->isVisible())
         $this->add('{{ $field->name }}', '{{ $field->type }}', [
             'label' => '{{ $field->label }}',
             'help_block' => ['text' => '{{ $field->description }}'],
@@ -35,6 +36,7 @@ class {{ $name }} extends Form {
             {!! $field->options !!}
 
         ]);
+        @endif
         @endforeach
     }
 

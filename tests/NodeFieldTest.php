@@ -50,4 +50,20 @@ class NodeFieldTest extends TestBase {
         );
     }
 
+    /** @test */
+    function it_checks_if_the_node_field_is_visible()
+    {
+        $nodeField = $this->getNodeField();
+
+        $this->assertFalse(
+            $nodeField->isVisible()
+        );
+
+        $nodeField->visible = 1;
+
+        $this->assertTrue(
+            $nodeField->isVisible()
+        );
+    }
+
 }

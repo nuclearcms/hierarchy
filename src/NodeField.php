@@ -45,4 +45,14 @@ class NodeField extends Eloquent {
         return $this->type;
     }
 
+    /**
+     * Checks if a node is locked
+     *
+     * @return bool
+     */
+    public function isVisible()
+    {
+        return (bool)$this->getAttribute('visible');
+    }
+
 }

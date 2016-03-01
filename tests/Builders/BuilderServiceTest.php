@@ -59,6 +59,10 @@ class BuilderServiceTest extends TestBase {
             ->shouldBeCalled();
 
         $model = $this->prophesize('Nuclear\Hierarchy\Contract\NodeTypeContract');
+        $model->getName()
+            ->willReturn('project')
+            ->shouldBeCalled();
+
         $model->getKey()
             ->willReturn(1)
             ->shouldBeCalled();
@@ -104,6 +108,38 @@ class BuilderServiceTest extends TestBase {
         }
 
         $this->fail('The migration did not run');
+    }
+
+    /** @test */
+    function it_builds_a_form_for_a_node_type()
+    {
+        $model = $this->prophesize('Nuclear\Hierarchy\Contract\NodeTypeContract');
+        $model->getName()
+            ->willReturn('project')
+            ->shouldBeCalled();
+
+        $collection = new Collection();
+        $model->getFields()
+            ->willReturn($collection)
+            ->shouldBeCalled();
+
+        $formBuilder = $this->prophesize('Nuclear\Hierarchy\Contract\Builders\FormBuilderContract');
+        $formBuilder->build('project', $collection)
+            ->willReturn(null)
+            ->shouldBeCalled();
+
+        $migrationBuilder = $this->prophesize('Nuclear\Hierarchy\Contract\Builders\MigrationBuilderContract');
+        $cacheBuilder = $this->prophesize('Nuclear\Hierarchy\Contract\Builders\CacheBuilderContract');
+        $modelBuilder = $this->prophesize('Nuclear\Hierarchy\Contract\Builders\ModelBuilderContract');
+
+        $service = new BuilderService(
+            $modelBuilder->reveal(),
+            $migrationBuilder->reveal(),
+            $formBuilder->reveal(),
+            $cacheBuilder->reveal()
+        );
+
+        $service->buildForm($model->reveal());
     }
 
     /** @test */
