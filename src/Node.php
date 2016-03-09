@@ -581,7 +581,7 @@ class Node extends BaseNode {
      */
     public function lock()
     {
-        $this->locked = 1;
+        $this->setAttribute('locked', 1);
 
         return $this;
     }
@@ -593,7 +593,7 @@ class Node extends BaseNode {
      */
     public function unlock()
     {
-        $this->locked = 0;
+        $this->setAttribute('locked', 0);
 
         return $this;
     }
@@ -605,7 +605,7 @@ class Node extends BaseNode {
      */
     public function hide()
     {
-        $this->visible = 0;
+        $this->setAttribute('visible', 0);
 
         return $this;
     }
