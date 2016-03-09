@@ -275,6 +275,17 @@ class Node extends BaseNode {
      */
     public function scopeSortedBySourceAttribute(Builder $query, $attribute, $direction = 'ASC')
     {
+        return $this->orderQueryBySourceAttribute($query, $attribute, $direction);
+    }
+
+    /**
+     * @param Builder $query
+     * @param $attribute
+     * @param $direction
+     * @return mixed
+     */
+    protected function orderQueryBySourceAttribute(Builder $query, $attribute, $direction)
+    {
         $key = $this->getTable() . '.' . $this->getKeyName();
 
         return $query->join($this->sourcesTable . ' as t', 't.node_id', '=', $key)
