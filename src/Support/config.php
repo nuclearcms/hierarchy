@@ -28,7 +28,7 @@ return [
 		'text'     => 'string',
 		'textarea' => 'text',
 		'markdown' => 'longtext',
-		'document'     => 'unsignedInteger',
+		'document' => 'unsignedInteger',
 		'gallery'  => 'text',
 		'checkbox' => 'boolean',
 		'select'   => 'string',

@@ -55,7 +55,7 @@ class MigrationBuilder implements MigrationBuilderContract, WriterContract {
             'text'     => 'string',
             'textarea' => 'text',
             'markdown' => 'longtext',
-            'document'     => 'unsignedInteger',
+            'document' => 'unsignedInteger',
             'gallery'  => 'text',
             'checkbox' => 'boolean',
             'select'   => 'string',
@@ -64,7 +64,8 @@ class MigrationBuilder implements MigrationBuilderContract, WriterContract {
             'slug'     => 'string',
             'tag'      => 'text',
             'password' => 'string',
-            'date'     => 'timestamp'
+            'date'     => 'timestamp',
+            'node_collection' => 'text',
         ]);
 
         $this->defaultType = config('hierarchy.default_type', 'string');
