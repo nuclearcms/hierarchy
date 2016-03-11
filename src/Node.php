@@ -289,6 +289,7 @@ class Node extends BaseNode {
         $key = $this->getTable() . '.' . $this->getKeyName();
 
         return $query->join($this->sourcesTable . ' as t', 't.node_id', '=', $key)
+            ->select('t.id as source_id', 'nodes.*')
             ->groupBy($key)
             ->orderBy('t.' . $attribute, $direction);
     }
