@@ -339,7 +339,7 @@ class Node extends BaseNode {
      */
     public function scopeDraft(Builder $query)
     {
-        return $query->where('status', Node::PENDING);
+        return $query->where('status', Node::DRAFT);
     }
 
     /**
