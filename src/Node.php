@@ -266,6 +266,24 @@ class Node extends BaseNode {
     }
 
     /**
+     * Get source or fallback to first found translation
+     *
+     * @param $locale
+     * @return NodeSource
+     */
+    public function translateOrFirst($locale)
+    {
+        $translation = $this->getTranslationAttribute($locale, true);
+
+        if ( ! $translation)
+        {
+            $translation = $this->translations->first();
+        }
+
+        return $translation;
+    }
+
+    /**
      * Sorts by source attribute
      *
      * @param Builder $query

@@ -374,6 +374,31 @@ class NodeTest extends TestBase {
     }
 
     /** @test */
+    function it_falls_back_to_first_translation_if_default_does_not_exist()
+    {
+        $node = $this->getNode();
+        $node->{'node_name:tr'} = 'about';
+
+        $this->assertNull(
+            $node->translate('en')
+        );
+
+        $this->assertNull(
+            $node->translate(null)
+        );
+
+        $this->assertEquals(
+            'about',
+            $node->translateOrFirst('en')->node_name
+        );
+
+        $this->assertEquals(
+            'about',
+            $node->translateOrFirst(null)->node_name
+        );
+    }
+
+    /** @test */
     function it_checks_translated_children()
     {
         $node = $this->getNode();
