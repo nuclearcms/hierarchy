@@ -16,12 +16,12 @@ Installing Hierarchy is simple.
     ```js
     {
         "require": {
-            "nuclear/hierarchy": "1.2.*"
+            "nuclear/hierarchy": "~1.0"
         }
     }
     ```
 
-2. In order to register Hierarchy Service Provider add `'Nuclear\Hierarchy\Providers\HierarchyServiceProvider'` to the end of `providers` array in your `config/app.php` file.
+2. In order to register Hierarchy Service Provider add `'Nuclear\Hierarchy\Providers\HierarchyServiceProvider'` and `'Nuclear\Hierarchy\Providers\BuilderServiceProvider'` to the end of `providers` array in your `config/app.php` file.
     ```php
     'providers' => array(
     
@@ -29,9 +29,11 @@ Installing Hierarchy is simple.
         'Illuminate\Auth\AuthServiceProvider',
         ...
         'Nuclear\Hierarchy\Providers\HierarchyServiceProvider',
+        'Nuclear\Hierarchy\Providers\BuilderServiceProvider',
     
     ),
     ```
+    **Important:** As of version 1.3 the services inside `HierarchyServiceProvider` is separated into two. The `BuilderServiceProvider` must be registered separately.
     
 3. Publish the migrations and configuration file.
     ```bash

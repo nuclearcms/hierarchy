@@ -28,11 +28,16 @@ class TestBase extends TestCase {
             'database' => ':memory:',
             'prefix'   => ''
         ]);
+
+        $app['config']->set('translatable.fallback_locale', 'en');
     }
 
     protected function getPackageProviders($app)
     {
-        return ['Nuclear\Hierarchy\Providers\HierarchyServiceProvider'];
+        return [
+            'Nuclear\Hierarchy\Providers\HierarchyServiceProvider',
+            'Nuclear\Hierarchy\Providers\BuilderServiceProvider'
+        ];
     }
 
     protected function setBasePath()

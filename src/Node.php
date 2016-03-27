@@ -95,7 +95,27 @@ class Node extends BaseNode {
         static::creating(function ($node)
         {
             $node->published_at = Carbon::now();
+
+            $node->fireNodeEvent('creating');
         });
+
+        foreach (['created', 'updating', 'updated', 'deleting', 'deleted', 'saving', 'saved'] as $event)
+        {
+            static::$event(function ($node) use ($event)
+            {
+                $node->fireNodeEvent($event);
+            });
+        }
+    }
+
+    /**
+     * Fires a node event
+     *
+     * @param string $event
+     */
+    public function fireNodeEvent($event)
+    {
+        event($this->getNodeType()->getName() . '.' . $event, $this);
     }
 
     /**
@@ -106,6 +126,31 @@ class Node extends BaseNode {
     public function nodeType()
     {
         return $this->belongsTo(NodeType::class);
+    }
+
+    /**
+     * Getter for node type
+     *
+     * @return NodeType
+     */
+    public function getNodeType()
+    {
+        $bag = hierarchy_bag('nodetype');
+
+        if ($this->relationLoaded('nodeType'))
+        {
+            $nodeType = $this->getRelation('nodeType');
+        } elseif ($nodeType = $bag->getNodeType($this->node_type_id))
+        {
+            $this->setRelation('nodeType', $nodeType);
+        } else
+        {
+            $nodeType = $this->load('nodeType')->getRelation('nodeType');
+        }
+
+        $bag->addNodeType($nodeType);
+
+        return $nodeType;
     }
 
     /**
@@ -227,7 +272,7 @@ class Node extends BaseNode {
     {
         $nodeSource = NodeSource::newWithType(
             $locale,
-            $this->nodeType->name
+            $this->getNodeType()->name
         );
 
         $this->translations->add($nodeSource);
@@ -659,7 +704,7 @@ class Node extends BaseNode {
      */
     public function hidesChildren()
     {
-        return $this->hides_children || $this->nodeType->hides_children;
+        return $this->hides_children || $this->getNodeType()->hides_children;
     }
 
     /**

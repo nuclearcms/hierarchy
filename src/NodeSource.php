@@ -26,6 +26,13 @@ class NodeSource extends Eloquent implements NodeSourceContract {
     public $timestamps = false;
 
     /**
+     * The attributes that should be hidden for arrays.
+     *
+     * @var array
+     */
+    protected $hidden = ['source'];
+
+    /**
      * Temporary source model
      *
      * @var Model

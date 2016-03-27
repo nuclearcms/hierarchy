@@ -43,3 +43,17 @@ if ( ! function_exists('source_form_name'))
         return 'Edit' . ucfirst($key) . 'Form';
     }
 }
+
+if ( ! function_exists('hierachy_bag'))
+{
+    /**
+     * Returns a hierarchy bag
+     *
+     * @param string $bag
+     * @return object
+     */
+    function hierarchy_bag($bag)
+    {
+        return app()->make('hierarchy.bags.' . $bag);
+    }
+}

@@ -4,11 +4,12 @@ namespace Nuclear\Hierarchy\Providers;
 
 
 use Illuminate\Support\ServiceProvider;
+use Nuclear\Hierarchy\Bags\NodeTypeBag;
 use Nuclear\Hierarchy\Cache\Accessor;
 
 class HierarchyServiceProvider extends ServiceProvider {
 
-    const version = '1.2.13';
+    const version = '1.3.0';
 
     /**
      * Indicates if loading of the provider is deferred.
@@ -28,23 +29,7 @@ class HierarchyServiceProvider extends ServiceProvider {
 
         $this->registerCacheAccessor();
 
-        $this->registerExternalServices();
-
-        $this->registerBuilders();
-    }
-
-    /**
-     * Registers builders
-     *
-     * @return void
-     */
-    protected function registerBuilders()
-    {
-        $this->registerModelBuilder();
-        $this->registerMigrationBuilder();
-        $this->registerFormBuilder();
-        $this->registerCacheBuilder();
-        $this->registerBuilderService();
+        $this->registerNodeTypeBag();
     }
 
     /**
@@ -71,78 +56,16 @@ class HierarchyServiceProvider extends ServiceProvider {
     }
 
     /**
-     * Registers external services needed for the package
+     * Registers the NodeTypeBag
      *
      * @return void
      */
-    protected function registerExternalServices()
+    protected function registerNodeTypeBag()
     {
-        $this->app->register('Dimsav\Translatable\TranslatableServiceProvider');
-    }
-
-    /**
-     * Registers the model builder
-     *
-     * @return void
-     */
-    protected function registerModelBuilder()
-    {
-        $this->app->bind(
-            'Nuclear\Hierarchy\Contract\Builders\ModelBuilderContract',
-            'Nuclear\Hierarchy\Builders\ModelBuilder'
-        );
-    }
-
-    /**
-     * Registers the migration builder
-     *
-     * @return void
-     */
-    protected function registerMigrationBuilder()
-    {
-        $this->app->bind(
-            'Nuclear\Hierarchy\Contract\Builders\MigrationBuilderContract',
-            'Nuclear\Hierarchy\Builders\MigrationBuilder'
-        );
-    }
-
-    /**
-     * Registers the form builder
-     *
-     * @return void
-     */
-    protected function registerFormBuilder()
-    {
-        $this->app->bind(
-            'Nuclear\Hierarchy\Contract\Builders\FormBuilderContract',
-            'Nuclear\Hierarchy\Builders\FormBuilder'
-        );
-    }
-
-    /**
-     * Registers the migration builder
-     *
-     * @return void
-     */
-    protected function registerCacheBuilder()
-    {
-        $this->app->bind(
-            'Nuclear\Hierarchy\Contract\Builders\CacheBuilderContract',
-            'Nuclear\Hierarchy\Builders\CacheBuilder'
-        );
-    }
-
-    /**
-     * Registers the builder service
-     *
-     * @return void
-     */
-    protected function registerBuilderService()
-    {
-        $this->app->bind(
-            'Nuclear\Hierarchy\Contract\Builders\BuilderServiceContract',
-            'Nuclear\Hierarchy\Builders\BuilderService'
-        );
+        $this->app['hierarchy.bags.nodetype'] = $this->app->share(function ()
+        {
+            return new NodeTypeBag;
+        });
     }
 
     /**

@@ -98,6 +98,90 @@ class NodeTest extends TestBase {
     }
 
     /** @test */
+    function it_fires_a_node_event()
+    {
+        $node = $this->getNode();
+        $id = $node->getKey();
+
+        $dispatcher = $this->app->make('Illuminate\Contracts\Events\Dispatcher');
+
+        $dispatcher->listen('project.saved', function ($project) use ($id)
+        {
+            if ($project->getKey() === $id)
+            {
+                throw new Exception('Project saved.');
+            }
+        });
+
+        try
+        {
+            $node->fireNodeEvent('saved');
+        } catch (Exception $e)
+        {
+            if ($e->getMessage() === 'Project saved.')
+            {
+                return;
+            }
+        }
+
+        $this->fail('Event not fired, test fails');
+    }
+
+    /** @test */
+    function it_fires_node_creating_events_automatically()
+    {
+        $dispatcher = $this->app->make('Illuminate\Contracts\Events\Dispatcher');
+
+        $dispatcher->listen('project.creating', function ($project)
+        {
+            throw new Exception('Creating project.');
+        });
+
+        try
+        {
+            $node = $this->getNode();
+        } catch (Exception $e)
+        {
+            if ($e->getMessage() === 'Creating project.')
+            {
+                return;
+            }
+        }
+
+        $this->fail('Event not fired, test fails');
+    }
+
+    /** @test */
+    function it_fires_node_events_automatically()
+    {
+        $dispatcher = $this->app->make('Illuminate\Contracts\Events\Dispatcher');
+
+        $node = $this->getNode();
+        $id = $node->getKey();
+
+        $dispatcher->listen('project.saved', function ($project) use ($id)
+        {
+            if ($project->getKey() === $id)
+            {
+                throw new Exception('Project saved.');
+            }
+        });
+
+        try
+        {
+            $node->save();
+        } catch (Exception $e)
+        {
+            if ($e->getMessage() === 'Project saved.')
+            {
+                return;
+            }
+        }
+
+        $this->fail('Event not fired, test fails');
+    }
+
+    /** @test */
     function it_is_related_to_the_node_type()
     {
         $node = $this->getNode();
@@ -109,7 +193,7 @@ class NodeTest extends TestBase {
 
         $this->assertInstanceOf(
             'Nuclear\Hierarchy\NodeType',
-            $node->nodeType
+            $node->getNodeType()
         );
     }
 
@@ -906,15 +990,15 @@ class NodeTest extends TestBase {
         $node = $this->getNode();
 
         $node->fill([
-            'en'      => [
+            'en' => [
                 'title'       => 'English Title',
                 'description' => 'English Description',
-                'area' => 100000
+                'area'        => 100000
             ],
-            'tr'      => [
+            'tr' => [
                 'title'       => 'Türkçe Başlık',
                 'description' => 'Türkçe Açıklama',
-                'area' => 30000
+                'area'        => 30000
             ]
         ]);
 
@@ -977,6 +1061,29 @@ class NodeTest extends TestBase {
             'Content',
             $node->content
         );
+    }
+
+    /** @test */
+    function it_duplicates_a_node()
+    {
+        $node = $this->getNode();
+
+        $node->fill([
+            'en' => [
+                'title'       => 'English Title',
+                'description' => 'English Description',
+                'area'        => 100000
+            ],
+            'tr' => [
+                'title'       => 'Türkçe Başlık',
+                'description' => 'Türkçe Açıklama',
+                'area'        => 30000
+            ]
+        ]);
+
+        $node->save();
+
+        $node->duplicate();
     }
 
 }
