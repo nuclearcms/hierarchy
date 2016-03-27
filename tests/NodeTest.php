@@ -1063,27 +1063,4 @@ class NodeTest extends TestBase {
         );
     }
 
-    /** @test */
-    function it_duplicates_a_node()
-    {
-        $node = $this->getNode();
-
-        $node->fill([
-            'en' => [
-                'title'       => 'English Title',
-                'description' => 'English Description',
-                'area'        => 100000
-            ],
-            'tr' => [
-                'title'       => 'Türkçe Başlık',
-                'description' => 'Türkçe Açıklama',
-                'area'        => 30000
-            ]
-        ]);
-
-        $node->save();
-
-        $node->duplicate();
-    }
-
 }
