@@ -62,6 +62,13 @@ class Node extends BaseNode {
     protected $localeKey = 'locale';
 
     /**
+     * Translation foreign key
+     *
+     * @var string
+     */
+    protected $translationForeignKey = 'node_id';
+
+    /**
      * The node type key
      *
      * @var string
