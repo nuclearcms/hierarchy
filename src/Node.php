@@ -365,6 +365,33 @@ class Node extends BaseNode {
     }
 
     /**
+     * Gets a node by name
+     *
+     * @param Builder $query
+     * @param string $name
+     * @param string|null $locale
+     * @return Builder
+     */
+    public function scopeByName(Builder $query, $name, $locale = null)
+    {
+        return $this->scopeWhereTranslation($query, 'node_name', $name, $locale);
+    }
+
+    /**
+     * Gets nodes by type
+     *
+     * @param Builder $query
+     * @param string $type
+     * @param string|null $locale
+     * @return Builder
+     */
+    public function scopeWithType(Builder $query, $type, $locale = null)
+    {
+        return $this->scopeWhereTranslation($query, 'source_type', $type, $locale);
+    }
+
+
+    /**
      * Published scope
      *
      * @param Builder $query
