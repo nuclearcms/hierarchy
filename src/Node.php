@@ -385,7 +385,7 @@ class Node extends BaseNode {
      * @param string|null $locale
      * @return Builder
      */
-    public function scopeWithType(Builder $query, $type, $locale = null)
+    public function scopeByType(Builder $query, $type, $locale = null)
     {
         return $this->scopeWhereTranslation($query, 'source_type', $type, $locale);
     }
