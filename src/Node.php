@@ -325,7 +325,7 @@ class Node extends BaseNode {
      */
     public function translateOrFirst($locale)
     {
-        $translation = $this->getTranslationAttribute($locale, true);
+        $translation = $this->translate($locale, true);
 
         if ( ! $translation)
         {
