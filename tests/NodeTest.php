@@ -1063,4 +1063,91 @@ class NodeTest extends TestBase {
         );
     }
 
+    /** @test */
+    function it_scopes_nodes_with_name()
+    {
+        $this->assertNull(
+            Node::withName('english-title')->first()
+        );
+
+        $node = $this->getNode();
+
+        $node->fill([
+            'en' => [
+                'title'       => 'English Title',
+                'description' => 'English Description',
+                'area'        => 100000
+            ],
+            'tr' => [
+                'title'       => 'Türkçe Başlık',
+                'description' => 'Türkçe Açıklama',
+                'area'        => 30000
+            ]
+        ]);
+
+        $node->save();
+
+        $this->assertInstanceOf(
+            'Nuclear\Hierarchy\Node',
+            Node::withName('english-title')->first()
+        );
+
+        $this->assertInstanceOf(
+            'Nuclear\Hierarchy\Node',
+            Node::withName('english-title', 'en')->first()
+        );
+
+        $this->assertNull(
+            Node::withName('english-title', 'tr')->first()
+        );
+
+        $this->assertInstanceOf(
+            'Nuclear\Hierarchy\Node',
+            Node::withName('turkce-baslik')->first()
+        );
+
+        $this->assertInstanceOf(
+            'Nuclear\Hierarchy\Node',
+            Node::withName('turkce-baslik', 'tr')->first()
+        );
+    }
+
+    /** @test */
+    function it_scopes_nodes_with_type()
+    {
+        $this->assertNull(
+            Node::withType('project')->first()
+        );
+
+        $this->assertNull(
+            Node::withType('non-existing')->first()
+        );
+
+        $node = $this->getNode();
+
+        $node->fill([
+            'en' => [
+                'title'       => 'English Title',
+                'description' => 'English Description',
+                'area'        => 100000
+            ],
+            'tr' => [
+                'title'       => 'Türkçe Başlık',
+                'description' => 'Türkçe Açıklama',
+                'area'        => 30000
+            ]
+        ]);
+
+        $node->save();
+
+        $this->assertInstanceOf(
+            'Nuclear\Hierarchy\Node',
+            Node::withType('project')->first()
+        );
+
+        $this->assertNull(
+            Node::withType('non-existing')->first()
+        );
+    }
+
 }
