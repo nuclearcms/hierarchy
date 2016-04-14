@@ -320,10 +320,10 @@ class Node extends BaseNode {
     /**
      * Get source or fallback to first found translation
      *
-     * @param $locale
+     * @param string|null $locale
      * @return NodeSource
      */
-    public function translateOrFirst($locale)
+    public function translateOrFirst($locale = null)
     {
         $translation = $this->translate($locale, true);
 
