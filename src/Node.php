@@ -132,7 +132,9 @@ class Node extends BaseNode {
      */
     public function nodeType()
     {
-        return $this->belongsTo(NodeType::class);
+        return $this->belongsTo(
+            config('hierarchy.nodetype_model', 'Nuclear\Hierarchy\NodeType')
+        );
     }
 
     /**

@@ -47,7 +47,8 @@ return [
 	| Model Class Paths
 	|--------------------------------------------------------------------------
 	|
-	| Used by type and field repositories.
+	| Used by type and field repositories,
+    | and the node_type model is used by the Node model.
 	|
 	*/
     'nodetype_model' => 'Nuclear\Hierarchy\NodeType',
