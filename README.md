@@ -37,7 +37,7 @@ Installing Hierarchy is simple.
     
 3. Publish the migrations and configuration file.
     ```bash
-        php artisan vendor:publish
+        php artisan vendor:publish --provider="Nuclear\Hierarchy\Providers\HierarchyServiceProvider"
     ```
     Do not forget to migrate the database.
 

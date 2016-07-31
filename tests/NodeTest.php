@@ -364,6 +364,11 @@ class NodeTest extends TestBase {
             'Illuminate\Pagination\LengthAwarePaginator',
             $node->getOrderedChildren(15)
         );
+
+        $this->assertInstanceOf(
+            'Illuminate\Database\Eloquent\Relations\HasMany',
+            $node->getOrderedChildren(false)
+        );
     }
 
     /** @test */
@@ -379,6 +384,11 @@ class NodeTest extends TestBase {
         $this->assertInstanceOf(
             'Illuminate\Pagination\LengthAwarePaginator',
             $node->getPublishedOrderedChildren(15)
+        );
+
+        $this->assertInstanceOf(
+            'Illuminate\Database\Eloquent\Relations\HasMany',
+            $node->getPublishedOrderedChildren(false)
         );
     }
 
@@ -396,6 +406,11 @@ class NodeTest extends TestBase {
             'Illuminate\Pagination\LengthAwarePaginator',
             $node->getPositionOrderedChildren(15)
         );
+
+        $this->assertInstanceOf(
+            'Illuminate\Database\Eloquent\Relations\HasMany',
+            $node->getPositionOrderedChildren(false)
+        );
     }
 
     /** @test */
@@ -411,6 +426,11 @@ class NodeTest extends TestBase {
         $this->assertInstanceOf(
             'Illuminate\Pagination\LengthAwarePaginator',
             $node->getPublishedPositionOrderedChildren(15)
+        );
+
+        $this->assertInstanceOf(
+            'Illuminate\Database\Eloquent\Relations\HasMany',
+            $node->getPublishedPositionOrderedChildren(false)
         );
     }
 
@@ -1119,12 +1139,12 @@ class NodeTest extends TestBase {
 
         $this->assertInstanceOf(
             'Nuclear\Hierarchy\Node',
-            Node::withName('turkce-baslik')->first()
+            Node::withName('tuerkce-baslik')->first()
         );
 
         $this->assertInstanceOf(
             'Nuclear\Hierarchy\Node',
-            Node::withName('turkce-baslik', 'tr')->first()
+            Node::withName('tuerkce-baslik', 'tr')->first()
         );
     }
 

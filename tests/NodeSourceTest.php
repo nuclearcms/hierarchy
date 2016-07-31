@@ -385,7 +385,7 @@ class NodeSourceTest extends TestBase {
 
         $this->assertEquals(
             $nodeSource->getNodeName(),
-            'some-other-node-name-guics'
+            'some-other-node-name-gueics'
         );
     }
 

@@ -24,13 +24,20 @@
     ],
     "require": {
         "php": ">=5.5.9",
-        "kalnoy/nestedset": "~3.1",
+        "nuclear/documents": "~0.9",
+        "nuclear/synthesizer": "~0.9",
+        "kenarkose/chronicle": "~1.2",
+        "kenarkose/ownable": "~1.3",
+        "kenarkose/sortable": "~1.2",
+        "kenarkose/tracker": "~1.6",
+        "nicolaslopezj/searchable": "^1.9",
+        "kalnoy/nestedset": "~4.0",
         "doctrine/dbal": "~2.5",
-        "dimsav/laravel-translatable": "~5.4",
-        "kris/laravel-form-builder": "^1.6"
+        "dimsav/laravel-translatable": "~5.5",
+        "kris/laravel-form-builder": "^1.7"
     },
     "require-dev": {
-        "orchestra/testbench": "~3.0",
+        "orchestra/testbench": "~3.2",
         "phpunit/phpunit": "~4.0",
         "mikey179/vfsStream": "~1.5",
         "mockery/mockery": "0.9.*"

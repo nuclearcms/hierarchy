@@ -6,13 +6,29 @@ namespace Nuclear\Hierarchy;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Pagination\LengthAwarePaginator;
-use Kalnoy\Nestedset\Node as BaseNode;
 use Carbon\Carbon;
 use Dimsav\Translatable\Translatable;
-use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Model as Eloquent;
 use Illuminate\Support\Collection;
+use Kalnoy\Nestedset\NodeTrait;
+use Kenarkose\Chronicle\RecordsActivity;
+use Kenarkose\Ownable\AutoAssociatesOwner;
+use Kenarkose\Ownable\Ownable;
+use Kenarkose\Sortable\Sortable;
+use Kenarkose\Tracker\Trackable;
+use Kenarkose\Tracker\TrackableInterface;
+use Nicolaslopezj\Searchable\SearchableTrait;
+use Nuclear\Hierarchy\Tags\Taggable;
 
-class Node extends BaseNode {
+class Node extends Eloquent implements TrackableInterface {
+
+    use NodeTrait, Taggable, SearchableTrait, Ownable,
+        AutoAssociatesOwner, RecordsActivity, Trackable;
+
+    use Sortable
+    {
+        scopeSortable as _scopeSortable;
+    }
 
     /**
      * The translatable trait requires some modification
@@ -23,20 +39,73 @@ class Node extends BaseNode {
     }
 
     /**
+     * Table for the model
+     *
+     * We hardcode this since we would like to keep
+     * the child classes in the same table
+     */
+    protected $table = 'nodes';
+
+    /**
      * The attributes that are mass assignable.
      *
      * @var array
      */
     protected $fillable = ['title', 'node_name',
-        'meta_title', 'meta_keywords', 'meta_description',
+        'meta_title', 'meta_keywords', 'meta_description', 'meta_image', 'meta_author',
         'visible', 'sterile', 'home', 'locked', 'status', 'hides_children', 'priority',
-        'published_at', 'children_order', 'children_order_direction'];
+        'published_at', 'children_order', 'children_order_direction', 'children_display_mode'];
 
     /**
      * The translated fields for the model.
      */
     protected $translatedAttributes = ['title', 'node_name',
-        'meta_title', 'meta_keywords', 'meta_description'];
+        'meta_title', 'meta_keywords', 'meta_description', 'meta_image', 'meta_author'];
+
+    /**
+     * Searchable columns.
+     *
+     * @var array
+     */
+    protected $searchable = [
+        'columns' => [
+            'node_sources.title'         => 50,
+            'node_sources.meta_keywords' => 20
+        ],
+        'joins'   => [
+            'node_sources' => ['nodes.id', 'node_sources.node_id'],
+        ]
+    ];
+
+    /**
+     * Sortable columns
+     *
+     * @var array
+     */
+    protected $sortableColumns = ['title', 'created_at'];
+
+    /**
+     * Default sortable key
+     *
+     * @var string
+     */
+    protected $sortableKey = 'created_at';
+
+    /**
+     * Default sortable direction
+     *
+     * @var string
+     */
+    protected $sortableDirection = 'desc';
+
+    /**
+     * Tracker relation configuration
+     *
+     * We are being explicit here to be able to extend
+     * with different models
+     */
+    protected $trackerPivotTable = 'node_site_view';
+    protected $trackerForeignKey = 'node_id';
 
     /**
      * The attributes that should be mutated to dates.
@@ -256,10 +325,10 @@ class Node extends BaseNode {
     /**
      * Checks if the translation is dirty
      *
-     * @param \Illuminate\Database\Eloquent\Model $translation
+     * @param Eloquent $translation
      * @return bool
      */
-    protected function isTranslationDirty(Model $translation)
+    protected function isTranslationDirty(Eloquent $translation)
     {
         return $translation->isDirty();
     }
@@ -314,11 +383,16 @@ class Node extends BaseNode {
 
             $translation = $this->translate($locale);
 
-            $attribute = ($translation) ? $translation->$key : null;
+            $attribute = ($translation) ? $translation->{$key} : null;
 
             if (empty($attribute) && $fallback)
             {
-                $attribute = $this->translate($this->getFallbackLocale())->$key;
+                $translation = $this->translate($this->getFallbackLocale());
+
+                if ($translation)
+                {
+                    return $translation->{$key};
+                }
             }
 
             return $attribute;
@@ -561,12 +635,17 @@ class Node extends BaseNode {
     /**
      * Determines the pagination of children
      *
-     * @param $perPage
-     * @param $children
+     * @param mixed $perPage
+     * @param HasMany $children
      * @return mixed
      */
-    public function determineChildrenPagination($perPage, $children)
+    public function determineChildrenPagination($perPage, HasMany $children)
     {
+        if ($perPage === false)
+        {
+            return $children;
+        }
+
         return is_null($perPage) ?
             $children->get() :
             $children->paginate($perPage);

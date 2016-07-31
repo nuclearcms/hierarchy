@@ -4,8 +4,11 @@ namespace Nuclear\Hierarchy;
 
 
 use Illuminate\Database\Eloquent\Model as Eloquent;
+use Kenarkose\Chronicle\RecordsActivity;
 
 class NodeField extends Eloquent {
+
+    use RecordsActivity;
 
     /**
      * The attributes that are mass assignable.

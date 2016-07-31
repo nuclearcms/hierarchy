@@ -16,6 +16,8 @@ class TestBase extends TestCase {
         $this->setBasePath();
 
         $this->registerAutoloader();
+
+        $this->createDefaultUser();
     }
 
     protected function getEnvironmentSetUp($app)
@@ -30,13 +32,17 @@ class TestBase extends TestCase {
         ]);
 
         $app['config']->set('translatable.fallback_locale', 'en');
+
+        $app['config']->set('auth.model', User::class);
     }
 
     protected function getPackageProviders($app)
     {
         return [
             'Nuclear\Hierarchy\Providers\HierarchyServiceProvider',
-            'Nuclear\Hierarchy\Providers\BuilderServiceProvider'
+            'Nuclear\Hierarchy\Providers\BuilderServiceProvider',
+            'Kenarkose\Chronicle\ChronicleServiceProvider',
+            'Kenarkose\Sortable\SortableServiceProvider'
         ];
     }
 
@@ -50,7 +56,7 @@ class TestBase extends TestCase {
     protected function resetDatabase()
     {
         // Relative to the testbench app folder: vendors/orchestra/testbench/src/fixture
-        $migrationsPath = 'src/Support/migrations';
+        $migrationsPath = 'tests/_migrations';
         $artisan = $this->app->make('Illuminate\Contracts\Console\Kernel');
 
         // Migrate
@@ -92,5 +98,19 @@ class TestBase extends TestCase {
                 require $file;
             }
         });
+    }
+
+    /**
+     * Creates the default user
+     */
+    protected function createDefaultUser()
+    {
+        $user = User::create([
+            'email' => 'john@doe.com',
+            'first_name' => 'John',
+            'last_name' => 'Doe'
+        ]);
+
+        auth()->login($user);
     }
 }
