@@ -23,6 +23,7 @@ class HierarchyCreateNodeTypesTable extends Migration {
             $table->boolean('hides_children')->default(0);
             $table->string('color', 32)->default('#000000');
             $table->boolean('taggable')->default(0);
+            $table->boolean('newsletter')->default(0);
 
             $table->timestamps();
         });

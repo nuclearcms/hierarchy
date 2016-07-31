@@ -5,19 +5,14 @@
 namespace gen\Entities;
 
 
-use Illuminate\Database\Eloquent\Model as Eloquent;
+use Nuclear\Hierarchy\NodeSourceExtension;
 
-class {{ $name }} extends Eloquent {
+class {{ $name }} extends NodeSourceExtension {
 
     /**
      * The fillable fields for the model.
      */
     protected $fillable = [{!! $fields !!}];
-
-    /*
-     * Timestamps for the model.
-     */
-    public $timestamps = false;
 
     /*
      * Returns the fields for the model

@@ -373,4 +373,16 @@ class NodeSource extends Eloquent implements NodeSourceContract {
     {
         return $this->nodeModelName ?: 'Nuclear\Hierarchy\Node';
     }
+
+    /**
+     * Sets the extension node id
+     *
+     * @param int $id
+     */
+    public function setExtensionNodeId($id)
+    {
+        $this->getSource()->setNodeId($id)->save();
+    }
+
+
 }

@@ -178,7 +178,14 @@ class Node extends Eloquent implements TrackableInterface {
             $node->fireNodeEvent('creating');
         });
 
-        foreach (['created', 'updating', 'updated', 'deleting', 'deleted', 'saving', 'saved'] as $event)
+        static::created(function ($node)
+        {
+            $node->propagateIdToSources();
+
+            $node->fireNodeEvent('created');
+        });
+
+        foreach (['updating', 'updated', 'deleting', 'deleted', 'saving', 'saved'] as $event)
         {
             static::$event(function ($node) use ($event)
             {
@@ -195,6 +202,27 @@ class Node extends Eloquent implements TrackableInterface {
     public function fireNodeEvent($event)
     {
         event($this->getNodeTypeName() . '.' . $event, $this);
+    }
+
+    /**
+     * Propagates self id to sources
+     */
+    public function propagateIdToSources()
+    {
+        foreach($this->translations as $source)
+        {
+            $source->setExtensionNodeId($this->getKey());
+        }
+    }
+
+    /**
+     * The node source extension relation
+     *
+     * @return HasMany
+     */
+    public function nodeSourceExtensions()
+    {
+        return $this->hasMany(source_model_name($this->getNodeTypeName(), true));
     }
 
     /**
@@ -1083,6 +1111,16 @@ class Node extends Eloquent implements TrackableInterface {
 
         return route('reactor.nodes.edit',
             $parameters);
+    }
+
+    /**
+     * Checks if the node is a newsletter node
+     *
+     * @return bool
+     */
+    public function isNewsletter()
+    {
+        return $this->getNodeType()->isTypeNewsletter();
     }
 
 }

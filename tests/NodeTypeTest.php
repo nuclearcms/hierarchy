@@ -162,4 +162,12 @@ class NodeTypeTest extends TestBase {
         );
     }
 
+    /** @test */
+    function it_checks_if_node_type_is_newsletter()
+    {
+        $nodeType = $this->getNodeType();
+
+        $this->assertFalse($nodeType->isTypeNewsletter());
+    }
+
 }

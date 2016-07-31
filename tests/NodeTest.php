@@ -208,6 +208,17 @@ class NodeTest extends TestBase {
     }
 
     /** @test */
+    function it_is_related_to_node_source_extensions()
+    {
+        $node = $this->getNode();
+
+        $this->assertInstanceOf(
+            'Illuminate\Database\Eloquent\Relations\HasMany',
+            $node->nodeSourceExtensions()
+        );
+    }
+
+    /** @test */
     function it_is_related_to_the_node_type()
     {
         $node = $this->getNode();
@@ -1216,6 +1227,14 @@ class NodeTest extends TestBase {
     function it_makes_the_default_edit_link()
     {
         // Not possible to test this without registering routes
+    }
+
+    /** @test */
+    function it_checks_if_node_is_a_newsletter()
+    {
+        $node = $this->getNode();
+
+        $this->assertFalse($node->isNewsletter());
     }
 
 }

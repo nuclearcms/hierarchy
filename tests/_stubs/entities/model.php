@@ -4,19 +4,14 @@
 namespace gen\Entities;
 
 
-use Illuminate\Database\Eloquent\Model as Eloquent;
+use Nuclear\Hierarchy\NodeSourceExtension;
 
-class NsProjecttest extends Eloquent {
+class NsProjecttest extends NodeSourceExtension {
 
     /**
      * The fillable fields for the model.
      */
     protected $fillable = ['date', 'area', 'location'];
-
-    /*
-     * Timestamps for the model.
-     */
-    public $timestamps = false;
 
     /*
      * Returns the fields for the model

@@ -20,7 +20,7 @@ class NodeType extends Eloquent implements NodeTypeContract {
      * @var array
      */
     protected $fillable = ['name', 'label', 'description',
-        'visible', 'hides_children', 'color', 'taggable'];
+        'visible', 'hides_children', 'color', 'taggable', 'newsletter'];
 
     /**
      * Sortable columns
@@ -132,6 +132,16 @@ class NodeType extends Eloquent implements NodeTypeContract {
     public function getFieldKeys()
     {
         return $this->getFields()->lists('name')->toArray();
+    }
+
+    /**
+     * Checks if the node type is newsletter type
+     *
+     * @return bool
+     */
+    public function isTypeNewsletter()
+    {
+        return (bool)$this->newsletter;
     }
 
 }
