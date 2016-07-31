@@ -27,7 +27,6 @@ class HierarchyServiceProvider extends ServiceProvider {
     {
         $this->registerSourcePath();
 
-
         $this->registerNodeTypeBag();
     }
 
