@@ -49,7 +49,7 @@ class BuilderService implements BuilderServiceContract {
      */
     public function buildTable($name, $id)
     {
-        $this->modelBuilder->build($name, []);
+        $this->modelBuilder->build($name);
         $this->formBuilder->build($name);
         $migration = $this->migrationBuilder->buildSourceTableMigration($name);
 
@@ -62,12 +62,11 @@ class BuilderService implements BuilderServiceContract {
      * @param string $name
      * @param string $type
      * @param string $tableName
-     * @param array $fields
      * @param NodeTypeContract $nodeType
      */
-    public function buildField($name, $type, $tableName, array $fields, NodeTypeContract $nodeType)
+    public function buildField($name, $type, $tableName, NodeTypeContract $nodeType)
     {
-        $this->modelBuilder->build($tableName, $fields);
+        $this->modelBuilder->build($tableName, $nodeType->getFields());
         $this->buildForm($nodeType);
         $migration = $this->migrationBuilder->buildFieldMigrationForTable($name, $type, $tableName);
 
@@ -109,12 +108,11 @@ class BuilderService implements BuilderServiceContract {
      *
      * @param string $name
      * @param string $tableName
-     * @param array $fields
      * @param NodeTypeContract $nodeType
      */
-    public function destroyField($name, $tableName, array $fields, NodeTypeContract $nodeType)
+    public function destroyField($name, $tableName, NodeTypeContract $nodeType)
     {
-        $this->modelBuilder->build($tableName, $fields);
+        $this->modelBuilder->build($tableName, $nodeType->getFields());
         $this->formBuilder->build($tableName, $nodeType->getFields());
 
         $migration = $this->migrationBuilder

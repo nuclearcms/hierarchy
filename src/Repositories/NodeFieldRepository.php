@@ -24,7 +24,6 @@ class NodeFieldRepository extends Repository {
             $nodeField->getName(),
             $nodeField->getType(),
             $nodeType->getName(),
-            $nodeType->getFieldKeys(),
             $nodeType
         );
 
@@ -47,7 +46,6 @@ class NodeFieldRepository extends Repository {
         $this->builderService->destroyField(
             $nodeField->getName(),
             $nodeField->nodeType->getName(),
-            $nodeField->nodeType->getFieldKeys(),
             $nodeField->nodeType
         );
 

@@ -14,12 +14,25 @@ class {{ $name }} extends NodeSourceExtension {
      */
     protected $fillable = [{!! $fields !!}];
 
-    /*
+    /**
      * Returns the fields for the model
      */
     public static function getSourceFields()
     {
         return [{!! $fields !!}];
+    }
+
+    /**
+     * Returns searchables for the model
+     */
+    public static function getSearchableFields()
+    {
+        return [
+            'columns' => [{!! $searchableFields !!}],
+            'joins' => [
+                '{{ $tableName }}' => ['nodes.id', '{{ $tableName }}.node_id'],
+            ]
+        ];
     }
 
 }

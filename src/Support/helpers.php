@@ -47,6 +47,20 @@ if ( ! function_exists('source_form_name'))
     }
 }
 
+if ( ! function_exists('source_table_name'))
+{
+    /**
+     * Returns the name of the source table by key
+     *
+     * @param string $key
+     * @return string
+     */
+    function source_table_name($key)
+    {
+        return str_plural(MigrationBuilder::TABLE_PREFIX . $key);
+    }
+}
+
 if ( ! function_exists('hierachy_bag'))
 {
     /**

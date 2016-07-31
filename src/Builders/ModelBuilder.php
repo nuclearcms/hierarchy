@@ -3,6 +3,7 @@
 namespace Nuclear\Hierarchy\Builders;
 
 
+use Illuminate\Support\Collection;
 use Nuclear\Hierarchy\Contract\Builders\ModelBuilderContract;
 use Nuclear\Hierarchy\Contract\Builders\WriterContract;
 
@@ -14,18 +15,66 @@ class ModelBuilder implements ModelBuilderContract, WriterContract {
      * Builds a source model
      *
      * @param string $name
-     * @param array $fields
+     * @param Collection $fields
      */
-    public function build($name, array $fields)
+    public function build($name, Collection $fields = null)
     {
         $path = $this->getClassFilePath($name);
+        $tableName = source_table_name($name);
 
         $contents = view('_hierarchy::entities.model', [
-            'name'   => $this->getClassName($name),
-            'fields' => count($fields) ? "'" . implode("', '", $fields) . "'" : ''
+            'tableName'        => $tableName,
+            'name'             => $this->getClassName($name),
+            'fields'           => $this->makeFields($fields),
+            'searchableFields' => $this->makeSearchableFields($fields, $tableName)
         ])->render();
 
         $this->write($path, $contents);
+    }
+
+    /**
+     * Makes fields
+     *
+     * @param Collection $fields
+     * @return string
+     */
+    public function makeFields(Collection $fields = null)
+    {
+        if (is_null($fields))
+        {
+            return '';
+        }
+
+        $fields = $fields->pluck('name')->toArray();
+
+        return count($fields) ? "'" . implode("', '", $fields) . "'" : '';
+    }
+
+    /**
+     * Makes searchable fields
+     *
+     * @param Collection $fields
+     * @param string $tableName
+     * @return string
+     */
+    public function makeSearchableFields(Collection $fields = null, $tableName)
+    {
+        if (is_null($fields))
+        {
+            return '';
+        }
+
+        $searchables = [];
+
+        foreach ($fields as $field)
+        {
+            if ($field->search_priority > 0)
+            {
+                $searchables[] = "'{$tableName}.{$field->name}' => {$field->search_priority}";
+            }
+        }
+
+        return count($searchables) ? implode("', '", $searchables) : '';
     }
 
     /**

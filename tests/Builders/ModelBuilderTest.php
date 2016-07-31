@@ -19,7 +19,9 @@ class ModelBuilderTest extends TestBase {
             $builder->getClassFilePath('projecttest')
         );
 
-        $builder->build('projecttest', ['date', 'area', 'location']);
+        $fields = collect(json_decode('[{"name":"date","search_priority":0},{"name":"area","search_priority":0},{"name":"location","search_priority":10}]'));
+
+        $builder->build('projecttest', $fields);
 
         $this->assertFileExists(
             $builder->getClassFilePath('projecttest')
@@ -36,7 +38,9 @@ class ModelBuilderTest extends TestBase {
     {
         $builder = $this->getBuilder();
 
-        $builder->build('projecttest', ['date', 'area', 'location']);
+        $fields = collect(json_decode('[{"name":"date","search_priority":0},{"name":"area","search_priority":0},{"name":"location","search_priority":10}]'));
+
+        $builder->build('projecttest', $fields);
 
         $this->assertFileExists(
             $builder->getClassFilePath('projecttest')

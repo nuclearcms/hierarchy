@@ -17,12 +17,11 @@ use Kenarkose\Ownable\Ownable;
 use Kenarkose\Sortable\Sortable;
 use Kenarkose\Tracker\Trackable;
 use Kenarkose\Tracker\TrackableInterface;
-use Nicolaslopezj\Searchable\SearchableTrait;
 use Nuclear\Hierarchy\Tags\Taggable;
 
 class Node extends Eloquent implements TrackableInterface {
 
-    use NodeTrait, Taggable, SearchableTrait, Ownable,
+    use NodeTrait, Taggable, Searchable, Ownable,
         AutoAssociatesOwner, RecordsActivity, Trackable;
 
     use Sortable
@@ -1121,6 +1120,16 @@ class Node extends Eloquent implements TrackableInterface {
     public function isNewsletter()
     {
         return $this->getNodeType()->isTypeNewsletter();
+    }
+
+    /**
+     * It returns the searchable
+     *
+     * @return array
+     */
+    public function getSearchable()
+    {
+        return $this->searchable;
     }
 
 }

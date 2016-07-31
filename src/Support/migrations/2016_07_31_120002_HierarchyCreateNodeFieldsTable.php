@@ -23,6 +23,8 @@ class HierarchyCreateNodeFieldsTable extends Migration {
             $table->double('position')->unsigned();
             $table->string('type');
             $table->boolean('visible')->default(1);
+            $table->boolean('indexed')->default(0);
+            $table->integer('search_priority')->default(0);
 
             $table->text('rules')->nullable();
             $table->text('default_value')->nullable();

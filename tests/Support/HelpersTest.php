@@ -30,6 +30,15 @@ class HelpersTest extends TestBase {
     }
 
     /** @test */
+    function it_registers_source_table_name_helper()
+    {
+        $this->assertEquals(
+            'ns_projects',
+            source_table_name('project')
+        );
+    }
+
+    /** @test */
     function it_registers_hierarchy_bag_helper()
     {
         $this->assertInstanceOf(

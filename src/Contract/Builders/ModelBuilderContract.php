@@ -3,15 +3,17 @@
 namespace Nuclear\Hierarchy\Contract\Builders;
 
 
+use Illuminate\Support\Collection;
+
 interface ModelBuilderContract {
 
     /**
      * Builds a source model
      *
      * @param string $name
-     * @param array $fields
+     * @param Collection $fields
      */
-    public function build($name, array $fields);
+    public function build($name, Collection $fields = null);
 
     /**
      * Destroys a source model

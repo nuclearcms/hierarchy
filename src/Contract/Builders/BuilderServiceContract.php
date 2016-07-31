@@ -21,10 +21,9 @@ interface BuilderServiceContract {
      * @param string $name
      * @param string $type
      * @param string $tableName
-     * @param array $fields
      * @param NodeTypeContract $nodeType
      */
-    public function buildField($name, $type, $tableName, array $fields, NodeTypeContract $nodeType);
+    public function buildField($name, $type, $tableName, NodeTypeContract $nodeType);
 
     /**
      * Destroys a source table and all associated entities
@@ -40,9 +39,8 @@ interface BuilderServiceContract {
      *
      * @param string $name
      * @param string $tableName
-     * @param array $fields
      * @param NodeTypeContract $nodeType
      */
-    public function destroyField($name, $tableName, array $fields, NodeTypeContract $nodeType);
+    public function destroyField($name, $tableName, NodeTypeContract $nodeType);
 
 }

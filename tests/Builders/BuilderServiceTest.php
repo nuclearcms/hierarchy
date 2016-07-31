@@ -2,7 +2,6 @@
 
 use Illuminate\Database\Eloquent\Collection;
 use Nuclear\Hierarchy\Builders\BuilderService;
-use Prophecy\Argument;
 
 class BuilderServiceTest extends TestBase {
 
@@ -10,7 +9,7 @@ class BuilderServiceTest extends TestBase {
     function it_builds_a_source_table()
     {
         $modelBuilder = $this->prophesize('Nuclear\Hierarchy\Contract\Builders\ModelBuilderContract');
-        $modelBuilder->build('project', [])
+        $modelBuilder->build('project')
             ->willReturn(null)
             ->shouldBeCalled();
 
@@ -47,17 +46,21 @@ class BuilderServiceTest extends TestBase {
     /** @test */
     function it_builds_a_field_for_a_source_table()
     {
+        $model = $this->prophesize('Nuclear\Hierarchy\Contract\NodeTypeContract');
+        $collection = new Collection();
+        $model->getFields()
+            ->willReturn($collection)
+            ->shouldBeCalled();
+
         $modelBuilder = $this->prophesize('Nuclear\Hierarchy\Contract\Builders\ModelBuilderContract');
-        $modelBuilder->build('project', ['description'])
+        $modelBuilder->build('project', $collection)
             ->willReturn(null)
             ->shouldBeCalled();
 
-        $model = $this->prophesize('Nuclear\Hierarchy\Contract\NodeTypeContract');
         $model->getName()
             ->willReturn('project')
             ->shouldBeCalled();
 
-        $collection = new Collection();
         $model->getFields()
             ->willReturn($collection)
             ->shouldBeCalled();
@@ -80,7 +83,7 @@ class BuilderServiceTest extends TestBase {
 
         try
         {
-            $service->buildField('description', 'text', 'project', ['description'], $model->reveal());
+            $service->buildField('description', 'text', 'project', $model->reveal());
         } catch(\Exception $e)
         {
             if($e->getMessage() === 'up')
@@ -163,13 +166,18 @@ class BuilderServiceTest extends TestBase {
     /** @test */
     function it_destroys_a_field_from_a_source_table()
     {
+        $model = $this->prophesize('Nuclear\Hierarchy\Contract\NodeTypeContract');
+        $collection = new Collection();
+
+        $model->getFields()
+            ->willReturn($collection)
+            ->shouldBeCalled();
+
         $modelBuilder = $this->prophesize('Nuclear\Hierarchy\Contract\Builders\ModelBuilderContract');
-        $modelBuilder->build('project', [])
+        $modelBuilder->build('project', $collection)
             ->willReturn(null)
             ->shouldBeCalled();
 
-        $model = $this->prophesize('Nuclear\Hierarchy\Contract\NodeTypeContract');
-        $collection = new Collection();
         $model->getFields()
             ->willReturn($collection)
             ->shouldBeCalled();
@@ -199,7 +207,7 @@ class BuilderServiceTest extends TestBase {
         // the destroyFieldMigrationForTable method
         // We assume if the destroyFieldMigrationForTable is
         // called, the method reached to the end without any problem
-        $service->destroyField('description', 'project', [], $model->reveal());
+        $service->destroyField('description', 'project', $model->reveal());
     }
 
 }
