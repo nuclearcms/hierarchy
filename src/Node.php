@@ -959,4 +959,130 @@ class Node extends Eloquent implements TrackableInterface {
         }
     }
 
+    /**
+     * Sortable by scope
+     *
+     * @param $query
+     * @param string|null $key
+     * @param string|null $direction
+     * @return Builder
+     */
+    public function scopeSortable($query, $key = null, $direction = null)
+    {
+        list($key, $direction) = $this->validateSortableParameters($key, $direction);
+
+        if ($this->_isTranslationAttribute($key))
+        {
+            return $this->orderQueryBySourceAttribute($query, $key, $direction);
+        }
+
+        return $query->orderBy($key, $direction);
+    }
+
+    /**
+     * Most visited scope
+     *
+     * @param Builder $query
+     * @param int|null $limit
+     * @return Builder
+     */
+    public function scopeMostVisited($query, $limit = null)
+    {
+        $query->select(\DB::raw('nodes.*, count(*) as `aggregate`'))
+            ->join('node_site_view', 'nodes.id', '=', 'node_site_view.node_id')
+            ->groupBy('nodes.id')
+            ->orderBy('aggregate', 'desc');
+
+        if ($limit)
+        {
+            $query->limit($limit);
+        }
+
+        return $query;
+    }
+
+    /**
+     * Recently visited scope
+     *
+     * @param Builder $query
+     * @param int|null $limit
+     * @return Builder
+     */
+    public function scopeRecentlyVisited($query, $limit = null)
+    {
+        $query
+            ->select(\DB::raw('nodes.*, MAX(node_site_view.site_view_id) as `aggregate`'))
+            ->join('node_site_view', 'nodes.id', '=', 'node_site_view.node_id')
+            ->orderBy('aggregate', 'desc')
+            ->groupBy('node_site_view.node_id');
+
+        if ($limit)
+        {
+            $query->limit($limit);
+        }
+
+        return $query;
+    }
+
+    /**
+     * Recently edited scope
+     *
+     * @param Builder $query
+     * @param int|null $limit
+     * @return Builder
+     */
+    public function scopeRecentlyEdited($query, $limit = null)
+    {
+        $query->orderBy('updated_at', 'desc');
+
+        if ($limit)
+        {
+            $query->limit($limit);
+        }
+
+        return $query;
+    }
+
+    /**
+     * Recently created scope
+     *
+     * @param Builder $query
+     * @param int|null $limit
+     * @return Builder
+     */
+    public function scopeRecentlyCreated($query, $limit = null)
+    {
+        $query->orderBy('created_at', 'desc');
+
+        if ($limit)
+        {
+            $query->limit($limit);
+        }
+
+        return $query;
+    }
+
+    /**
+     * Determines the default edit link for node
+     *
+     * @param null|string $locale
+     * @return string
+     */
+    public function getDefaultEditLink($locale = null)
+    {
+        $parameters = [
+            $this->getKey(),
+            $this->translateOrFirst($locale)->getKey()
+        ];
+
+        if ($this->hidesChildren())
+        {
+            return route('reactor.nodes.' . $this->children_display_mode,
+                $parameters);
+        }
+
+        return route('reactor.nodes.edit',
+            $parameters);
+    }
+
 }

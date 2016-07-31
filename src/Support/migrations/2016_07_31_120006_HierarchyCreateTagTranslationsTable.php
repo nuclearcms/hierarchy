@@ -19,7 +19,7 @@ class HierarchyCreateTagTranslationsTable extends Migration {
             $table->string('locale')->index();
 
             $table->string('title');
-            $table->string('tag_name');
+            $table->string('tag_name')->unique();
 
             $table->unique('tag_name');
             $table->unique(['tag_id', 'locale']);

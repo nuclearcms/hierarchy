@@ -27,6 +27,8 @@ class HierarchyServiceProvider extends ServiceProvider {
     {
         $this->registerSourcePath();
 
+        $this->registerSupporters();
+
         $this->registerNodeTypeBag();
     }
 
@@ -51,6 +53,19 @@ class HierarchyServiceProvider extends ServiceProvider {
         {
             return new NodeTypeBag;
         });
+    }
+
+    /**
+     * Registers support classes
+     *
+     * @return void
+     */
+    protected function registerSupporters()
+    {
+        $this->app->singleton(
+            'hierarchy.support.locale',
+            'Nuclear\Hierarchy\Support\LocaleManager'
+        );
     }
 
     /**

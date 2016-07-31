@@ -128,6 +128,32 @@ class NodeTest extends TestBase {
     }
 
     /** @test */
+    function it_sets_published_date_if_it_is_empty_on_creation()
+    {
+        $node = $this->getNode();
+
+        $this->assertInstanceOf(
+            'Carbon\Carbon',
+            $node->published_at
+        );
+
+        $node = new Node();
+
+        $node->setNodeTypeKey(1);
+
+        $yesterday = Carbon\Carbon::yesterday();
+
+        $node->published_at = $yesterday;
+
+        $node->save();
+
+        $this->assertEquals(
+            $node->published_at->timestamp,
+            $yesterday->timestamp
+        );
+    }
+
+    /** @test */
     function it_fires_node_creating_events_automatically()
     {
         $dispatcher = $this->app->make('Illuminate\Contracts\Events\Dispatcher');
@@ -1184,6 +1210,12 @@ class NodeTest extends TestBase {
         $this->assertNull(
             Node::withType('non-existing')->first()
         );
+    }
+
+    /** @test */
+    function it_makes_the_default_edit_link()
+    {
+        // Not possible to test this without registering routes
     }
 
 }

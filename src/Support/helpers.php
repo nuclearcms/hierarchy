@@ -60,3 +60,66 @@ if ( ! function_exists('hierachy_bag'))
         return app()->make('hierarchy.bags.' . $bag);
     }
 }
+
+if ( ! function_exists('get_node_by_id'))
+{
+    /**
+     * Returns the node by given id
+     * (alias for NodeRepository::getNodeById)
+     *
+     * @param int $id
+     * @param bool $published
+     * @return Node
+     */
+    function get_node_by_id($id, $published = true)
+    {
+        return app()->make('Nuclear\Hierarchy\NodeRepository')
+            ->getNodeById($id, $published);
+    }
+}
+
+if ( ! function_exists('get_nodes_by_ids'))
+{
+    /**
+     * Returns the nodes by given ids
+     * (alias for NodeRepository::getNodesByIds)
+     *
+     * @param array|string $ids
+     * @param bool $published
+     * @return Collection
+     */
+    function get_nodes_by_ids($ids, $published = true)
+    {
+        return app()->make('Nuclear\Hierarchy\NodeRepository')
+            ->getNodesByIds($ids, $published);
+    }
+}
+
+if ( ! function_exists('set_app_locale'))
+{
+    /**
+     * Sets the app locale
+     *
+     * @param string $locale
+     * @return void
+     */
+    function set_app_locale($locale = null)
+    {
+        app('hierarchy.support.locale')->setAppLocale($locale);
+    }
+}
+
+if ( ! function_exists('set_time_locale'))
+{
+    /**
+     * Sets the time locale
+     *
+     * @param string $locale
+     * @return void
+     */
+    function set_time_locale($locale = null)
+    {
+        app('hierarchy.support.locale')->setTimeLocale($locale);
+    }
+
+}

@@ -12,6 +12,15 @@ class HierarchyServiceProviderTest extends TestBase {
     }
 
     /** @test */
+    function it_registers_locale_manager()
+    {
+        $this->assertInstanceOf(
+            'Nuclear\Hierarchy\Support\LocaleManager',
+            $this->app['hierarchy.support.locale']
+        );
+    }
+
+    /** @test */
     function it_registers_node_type_bag()
     {
         $this->assertInstanceOf(

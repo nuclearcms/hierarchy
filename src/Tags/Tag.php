@@ -67,7 +67,7 @@ class Tag extends Model {
      */
     protected $searchable = [
         'columns' => [
-            'tag_translations.title' => 10,
+            'tag_translations.title'    => 10,
             'tag_translations.tag_name' => 10
         ],
         'joins'   => [
@@ -122,18 +122,26 @@ class Tag extends Model {
     }
 
     /**
-     * Finds a tag by name or creates it
+     * Finds a tag by title or creates it
      *
-     * @param string $name
+     * @param string $title
+     * @param string $locale
      * @return Tag
      */
-    public static function firstByNameOrCreate($name)
+    public static function firstByTitleOrCreate($title, $locale = null)
     {
-        $tag = Tag::whereTranslation('title', $name)->first();
+        $tag = Tag::whereTranslation('title', $title, $locale)->first();
 
         if (is_null($tag))
         {
-            $tag = Tag::create(compact('title'));
+            $attributes = compact('title');
+
+            if ($locale)
+            {
+                $attributes = [$locale => $attributes];
+            }
+
+            $tag = Tag::create($attributes);
         }
 
         return $tag;
