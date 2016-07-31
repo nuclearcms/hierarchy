@@ -216,6 +216,22 @@ class NodeTest extends TestBase {
     }
 
     /** @test */
+    function it_gets_node_type_name()
+    {
+        $node = $this->getNode();
+
+        $this->assertEquals(
+            $node->getNodeTypeKey(),
+            1
+        );
+
+        $this->assertEquals(
+            'project',
+            $node->getNodeTypeName()
+        );
+    }
+
+    /** @test */
     function it_sets_node_type_by_key()
     {
         $node = $this->getNode();

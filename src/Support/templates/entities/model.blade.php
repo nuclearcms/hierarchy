@@ -19,4 +19,12 @@ class {{ $name }} extends Eloquent {
      */
     public $timestamps = false;
 
+    /*
+     * Returns the fields for the model
+     */
+    public static function getSourceFields()
+    {
+        return [{!! $fields !!}];
+    }
+
 }

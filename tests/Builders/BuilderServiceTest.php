@@ -14,11 +14,6 @@ class BuilderServiceTest extends TestBase {
             ->willReturn(null)
             ->shouldBeCalled();
 
-        $cacheBuilder = $this->prophesize('Nuclear\Hierarchy\Contract\Builders\CacheBuilderContract');
-        $cacheBuilder->build(1, [])
-            ->willReturn(null)
-            ->shouldBeCalled();
-
         $formBuilder = $this->prophesize('Nuclear\Hierarchy\Contract\Builders\FormBuilderContract');
         $formBuilder->build('project')
             ->willReturn(null)
@@ -32,8 +27,7 @@ class BuilderServiceTest extends TestBase {
         $service = new BuilderService(
             $modelBuilder->reveal(),
             $migrationBuilder->reveal(),
-            $formBuilder->reveal(),
-            $cacheBuilder->reveal()
+            $formBuilder->reveal()
         );
 
         try
@@ -63,15 +57,6 @@ class BuilderServiceTest extends TestBase {
             ->willReturn('project')
             ->shouldBeCalled();
 
-        $model->getKey()
-            ->willReturn(1)
-            ->shouldBeCalled();
-
-        $cacheBuilder = $this->prophesize('Nuclear\Hierarchy\Contract\Builders\CacheBuilderContract');
-        $cacheBuilder->build(1, ['description'])
-            ->willReturn(null)
-            ->shouldBeCalled();
-
         $collection = new Collection();
         $model->getFields()
             ->willReturn($collection)
@@ -90,8 +75,7 @@ class BuilderServiceTest extends TestBase {
         $service = new BuilderService(
             $modelBuilder->reveal(),
             $migrationBuilder->reveal(),
-            $formBuilder->reveal(),
-            $cacheBuilder->reveal()
+            $formBuilder->reveal()
         );
 
         try
@@ -129,14 +113,12 @@ class BuilderServiceTest extends TestBase {
             ->shouldBeCalled();
 
         $migrationBuilder = $this->prophesize('Nuclear\Hierarchy\Contract\Builders\MigrationBuilderContract');
-        $cacheBuilder = $this->prophesize('Nuclear\Hierarchy\Contract\Builders\CacheBuilderContract');
         $modelBuilder = $this->prophesize('Nuclear\Hierarchy\Contract\Builders\ModelBuilderContract');
 
         $service = new BuilderService(
             $modelBuilder->reveal(),
             $migrationBuilder->reveal(),
-            $formBuilder->reveal(),
-            $cacheBuilder->reveal()
+            $formBuilder->reveal()
         );
 
         $service->buildForm($model->reveal());
@@ -155,11 +137,6 @@ class BuilderServiceTest extends TestBase {
             ->willReturn(null)
             ->shouldBeCalled();
 
-        $cacheBuilder = $this->prophesize('Nuclear\Hierarchy\Contract\Builders\CacheBuilderContract');
-        $cacheBuilder->destroy(1)
-            ->willReturn(null)
-            ->shouldBeCalled();
-
         $migrationBuilder = $this->prophesize('Nuclear\Hierarchy\Contract\Builders\MigrationBuilderContract');
         $migrationBuilder->getMigrationClassPathByKey('project')
             ->willReturn('TestMigration')
@@ -171,8 +148,7 @@ class BuilderServiceTest extends TestBase {
         $service = new BuilderService(
             $modelBuilder->reveal(),
             $migrationBuilder->reveal(),
-            $formBuilder->reveal(),
-            $cacheBuilder->reveal()
+            $formBuilder->reveal()
         );
 
         // At this time it is kind of impossible
@@ -203,15 +179,6 @@ class BuilderServiceTest extends TestBase {
             ->willReturn(null)
             ->shouldBeCalled();
 
-        $model->getKey()
-            ->willReturn(1)
-            ->shouldBeCalled();
-
-        $cacheBuilder = $this->prophesize('Nuclear\Hierarchy\Contract\Builders\CacheBuilderContract');
-        $cacheBuilder->build(1, [])
-            ->willReturn(null)
-            ->shouldBeCalled();
-
         $migrationBuilder = $this->prophesize('Nuclear\Hierarchy\Contract\Builders\MigrationBuilderContract');
         $migrationBuilder->getMigrationClassPathByKey('project', 'description')
             ->willReturn('TestMigration')
@@ -223,8 +190,7 @@ class BuilderServiceTest extends TestBase {
         $service = new BuilderService(
             $modelBuilder->reveal(),
             $migrationBuilder->reveal(),
-            $formBuilder->reveal(),
-            $cacheBuilder->reveal()
+            $formBuilder->reveal()
         );
 
         // At this time it is kind of impossible

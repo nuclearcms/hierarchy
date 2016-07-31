@@ -9,7 +9,7 @@ use Nuclear\Hierarchy\Cache\Accessor;
 
 class HierarchyServiceProvider extends ServiceProvider {
 
-    const version = '1.4.2';
+    const version = '2.0.0';
 
     /**
      * Indicates if loading of the provider is deferred.
@@ -27,7 +27,6 @@ class HierarchyServiceProvider extends ServiceProvider {
     {
         $this->registerSourcePath();
 
-        $this->registerCacheAccessor();
 
         $this->registerNodeTypeBag();
     }
@@ -40,19 +39,6 @@ class HierarchyServiceProvider extends ServiceProvider {
     protected function registerSourcePath()
     {
         $this->app['path.generated'] = base_path(config('hierarchy.gen_path', 'gen'));
-    }
-
-    /**
-     * Registers the cache accessor
-     *
-     * @return void
-     */
-    protected function registerCacheAccessor()
-    {
-        $this->app['hierarchy.cache'] = $this->app->share(function ()
-        {
-            return new Accessor;
-        });
     }
 
     /**
@@ -77,13 +63,16 @@ class HierarchyServiceProvider extends ServiceProvider {
         // we use blade engine to generate these files
         $this->loadViewsFrom(dirname(__DIR__) . '/Support/templates', '_hierarchy');
 
-        $this->publishes([
-            dirname(__DIR__) . '/Support/config.php' => config_path('hierarchy.php')
-        ]);
+        if ( ! $this->app->environment('production'))
+        {
+            $this->publishes([
+                dirname(__DIR__) . '/Support/config.php' => config_path('hierarchy.php')
+            ]);
 
-        $this->publishes([
-            dirname(__DIR__) . '/Support/migrations/' => database_path('/migrations')
-        ], 'migrations');
+            $this->publishes([
+                dirname(__DIR__) . '/Support/migrations/' => database_path('/migrations')
+            ], 'migrations');
+        }
     }
 
 }

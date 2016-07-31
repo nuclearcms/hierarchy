@@ -86,8 +86,7 @@ class NodeSource extends Eloquent implements NodeSourceContract {
     {
         $type = $type ?: $this->source_type;
 
-        return 'gen\\Entities\\' .
-        source_model_name($type);
+        return source_model_name($type, true);
     }
 
     /**

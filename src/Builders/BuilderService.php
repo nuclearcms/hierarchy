@@ -4,7 +4,6 @@ namespace Nuclear\Hierarchy\Builders;
 
 
 use Nuclear\Hierarchy\Contract\Builders\BuilderServiceContract;
-use Nuclear\Hierarchy\Contract\Builders\CacheBuilderContract;
 use Nuclear\Hierarchy\Contract\Builders\FormBuilderContract;
 use Nuclear\Hierarchy\Contract\Builders\MigrationBuilderContract;
 use Nuclear\Hierarchy\Contract\Builders\ModelBuilderContract;
@@ -18,12 +17,11 @@ class BuilderService implements BuilderServiceContract {
      *
      * @var ModelBuilderContract
      * @var MigrationBuilderContract
-     * @var CacheBuilderContract
+     * @var FormBuilderContract
      */
     protected $modelBuilder;
     protected $migrationBuilder;
     protected $formBuilder;
-    protected $cacheBuilder;
 
     /**
      * Constructor
@@ -31,19 +29,16 @@ class BuilderService implements BuilderServiceContract {
      * @param ModelBuilderContract $modelBuilder
      * @param MigrationBuilderContract $migrationBuilder
      * @param FormBuilderContract $formBuilder
-     * @param CacheBuilderContract $cacheBuilder
      */
     public function __construct(
         ModelBuilderContract $modelBuilder,
         MigrationBuilderContract $migrationBuilder,
-        FormBuilderContract $formBuilder,
-        CacheBuilderContract $cacheBuilder
+        FormBuilderContract $formBuilder
     )
     {
         $this->modelBuilder = $modelBuilder;
         $this->migrationBuilder = $migrationBuilder;
         $this->formBuilder = $formBuilder;
-        $this->cacheBuilder = $cacheBuilder;
     }
 
     /**
@@ -55,7 +50,6 @@ class BuilderService implements BuilderServiceContract {
     public function buildTable($name, $id)
     {
         $this->modelBuilder->build($name, []);
-        $this->cacheBuilder->build($id, []);
         $this->formBuilder->build($name);
         $migration = $this->migrationBuilder->buildSourceTableMigration($name);
 
@@ -74,7 +68,6 @@ class BuilderService implements BuilderServiceContract {
     public function buildField($name, $type, $tableName, array $fields, NodeTypeContract $nodeType)
     {
         $this->modelBuilder->build($tableName, $fields);
-        $this->cacheBuilder->build($nodeType->getKey(), $fields);
         $this->buildForm($nodeType);
         $migration = $this->migrationBuilder->buildFieldMigrationForTable($name, $type, $tableName);
 
@@ -102,7 +95,6 @@ class BuilderService implements BuilderServiceContract {
     {
         $this->modelBuilder->destroy($name);
         $this->formBuilder->destroy($name);
-        $this->cacheBuilder->destroy($id);
 
         $migration = $this->migrationBuilder
             ->getMigrationClassPathByKey($name);
@@ -124,7 +116,6 @@ class BuilderService implements BuilderServiceContract {
     {
         $this->modelBuilder->build($tableName, $fields);
         $this->formBuilder->build($tableName, $nodeType->getFields());
-        $this->cacheBuilder->build($nodeType->getKey(), $fields);
 
         $migration = $this->migrationBuilder
             ->getMigrationClassPathByKey($tableName, $name);

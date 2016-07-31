@@ -22,11 +22,14 @@ if ( ! function_exists('source_model_name'))
      * Returns the name of the source model by key
      *
      * @param string $key
+     * @param bool $withPath
      * @return string
      */
-    function source_model_name($key)
+    function source_model_name($key, $withPath = false)
     {
-        return studly_case(MigrationBuilder::TABLE_PREFIX . $key);
+        $name = studly_case(MigrationBuilder::TABLE_PREFIX . $key);
+
+        return $withPath ? 'gen\\Entities\\' . $name : $name;
     }
 }
 

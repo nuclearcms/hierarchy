@@ -101,7 +101,10 @@ class Node extends BaseNode {
 
         static::creating(function ($node)
         {
-            $node->published_at = Carbon::now();
+            if (empty($node->published_at))
+            {
+                $node->published_at = Carbon::now();
+            }
 
             $node->fireNodeEvent('creating');
         });
@@ -122,7 +125,7 @@ class Node extends BaseNode {
      */
     public function fireNodeEvent($event)
     {
-        event($this->getNodeType()->getName() . '.' . $event, $this);
+        event($this->getNodeTypeName() . '.' . $event, $this);
     }
 
     /**
@@ -173,6 +176,16 @@ class Node extends BaseNode {
     }
 
     /**
+     * Gets the node type name
+     *
+     * @return int $id
+     */
+    public function getNodeTypeName()
+    {
+        return $this->getNodeType()->getName();
+    }
+
+    /**
      * Sets the node type key
      *
      * @param int $id
@@ -208,7 +221,7 @@ class Node extends BaseNode {
             return false;
         }
 
-        return $this->_isTranslationAttribute($key) || $this->isCachedAttribute($key);
+        return $this->_isTranslationAttribute($key) || $this->isSourceAttribute($key);
     }
 
     /**
@@ -228,16 +241,16 @@ class Node extends BaseNode {
     }
 
     /**
-     * Checks if a key is a cached node source attribute
+     * Checks if a key is a node source attribute
      *
      * @param $key
      * @return bool
      */
-    protected function isCachedAttribute($key)
+    protected function isSourceAttribute($key)
     {
-        return app('hierarchy.cache')->nodeTypeHasField(
-            $this->getNodeTypeKey(), $key
-        );
+        $modelName = source_model_name($this->getNodeTypeName(), true);
+
+        return in_array($key, call_user_func([$modelName, 'getSourceFields']));
     }
 
     /**
@@ -254,20 +267,15 @@ class Node extends BaseNode {
     /**
      * Determine if the given attribute may be mass assigned.
      * (This method is an extension to the base Model isFillable method.
-     * It includes the cached attributes in order to check if keys are fillable.)
+     * It includes the node source attributes in order to check if keys are fillable.)
      *
      * @param  string $key
      * @return bool
      */
     public function isFillable($key)
     {
-        // We can assume cached attributes are fillable
-        if ($this->isCachedAttribute($key))
-        {
-            return true;
-        }
-
-        return parent::isFillable($key);
+        // We can assume source attributes are fillable
+        return $this->isSourceAttribute($key) || parent::isFillable($key);
     }
 
     /**
@@ -281,7 +289,7 @@ class Node extends BaseNode {
     {
         $nodeSource = NodeSource::newWithType(
             $locale,
-            $this->getNodeType()->name
+            $this->getNodeTypeName()
         );
 
         $this->translations->add($nodeSource);
@@ -854,7 +862,7 @@ class Node extends BaseNode {
 
         foreach ($this->translations as $translation)
         {
-            $translation->source_type = $nodeType->name;
+            $translation->source_type = $nodeType->getName();
         }
     }
 
@@ -865,7 +873,7 @@ class Node extends BaseNode {
     {
         foreach ($this->translations as $translation)
         {
-            $source = $translation->getNewSourceModel($nodeType->name);
+            $source = $translation->getNewSourceModel($nodeType->getName());
             $source->id = $translation->getKey();
 
             $translation->relations['source'] = $source;

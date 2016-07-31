@@ -16,17 +16,17 @@ class ModelBuilderTest extends TestBase {
         $builder = $this->getBuilder();
 
         $this->assertFileNotExists(
-            $builder->getClassFilePath('project')
+            $builder->getClassFilePath('projecttest')
         );
 
-        $builder->build('project', ['date', 'area', 'location']);
+        $builder->build('projecttest', ['date', 'area', 'location']);
 
         $this->assertFileExists(
-            $builder->getClassFilePath('project')
+            $builder->getClassFilePath('projecttest')
         );
 
         $this->assertFileEquals(
-            $builder->getClassFilePath('project'),
+            $builder->getClassFilePath('projecttest'),
             dirname(__DIR__) . '/_stubs/entities/model.php'
         );
     }
@@ -36,13 +36,13 @@ class ModelBuilderTest extends TestBase {
     {
         $builder = $this->getBuilder();
 
-        $builder->build('project', ['date', 'area', 'location']);
+        $builder->build('projecttest', ['date', 'area', 'location']);
 
         $this->assertFileExists(
-            $builder->getClassFilePath('project')
+            $builder->getClassFilePath('projecttest')
         );
 
-        $builder->destroy('project');
+        $builder->destroy('projecttest');
 
         $this->assertFileNotExists(
             $builder->getClassFilePath('project')

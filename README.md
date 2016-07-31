@@ -7,7 +7,7 @@ Polymorphic content management with node structure.
 [![Latest Stable Version](https://poser.pugx.org/Nuclear/Hierarchy/version)](https://packagist.org/packages/Nuclear/Hierarchy)
 [![License](https://poser.pugx.org/Nuclear/Hierarchy/license)](https://packagist.org/packages/Nuclear/Hierarchy)
 
-This package is intended for [Nuclear CMS](https://github.com/NuclearCMS/Nuclear) and it constitutes its main content management and content type management functionality. It is developed separately to enable individual development and possible reuse.
+This package is intended for [Nuclear CMS](https://github.com/NuclearCMS/Nuclear) and it constitutes its main content management, testing and content type management functionality. It is developed separately to enable individual development and possible reuse.
 
 ## Installation
 Installing Hierarchy is simple.
@@ -16,7 +16,7 @@ Installing Hierarchy is simple.
     ```js
     {
         "require": {
-            "nuclear/hierarchy": "~1.0"
+            "nuclear/hierarchy": "~2.0"
         }
     }
     ```
