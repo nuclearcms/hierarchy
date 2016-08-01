@@ -17,6 +17,8 @@ use Kenarkose\Ownable\Ownable;
 use Kenarkose\Sortable\Sortable;
 use Kenarkose\Tracker\Trackable;
 use Kenarkose\Tracker\TrackableInterface;
+use Nuclear\Hierarchy\Exception\InvalidParentNodeTypeException;
+use Nuclear\Hierarchy\Exception\NodeNameNotUniqueException;
 use Nuclear\Hierarchy\Tags\Taggable;
 
 class Node extends Eloquent implements TrackableInterface {
@@ -184,7 +186,14 @@ class Node extends Eloquent implements TrackableInterface {
             $node->fireNodeEvent('created');
         });
 
-        foreach (['updating', 'updated', 'deleting', 'deleted', 'saving', 'saved'] as $event)
+        static::saving(function ($node)
+        {
+            $node->validateCanHaveParentOfType();
+
+            $node->fireNodeEvent('saving');
+        });
+
+        foreach (['updating', 'updated', 'deleting', 'deleted', 'saved'] as $event)
         {
             static::$event(function ($node) use ($event)
             {
@@ -212,6 +221,27 @@ class Node extends Eloquent implements TrackableInterface {
         {
             $source->setExtensionNodeId($this->getKey());
         }
+    }
+
+
+    /**
+     * Validates parent type
+     */
+    public function validateCanHaveParentOfType()
+    {
+        if (is_null($this->parent))
+        {
+            return;
+        }
+
+        $allowedNodeTypes = json_decode($this->parent->getNodeType()->allowed_children);
+
+        if (empty($allowedNodeTypes) || in_array($this->getNodeTypeKey(), $allowedNodeTypes))
+        {
+            return;
+        }
+
+        throw new InvalidParentNodeTypeException('Parent does not allow node type of name "' . $this->getNodeTypeName() .'" as child.');
     }
 
     /**
@@ -248,7 +278,7 @@ class Node extends Eloquent implements TrackableInterface {
         if ($this->relationLoaded('nodeType'))
         {
             $nodeType = $this->getRelation('nodeType');
-        } elseif ($nodeType = $bag->getNodeType($this->node_type_id))
+        } elseif ($nodeType = $bag->getNodeType($this->getNodeTypeKey()))
         {
             $this->setRelation('nodeType', $nodeType);
         } else
@@ -1006,6 +1036,8 @@ class Node extends Eloquent implements TrackableInterface {
 
             $translation->relations['source'] = $source;
         }
+
+        $this->propagateIdToSources();
     }
 
     /**

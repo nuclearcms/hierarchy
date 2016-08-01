@@ -28,6 +28,7 @@ class HierarchyCreateNodeSourcesTable extends Migration {
             $table->string('meta_author')->nullable();
             $table->integer('meta_image')->unsigned()->nullable();
 
+            $table->unique('node_name');
             $table->unique(['node_id','locale']);
             $table->foreign('node_id')
                 ->references('id')

@@ -34,7 +34,8 @@ class NodeTest extends TestBase {
 
         $nodeType = $typeRepository->create([
             'name'  => 'project',
-            'label' => 'Project'
+            'label' => 'Project',
+            'allowed_children' => '[1]'
         ]);
 
         $fieldArea = $fieldRepository->create(
@@ -129,6 +130,55 @@ class NodeTest extends TestBase {
         }
 
         $this->fail('Event not fired, test fails');
+    }
+
+    /** @test */
+    function it_validates_parent_type()
+    {
+        $root = new Node();
+        $root->setNodeTypeKey(2);
+        $root->fill([
+            'title' => 'Category',
+            'node_name' => 'category'
+        ])->save();
+
+        $sub = new Node();
+        $sub->setNodeTypeKey(2);
+        $sub->fill([
+            'title' => 'Sub Category',
+            'node_name' => 'sub-category'
+        ]);
+        $sub->appendToNode($root);
+        $sub->save();
+
+        $p1 = new Node();
+        $p1->setNodeTypeKey(1);
+        $p1->fill([
+            'title' => 'Project 1',
+            'node_name' => 'project-1'
+        ]);
+        $p1->appendToNode($root);
+        $p1->save();
+
+        $p2 = new Node();
+        $p2->setNodeTypeKey(1);
+        $p2->fill([
+            'title' => 'Project 2',
+            'node_name' => 'project-2'
+        ]);
+        $p2->appendToNode($p1);
+        $p2->save();
+
+        try
+        {
+            $sub->appendToNode($p1);
+            $sub->save();
+        } catch (\Nuclear\Hierarchy\Exception\InvalidParentNodeTypeException $e)
+        {
+            return;
+        }
+
+        $this->fail('Node parent failed, test fails.');
     }
 
     /** @test */
@@ -1137,6 +1187,11 @@ class NodeTest extends TestBase {
         $this->assertEquals(
             'Content',
             $node->content
+        );
+
+        $this->assertEquals(
+            $node->getKey(),
+            $node->translate()->getSource()->node_id
         );
     }
 
