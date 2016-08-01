@@ -1149,7 +1149,7 @@ class Node extends Eloquent implements TrackableInterface {
      * @param null|string $locale
      * @return string
      */
-    public function getDefaultEditLink($locale = null)
+    public function getDefaultEditUrl($locale = null)
     {
         $parameters = [
             $this->getKey(),
