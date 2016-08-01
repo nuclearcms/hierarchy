@@ -50,7 +50,8 @@ class FormBuilderTest extends TestBase {
                 'label' => 'Project Description',
                 'rules' => '\'required|max:5000\'',
                 'default_value' => '\'Texty text\'',
-                'position' => 1
+                'position' => 1,
+                'search_priority' => 10
             ]),
             NodeField::create([
                 'name' => 'type',
@@ -58,7 +59,8 @@ class FormBuilderTest extends TestBase {
                 'description' => 'Some hints for type',
                 'label' => 'Project Type',
                 'position' => 2,
-                'options' => "'choices' => [1 => 'Housing', 2 => 'Cultural'], 'selected' => function(\$data) {return 1;}, 'empty_value' => '---no type---'"
+                'options' => "'choices' => [1 => 'Housing', 2 => 'Cultural'], 'selected' => function(\$data) {return 1;}, 'empty_value' => '---no type---'",
+                'search_priority' => 0
             ])
         ]));
 

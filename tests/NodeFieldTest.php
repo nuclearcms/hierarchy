@@ -11,7 +11,8 @@ class NodeFieldTest extends TestBase {
             'label' => 'Area',
             'description' => '',
             'type' => 'text',
-            'position' => 1.0
+            'position' => 1.0,
+            'search_priority' => 0
         ];
 
         return NodeField::create($attributes);

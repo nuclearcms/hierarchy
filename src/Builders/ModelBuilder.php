@@ -68,13 +68,13 @@ class ModelBuilder implements ModelBuilderContract, WriterContract {
 
         foreach ($fields as $field)
         {
-            if ($field->search_priority > 0)
+            if (intval($field->search_priority) > 0)
             {
                 $searchables[] = "'{$tableName}.{$field->name}' => {$field->search_priority}";
             }
         }
 
-        return count($searchables) ? implode("', '", $searchables) : '';
+        return implode(",", $searchables);
     }
 
     /**

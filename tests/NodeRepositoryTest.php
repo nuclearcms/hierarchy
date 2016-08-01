@@ -17,13 +17,4 @@ class NodeRepositoryTest extends TestBase {
         );
     }
 
-    /** @test */
-    function it_gets_search_node_builder()
-    {
-        $this->assertInstanceOf(
-            'Illuminate\Database\Eloquent\Builder',
-            $this->getNodeRepository()->getSearchNodeBuilder('derp')
-        );
-    }
-
 }

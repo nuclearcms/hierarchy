@@ -24,7 +24,7 @@ class NsProjecttest extends NodeSourceExtension {
     /**
      * Returns searchables for the model
      */
-    public static function getSearchableFields()
+    public static function getSearchable()
     {
         return [
             'columns' => ['ns_projecttests.location' => 10],

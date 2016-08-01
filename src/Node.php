@@ -1129,7 +1129,12 @@ class Node extends Eloquent implements TrackableInterface {
      */
     public function getSearchable()
     {
-        return $this->searchable;
+        $modelName = source_model_name($this->getNodeTypeName(), true);
+
+        return array_merge_recursive(
+            $this->searchable,
+            call_user_func([$modelName, 'getSearchable'])
+        );
     }
 
 }

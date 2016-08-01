@@ -25,12 +25,12 @@ class {{ $name }} extends NodeSourceExtension {
     /**
      * Returns searchables for the model
      */
-    public static function getSearchableFields()
+    public static function getSearchable()
     {
         return [
             'columns' => [{!! $searchableFields !!}],
             'joins' => [
-                '{{ $tableName }}' => ['nodes.id', '{{ $tableName }}.node_id'],
+                {!! empty($searchableFields) ? '' : "'{$tableName}' => ['nodes.id', '{$tableName}.node_id']," !!}
             ]
         ];
     }

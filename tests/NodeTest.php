@@ -43,7 +43,8 @@ class NodeTest extends TestBase {
             'label'       => 'Area',
             'description' => '',
             'type'        => 'integer',
-            'position'    => 0.1
+            'position'    => 0.1,
+            'search_priority' => 0
         ]);
 
         $fieldDescription = $fieldRepository->create(
@@ -52,7 +53,8 @@ class NodeTest extends TestBase {
             'label'       => 'Description',
             'description' => '',
             'type'        => 'text',
-            'position'    => 0.2
+            'position'    => 0.2,
+            'search_priority' => 10
         ]);
 
         $nodeType = $typeRepository->create([
@@ -66,7 +68,8 @@ class NodeTest extends TestBase {
             'label'       => 'Description',
             'description' => '',
             'type'        => 'text',
-            'position'    => 0.2
+            'position'    => 0.2,
+            'search_priority' => 0
         ]);
 
         $fieldContent = $fieldRepository->create(
@@ -75,7 +78,8 @@ class NodeTest extends TestBase {
             'label'       => 'Content',
             'description' => '',
             'type'        => 'text',
-            'position'    => 0.3
+            'position'    => 0.3,
+            'search_priority' => 0
         ]);
     }
 
@@ -1235,6 +1239,27 @@ class NodeTest extends TestBase {
         $node = $this->getNode();
 
         $this->assertFalse($node->isNewsletter());
+    }
+
+    /** @test */
+    function it_gets_searchable_property()
+    {
+        $node = $this->getNode();
+
+        $this->assertEquals(
+            $node->getSearchable(),
+            [
+                'columns' => [
+                    'node_sources.title'         => 50,
+                    'node_sources.meta_keywords' => 20,
+                    'ns_projects.description'    => 10
+                ],
+                'joins'   => [
+                    'node_sources' => ['nodes.id', 'node_sources.node_id'],
+                    'ns_projects'  => ['nodes.id', 'ns_projects.node_id']
+                ]
+            ]
+        );
     }
 
 }

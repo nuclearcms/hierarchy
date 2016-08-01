@@ -44,7 +44,8 @@ class NodeSourceTest extends TestBase {
                 'label' => 'Area',
                 'description' => '',
                 'type' => 'integer',
-                'position' => 0.1
+                'position' => 0.1,
+                'search_priority' => 0
         ]);
 
         $fieldDescription = $fieldRepository->create(
@@ -53,7 +54,8 @@ class NodeSourceTest extends TestBase {
             'label' => 'Description',
             'description' => '',
             'type' => 'text',
-            'position' => 0.2
+            'position' => 0.2,
+            'search_priority' => 10
         ]);
     }
 

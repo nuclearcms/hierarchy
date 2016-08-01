@@ -77,7 +77,8 @@ class NodeTypeTest extends TestBase {
             'label' => 'Area',
             'type' => 'integer',
             'position' => 1,
-            'description' => ''
+            'description' => '',
+            'search_priority' => 0
         ]);
 
         $this->assertInstanceOf(
@@ -105,7 +106,8 @@ class NodeTypeTest extends TestBase {
             'label' => 'Area',
             'type' => 'integer',
             'position' => 2,
-            'description' => ''
+            'description' => '',
+            'search_priority' => 0
         ]);
 
         $nodeType->addField([
@@ -113,7 +115,8 @@ class NodeTypeTest extends TestBase {
             'label' => 'Description',
             'type' => 'text',
             'position' => 1,
-            'description' => ''
+            'description' => '',
+            'search_priority' => 10
         ]);
 
         $fields = $nodeType->getFields();
@@ -141,7 +144,8 @@ class NodeTypeTest extends TestBase {
             'label' => 'Area',
             'type' => 'integer',
             'position' => 2,
-            'description' => ''
+            'description' => '',
+            'search_priority' => 0
         ]);
 
         $nodeType->addField([
@@ -149,7 +153,8 @@ class NodeTypeTest extends TestBase {
             'label' => 'Description',
             'type' => 'text',
             'position' => 1,
-            'description' => ''
+            'description' => '',
+            'search_priority' => 10
         ]);
 
         $fields = $nodeType->getFields();
