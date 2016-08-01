@@ -406,8 +406,6 @@ class Node extends Eloquent implements TrackableInterface {
     {
         if ($this->isTranslationAttribute($key))
         {
-            $locale = $locale ?: $this->locale();
-
             $translation = $this->translate($locale);
 
             $attribute = ($translation) ? $translation->{$key} : null;
