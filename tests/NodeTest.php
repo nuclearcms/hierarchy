@@ -1283,6 +1283,74 @@ class NodeTest extends TestBase {
     }
 
     /** @test */
+    function it_gets_node_url()
+    {
+        $root = $this->getNode();
+        $root->fill([
+            'en' => [
+                'title' => 'Root',
+                'node_name' => 'root'
+            ],
+            'tr' => [
+                'title' => 'Kök',
+                'node_name' => 'kok'
+            ]
+        ])->save();
+
+        $this->assertEquals(
+            $root->getNodeUrl(),
+            'http://localhost/root'
+        );
+
+        $this->assertEquals(
+            $root->getNodeUrl('en'),
+            'http://localhost/root'
+        );
+
+        $this->assertEquals(
+            $root->getNodeUrl('tr'),
+            'http://localhost/kok'
+        );
+
+        $mid = $this->getNode();
+        $mid->fill([
+            'title' => 'Mid',
+            'node_name' => 'mid'
+        ]);
+        $mid->appendToNode($root);
+        $mid->save();
+
+        $leaf = $this->getNode();
+        $leaf->fill([
+            'en' => [
+                'title' => 'Leaf',
+                'node_name' => 'leaf'
+            ],
+            'tr' => [
+                'title' => 'Yaprak',
+                'node_name' => 'yaprak'
+            ]
+        ]);
+        $leaf->appendToNode($mid);
+        $leaf->save();
+
+        $this->assertEquals(
+            $leaf->getNodeUrl(),
+            'http://localhost/root/mid/leaf'
+        );
+
+        $this->assertEquals(
+            $leaf->getNodeUrl('en'),
+            'http://localhost/root/mid/leaf'
+        );
+
+        $this->assertEquals(
+            $leaf->getNodeUrl('tr'),
+            'http://localhost/kok/mid/yaprak'
+        );
+    }
+
+    /** @test */
     function it_makes_the_default_edit_link()
     {
         // Not possible to test this without registering routes

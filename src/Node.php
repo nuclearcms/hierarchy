@@ -241,7 +241,7 @@ class Node extends Eloquent implements TrackableInterface {
             return;
         }
 
-        throw new InvalidParentNodeTypeException('Parent does not allow node type of name "' . $this->getNodeTypeName() .'" as child.');
+        throw new InvalidParentNodeTypeException('Parent does not allow node type of name "' . $this->getNodeTypeName() . '" as child.');
     }
 
     /**
@@ -1121,6 +1121,26 @@ class Node extends Eloquent implements TrackableInterface {
         }
 
         return $query;
+    }
+
+    /**
+     * Gets the full url for node
+     *
+     * @param string $locale
+     * @return string
+     */
+    public function getNodeUrl($locale = null)
+    {
+        $node = $this;
+        $uri = '';
+
+        do
+        {
+            $uri = '/' . $node->getTranslationAttribute('node_name', $locale) . $uri;
+            $node = $node->parent;
+        } while ( ! is_null($node));
+
+        return url($uri);
     }
 
     /**
