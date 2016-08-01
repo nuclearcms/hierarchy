@@ -1097,7 +1097,7 @@ class NodeTest extends TestBase {
         );
 
         $this->assertNull(
-            $node->content
+            $node->non_existing_key
         );
 
         $this->assertEquals(

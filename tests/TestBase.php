@@ -41,6 +41,8 @@ class TestBase extends TestCase {
         return [
             'Nuclear\Hierarchy\Providers\HierarchyServiceProvider',
             'Nuclear\Hierarchy\Providers\BuilderServiceProvider',
+            'Nuclear\Documents\Providers\DocumentsServiceProvider',
+            'Nuclear\Synthesizer\SynthesizerServiceProvider',
             'Kenarkose\Chronicle\ChronicleServiceProvider',
             'Kenarkose\Sortable\SortableServiceProvider'
         ];

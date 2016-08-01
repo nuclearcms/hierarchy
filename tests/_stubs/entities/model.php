@@ -34,4 +34,12 @@ class NsProjecttest extends NodeSourceExtension {
         ];
     }
 
+    /**
+     * Returns mutatables for the model
+     */
+    public static function getMutatables()
+    {
+        return ['location' => 'markdown'];
+    }
+
 }

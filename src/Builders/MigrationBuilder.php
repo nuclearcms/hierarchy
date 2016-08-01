@@ -62,7 +62,6 @@ class MigrationBuilder implements MigrationBuilderContract, WriterContract {
             'number'   => 'double',
             'color'    => 'string',
             'slug'     => 'string',
-            'tag'      => 'text',
             'password' => 'string',
             'date'     => 'timestamp',
             'node_collection' => 'text',

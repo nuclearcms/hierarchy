@@ -26,7 +26,8 @@ class ModelBuilder implements ModelBuilderContract, WriterContract {
             'tableName'        => $tableName,
             'name'             => $this->getClassName($name),
             'fields'           => $this->makeFields($fields),
-            'searchableFields' => $this->makeSearchableFields($fields, $tableName)
+            'searchableFields' => $this->makeSearchableFields($fields, $tableName),
+            'mutatables'       => $this->makeMutatableFields($fields)
         ])->render();
 
         $this->write($path, $contents);
@@ -38,7 +39,7 @@ class ModelBuilder implements ModelBuilderContract, WriterContract {
      * @param Collection $fields
      * @return string
      */
-    public function makeFields(Collection $fields = null)
+    protected function makeFields(Collection $fields = null)
     {
         if (is_null($fields))
         {
@@ -57,7 +58,7 @@ class ModelBuilder implements ModelBuilderContract, WriterContract {
      * @param string $tableName
      * @return string
      */
-    public function makeSearchableFields(Collection $fields = null, $tableName)
+    protected function makeSearchableFields(Collection $fields = null, $tableName)
     {
         if (is_null($fields))
         {
@@ -75,6 +76,32 @@ class ModelBuilder implements ModelBuilderContract, WriterContract {
         }
 
         return implode(",", $searchables);
+    }
+
+    /**
+     * Makes mutatable fields
+     *
+     * @param Collection $fields
+     * @return string
+     */
+    protected function makeMutatableFields(Collection $fields = null)
+    {
+        if (is_null($fields))
+        {
+            return '';
+        }
+
+        $mutatables = [];
+
+        foreach ($fields as $field)
+        {
+            if (in_array($field->type, ['document', 'gallery', 'markdown', 'node', 'node_collection']))
+            {
+                $mutatables[] = "'{$field->name}' => '{$field->type}'";
+            }
+        }
+
+        return implode(",", $mutatables);
     }
 
     /**

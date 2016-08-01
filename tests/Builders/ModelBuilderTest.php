@@ -19,7 +19,7 @@ class ModelBuilderTest extends TestBase {
             $builder->getClassFilePath('projecttest')
         );
 
-        $fields = collect(json_decode('[{"name":"date","search_priority":0},{"name":"area","search_priority":0},{"name":"location","search_priority":10}]'));
+        $fields = collect(json_decode('[{"name":"date","search_priority":0,"type":"text"},{"name":"area","search_priority":0,"type":"integer"},{"name":"location","search_priority":10,"type":"markdown"}]'));
 
         $builder->build('projecttest', $fields);
 
@@ -38,7 +38,7 @@ class ModelBuilderTest extends TestBase {
     {
         $builder = $this->getBuilder();
 
-        $fields = collect(json_decode('[{"name":"date","search_priority":0},{"name":"area","search_priority":0},{"name":"location","search_priority":10}]'));
+        $fields = collect(json_decode('[{"name":"date","search_priority":0,"type":"text"},{"name":"area","search_priority":0,"type":"integer"},{"name":"location","search_priority":10,"type":"text"}]'));
 
         $builder->build('projecttest', $fields);
 

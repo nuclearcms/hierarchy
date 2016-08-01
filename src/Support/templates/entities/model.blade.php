@@ -35,4 +35,12 @@ class {{ $name }} extends NodeSourceExtension {
         ];
     }
 
+    /**
+     * Returns mutatables for the model
+     */
+    public static function getMutatables()
+    {
+        return [{!! $mutatables !!}];
+    }
+
 }

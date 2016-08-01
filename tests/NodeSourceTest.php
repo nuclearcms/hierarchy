@@ -57,6 +57,16 @@ class NodeSourceTest extends TestBase {
             'position' => 0.2,
             'search_priority' => 10
         ]);
+
+        $fieldContent = $fieldRepository->create(
+            $nodeType->getKey(), [
+            'name' => 'content',
+            'label' => 'Content',
+            'description' => '',
+            'type' => 'markdown',
+            'position' => 0.3,
+            'search_priority' => 0
+        ]);
     }
 
     /** @test */
@@ -451,6 +461,33 @@ class NodeSourceTest extends TestBase {
         $this->assertArrayHasKey(
             'description',
             $nodeSource->toArray()
+        );
+    }
+
+    /** @test */
+    function it_gets_a_mutated_source_property()
+    {
+        $nodeSource = $this->getNodeSource();
+        $this->populateNodeSource($nodeSource);
+
+        $nodeSource->content = '**strong**';
+
+        $nodeSource->save();
+
+        $this->assertEquals(
+            '**strong**',
+            $nodeSource->toArray()['content']
+        );
+
+        $this->assertInstanceOf(
+            'Nuclear\Synthesizer\Synthesizer',
+            $nodeSource->content
+        );
+
+        // This is to test caching
+        $this->assertInstanceOf(
+            'Nuclear\Synthesizer\Synthesizer',
+            $nodeSource->content
         );
     }
 
