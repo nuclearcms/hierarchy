@@ -71,7 +71,7 @@ class BuilderServiceTest extends TestBase {
             ->shouldBeCalled();
 
         $migrationBuilder = $this->prophesize('Nuclear\Hierarchy\Contract\Builders\MigrationBuilderContract');
-        $migrationBuilder->buildFieldMigrationForTable('description', 'text', 'project')
+        $migrationBuilder->buildFieldMigrationForTable('description', 'text', false, 'project')
             ->willReturn('TestMigration')
             ->shouldBeCalled();
 
@@ -83,7 +83,7 @@ class BuilderServiceTest extends TestBase {
 
         try
         {
-            $service->buildField('description', 'text', 'project', $model->reveal());
+            $service->buildField('description', 'text', false, 'project', $model->reveal());
         } catch(\Exception $e)
         {
             if($e->getMessage() === 'up')

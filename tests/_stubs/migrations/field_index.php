@@ -8,7 +8,7 @@ use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 use Nuclear\Hierarchy\Contract\Migration\MigrationContract;
 
-class HierarchyCreateDescriptionFieldForProjectSourceTable extends Migration implements MigrationContract {
+class HierarchyCreateLocationFieldForProjectSourceTable extends Migration implements MigrationContract {
 
     /**
      * Run the migrations.
@@ -17,8 +17,9 @@ class HierarchyCreateDescriptionFieldForProjectSourceTable extends Migration imp
     {
         \Schema::table('ns_projects', function (Blueprint $table)
         {
-            $table->text('description')->nullable();
+            $table->string('location')->nullable();
 
+                        $table->index('location');
                     });
     }
 
@@ -29,7 +30,7 @@ class HierarchyCreateDescriptionFieldForProjectSourceTable extends Migration imp
     {
         \Schema::table('ns_projects', function (Blueprint $table)
         {
-            $table->dropColumn('description');
+            $table->dropColumn('location');
         });
     }
 

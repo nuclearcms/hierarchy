@@ -116,10 +116,11 @@ class MigrationBuilder implements MigrationBuilderContract, WriterContract {
      *
      * @param string $name
      * @param string $type
+     * @param bool $indexed
      * @param string $tableName
      * @return string
      */
-    public function buildFieldMigrationForTable($name, $type, $tableName)
+    public function buildFieldMigrationForTable($name, $type, $indexed, $tableName)
     {
         $path = $this->getMigrationPath($tableName, $name);
         $migration = $this->getTableFieldMigrationName($name, $tableName);
@@ -128,7 +129,8 @@ class MigrationBuilder implements MigrationBuilderContract, WriterContract {
             'field'     => $name,
             'table'     => source_table_name($tableName),
             'migration' => $migration,
-            'type'      => $this->getColumnType($type)
+            'type'      => $this->getColumnType($type),
+            'indexed'   => $indexed
         ])->render();
 
         $this->write($path, $contents);

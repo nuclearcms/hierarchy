@@ -26,10 +26,11 @@ interface MigrationBuilderContract {
      *
      * @param string $name
      * @param string $type
+     * @param bool $indexed
      * @param string $tableName
      * @return string
      */
-    public function buildFieldMigrationForTable($name, $type, $tableName);
+    public function buildFieldMigrationForTable($name, $type, $indexed, $tableName);
 
     /**
      * Destroys a field migration for a table

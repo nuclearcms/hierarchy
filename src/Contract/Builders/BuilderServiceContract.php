@@ -20,10 +20,11 @@ interface BuilderServiceContract {
      *
      * @param string $name
      * @param string $type
+     * @param bool $indexed
      * @param string $tableName
      * @param NodeTypeContract $nodeType
      */
-    public function buildField($name, $type, $tableName, NodeTypeContract $nodeType);
+    public function buildField($name, $type, $indexed, $tableName, NodeTypeContract $nodeType);
 
     /**
      * Destroys a source table and all associated entities

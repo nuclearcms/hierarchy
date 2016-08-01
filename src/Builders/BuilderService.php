@@ -61,14 +61,15 @@ class BuilderService implements BuilderServiceContract {
      *
      * @param string $name
      * @param string $type
+     * @param bool $indexed
      * @param string $tableName
      * @param NodeTypeContract $nodeType
      */
-    public function buildField($name, $type, $tableName, NodeTypeContract $nodeType)
+    public function buildField($name, $type, $indexed, $tableName, NodeTypeContract $nodeType)
     {
         $this->modelBuilder->build($tableName, $nodeType->getFields());
         $this->buildForm($nodeType);
-        $migration = $this->migrationBuilder->buildFieldMigrationForTable($name, $type, $tableName);
+        $migration = $this->migrationBuilder->buildFieldMigrationForTable($name, $type, $indexed, $tableName);
 
         $this->migrateUp($migration);
     }

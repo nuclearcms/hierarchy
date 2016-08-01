@@ -19,4 +19,11 @@ interface NodeFieldContract {
      */
     public function getType();
 
+    /**
+     * Checks if the node field is indexed
+     *
+     * @return bool
+     */
+    public function isIndexed();
+
 }

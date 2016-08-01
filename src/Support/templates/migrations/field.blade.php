@@ -19,6 +19,10 @@ class {{ $migration }} extends Migration implements MigrationContract {
         \Schema::table('{{ $table }}', function (Blueprint $table)
         {
             $table->{{ $type }}('{{ $field }}')->nullable();
+
+            @if($indexed)
+            $table->index('{{ $field }}');
+            @endif
         });
     }
 

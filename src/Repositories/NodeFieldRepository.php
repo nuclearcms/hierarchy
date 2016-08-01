@@ -23,6 +23,7 @@ class NodeFieldRepository extends Repository {
         $this->builderService->buildField(
             $nodeField->getName(),
             $nodeField->getType(),
+            $nodeField->isIndexed(),
             $nodeType->getName(),
             $nodeType
         );

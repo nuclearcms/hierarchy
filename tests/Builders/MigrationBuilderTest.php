@@ -44,8 +44,8 @@ class MigrationBuilderTest extends TestBase {
         $builder = $this->getBuilder();
 
         $builder->buildSourceTableMigration('project');
-        $builder->buildFieldMigrationForTable('area', 'integer', 'project');
-        $builder->buildFieldMigrationForTable('description', 'text', 'project');
+        $builder->buildFieldMigrationForTable('area', 'integer', false, 'project');
+        $builder->buildFieldMigrationForTable('description', 'text', false, 'project');
 
         $this->assertFileExists(
             $builder->getMigrationPath('project')
@@ -79,7 +79,7 @@ class MigrationBuilderTest extends TestBase {
             $builder->getMigrationPath('project', 'description')
         );
 
-        $classPath = $builder->buildFieldMigrationForTable('description', 'textarea', 'project');
+        $classPath = $builder->buildFieldMigrationForTable('description', 'textarea', false, 'project');
 
         $this->assertFileExists(
             $builder->getMigrationPath('project', 'description')
@@ -99,11 +99,39 @@ class MigrationBuilderTest extends TestBase {
     }
 
     /** @test */
+    function it_creates_field_migration_for_table_with_index()
+    {
+        $builder = $this->getBuilder();
+
+        $this->assertFileNotExists(
+            $builder->getMigrationPath('project', 'location')
+        );
+
+        $classPath = $builder->buildFieldMigrationForTable('location', 'text', true, 'project');
+
+        $this->assertFileExists(
+            $builder->getMigrationPath('project', 'location')
+        );
+
+        $this->assertFileEquals(
+            $builder->getMigrationPath('project', 'location'),
+            dirname(__DIR__) . '/_stubs/migrations/field_index.php'
+        );
+
+        $this->assertEquals(
+            $classPath,
+            $builder->getMigrationClassPath(
+                $builder->getTableFieldMigrationName('location', 'project')
+            )
+        );
+    }
+
+    /** @test */
     function it_destroys_field_migration_for_table()
     {
         $builder = $this->getBuilder();
 
-        $builder->buildFieldMigrationForTable('area', 'integer', 'project');
+        $builder->buildFieldMigrationForTable('area', 'integer', false, 'project');
 
         $this->assertFileExists(
             $builder->getMigrationPath('project', 'area')

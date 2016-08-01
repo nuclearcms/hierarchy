@@ -52,6 +52,22 @@ class NodeFieldTest extends TestBase {
     }
 
     /** @test */
+    function it_checks_if_the_node_field_is_indexed()
+    {
+        $nodeField = $this->getNodeField();
+
+        $this->assertFalse(
+            $nodeField->isIndexed()
+        );
+
+        $nodeField->indexed = 1;
+
+        $this->assertTrue(
+            $nodeField->isIndexed()
+        );
+    }
+
+    /** @test */
     function it_checks_if_the_node_field_is_visible()
     {
         $nodeField = $this->getNodeField();

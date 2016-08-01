@@ -49,6 +49,16 @@ class NodeField extends Eloquent {
     }
 
     /**
+     * Checks if the node field is indexed
+     *
+     * @return bool
+     */
+    public function isIndexed()
+    {
+        return (bool)$this->getAttribute('indexed');
+    }
+
+    /**
      * Checks if a node is locked
      *
      * @return bool
