@@ -208,7 +208,7 @@ class Node extends Eloquent implements TrackableInterface {
      */
     public function propagateIdToSources()
     {
-        foreach($this->translations as $source)
+        foreach ($this->translations as $source)
         {
             $source->setExtensionNodeId($this->getKey());
         }
@@ -447,6 +447,26 @@ class Node extends Eloquent implements TrackableInterface {
     }
 
     /**
+     * Sortable by scope
+     *
+     * @param $query
+     * @param string|null $key
+     * @param string|null $direction
+     * @return Builder
+     */
+    public function scopeSortable($query, $key = null, $direction = null)
+    {
+        list($key, $direction) = $this->validateSortableParameters($key, $direction);
+
+        if ($this->isTranslationAttribute($key))
+        {
+            return $this->orderQueryBySourceAttribute($query, $key, $direction);
+        }
+
+        return $query->orderBy($key, $direction);
+    }
+
+    /**
      * Sorts by source attribute
      *
      * @param Builder $query
@@ -467,9 +487,13 @@ class Node extends Eloquent implements TrackableInterface {
      */
     protected function orderQueryBySourceAttribute(Builder $query, $attribute, $direction)
     {
+        $table = $this->_isTranslationAttribute($attribute) ?
+            $this->sourcesTable :
+            source_table_name($this->getNodeTypeName());
+
         $key = $this->getTable() . '.' . $this->getKeyName();
 
-        return $query->join($this->sourcesTable . ' as t', 't.node_id', '=', $key)
+        return $query->join($table . ' as t', 't.node_id', '=', $key)
             ->select('t.id as source_id', 'nodes.*')
             ->groupBy($key)
             ->orderBy('t.' . $attribute, $direction);
@@ -984,26 +1008,6 @@ class Node extends Eloquent implements TrackableInterface {
 
             $translation->relations['source'] = $source;
         }
-    }
-
-    /**
-     * Sortable by scope
-     *
-     * @param $query
-     * @param string|null $key
-     * @param string|null $direction
-     * @return Builder
-     */
-    public function scopeSortable($query, $key = null, $direction = null)
-    {
-        list($key, $direction) = $this->validateSortableParameters($key, $direction);
-
-        if ($this->_isTranslationAttribute($key))
-        {
-            return $this->orderQueryBySourceAttribute($query, $key, $direction);
-        }
-
-        return $query->orderBy($key, $direction);
     }
 
     /**
