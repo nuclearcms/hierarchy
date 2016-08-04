@@ -37,9 +37,10 @@ class LocaleManager {
      * Sets the app locale
      *
      * @param string $locale
+     * @param bool $session
      * @return void
      */
-    public function setAppLocale($locale = null)
+    public function setAppLocale($locale = null, $session = true)
     {
         $locale = $locale ?: $this->session->get('_locale', null);
 
@@ -47,7 +48,10 @@ class LocaleManager {
         {
             $this->app->setLocale($locale);
 
-            $this->session->put('_locale', $locale);
+            if ($session)
+            {
+                $this->session->put('_locale', $locale);
+            }
 
             $this->setTimeLocale($locale);
         }

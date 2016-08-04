@@ -115,11 +115,12 @@ if ( ! function_exists('set_app_locale'))
      * Sets the app locale
      *
      * @param string $locale
+     * @param bool $session
      * @return void
      */
-    function set_app_locale($locale = null)
+    function set_app_locale($locale = null, $session = true)
     {
-        app('hierarchy.support.locale')->setAppLocale($locale);
+        app('hierarchy.support.locale')->setAppLocale($locale, $session);
     }
 }
 
