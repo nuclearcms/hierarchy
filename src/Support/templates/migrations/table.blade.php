@@ -18,11 +18,12 @@ class {{ $migration }} extends Migration implements MigrationContract {
     {
         \Schema::create('{{ $table }}', function (Blueprint $table)
         {
-            $table->integer('id')->unsigned();
-            $table->primary('id');
+            $table->integer('id')
+                ->unsigned()->nullable();
             $table->integer('node_id')
                 ->unsigned()->nullable();
 
+            $table->index('id');
             $table->foreign('id')
                 ->references('id')
                 ->on('{{ config('hierarchy.nodesources_table', 'node_sources') }}')
