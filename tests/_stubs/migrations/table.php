@@ -22,7 +22,7 @@ class HierarchyCreateProjectSourceTable extends Migration implements MigrationCo
             $table->integer('node_id')
                 ->unsigned()->nullable();
 
-            $table->index('id');
+            $table->primary('id');
             $table->foreign('id')
                 ->references('id')
                 ->on('node_sources')

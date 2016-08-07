@@ -228,8 +228,10 @@ class NodeSource extends Eloquent implements NodeSourceContract {
         // the parent saves.
         if ( ! is_null($this->tempSource))
         {
-            $saved = $this->source()->save(
-                $this->tempSource);
+            $tempSource = $this->tempSource;
+            $tempSource->id = $this->getKey();
+
+            $saved = $this->source()->save($tempSource);
 
             // Reload the relation
             $this->load('source');

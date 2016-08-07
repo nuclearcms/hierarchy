@@ -23,7 +23,7 @@ class {{ $migration }} extends Migration implements MigrationContract {
             $table->integer('node_id')
                 ->unsigned()->nullable();
 
-            $table->index('id');
+            $table->primary('id');
             $table->foreign('id')
                 ->references('id')
                 ->on('{{ config('hierarchy.nodesources_table', 'node_sources') }}')
