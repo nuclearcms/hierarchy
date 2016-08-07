@@ -18,7 +18,7 @@ class HierarchyCreateProjectSourceTable extends Migration implements MigrationCo
         \Schema::create('ns_projects', function (Blueprint $table)
         {
             $table->integer('id')
-                ->unsigned()->nullable();
+                ->unsigned();
             $table->integer('node_id')
                 ->unsigned()->nullable();
 

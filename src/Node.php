@@ -181,7 +181,7 @@ class Node extends Eloquent implements TrackableInterface {
 
         static::created(function ($node)
         {
-            $node->propagateIdToSources();
+            $node->propagateIdToSources(false);
 
             $node->fireNodeEvent('created');
         });
@@ -214,12 +214,15 @@ class Node extends Eloquent implements TrackableInterface {
 
     /**
      * Propagates self id to sources
+     *
+     * The save parameter is to prevent saving sources prematurely
+     * @param bool $save
      */
-    public function propagateIdToSources()
+    public function propagateIdToSources($save = true)
     {
         foreach ($this->translations as $source)
         {
-            $source->setExtensionNodeId($this->getKey());
+            $source->setExtensionNodeId($this->getKey(), $save);
         }
     }
 

@@ -228,10 +228,8 @@ class NodeSource extends Eloquent implements NodeSourceContract {
         // the parent saves.
         if ( ! is_null($this->tempSource))
         {
-            $tempSource = $this->tempSource;
-            $tempSource->id = $this->getKey();
-
-            $saved = $this->source()->save($tempSource);
+            $saved = $this->source()->save(
+                $this->tempSource);
 
             // Reload the relation
             $this->load('source');
@@ -379,11 +377,17 @@ class NodeSource extends Eloquent implements NodeSourceContract {
     /**
      * Sets the extension node id
      *
+     * @param bool $save
      * @param int $id
      */
-    public function setExtensionNodeId($id)
+    public function setExtensionNodeId($id, $save = true)
     {
-        $this->getSource()->setNodeId($id)->save();
+        $source = $this->getSource()->setNodeId($id);
+
+        if ($save)
+        {
+            $source->save();
+        }
     }
 
 

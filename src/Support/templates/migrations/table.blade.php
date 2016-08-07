@@ -19,7 +19,7 @@ class {{ $migration }} extends Migration implements MigrationContract {
         \Schema::create('{{ $table }}', function (Blueprint $table)
         {
             $table->integer('id')
-                ->unsigned()->nullable();
+                ->unsigned();
             $table->integer('node_id')
                 ->unsigned()->nullable();
 
