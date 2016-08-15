@@ -33,7 +33,8 @@ class TestBase extends TestCase {
 
         $app['config']->set('translatable.fallback_locale', 'en');
 
-        $app['config']->set('auth.model', User::class);
+        $app['config']->set('ownable.model', User::class);
+        $app['config']->set('chronicle.user_model', User::class);
     }
 
     protected function getPackageProviders($app)
