@@ -1,6 +1,6 @@
 <?php
 
-namespace Reactor\Tags;
+namespace Nuclear\Hierarchy\Tags;
 
 
 use Dimsav\Translatable\Translatable;
