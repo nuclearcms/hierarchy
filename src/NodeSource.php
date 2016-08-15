@@ -46,7 +46,7 @@ class NodeSource extends Eloquent implements NodeSourceContract {
     {
         NodeSource::saving(function (NodeSourceContract $nodeSource)
         {
-            if (empty($nodeSource->getNodeName()) or is_null($nodeSource->getNodeName()))
+            if (empty($nodeSource->getNodeName()) || is_null($nodeSource->getNodeName()))
             {
                 $nodeSource->setNodeNameFromTitle();
             }

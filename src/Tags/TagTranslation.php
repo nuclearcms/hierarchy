@@ -24,8 +24,21 @@ class TagTranslation extends Model {
     {
         TagTranslation::saving(function ($translation)
         {
-            $translation->setSlugFromName();
+            if (empty($translation->getTagName()) || is_null($translation->getTagName()))
+            {
+                $translation->setSlugFromTitle();
+            }
         });
+    }
+
+    /**
+     * Getter for tag name
+     *
+     * @return string
+     */
+    public function getTagName()
+    {
+        return $this->getAttribute('tag_name');
     }
 
     /**
@@ -34,7 +47,7 @@ class TagTranslation extends Model {
      * @param string
      * @return void
      */
-    public function setSlugFromName()
+    public function setSlugFromTitle()
     {
         if (empty($this->tag_name))
         {
