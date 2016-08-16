@@ -21,6 +21,13 @@ class Tag extends Model {
     }
 
     /**
+     * The number of models to return for pagination.
+     *
+     * @var int
+     */
+    protected $perPage = 50;
+
+    /**
      * The relations to eager load on every query.
      *
      * @var array
@@ -176,6 +183,16 @@ class Tag extends Model {
     public function scopeWithName(Builder $query, $name)
     {
         return $this->scopeWhereTranslation($query, 'tag_name', $name);
+    }
+
+    /**
+     * Checks if the node can have more translations
+     *
+     * @return bool
+     */
+    public function canHaveMoreTranslations()
+    {
+        return (locale_count() > count($this->translations));
     }
 
 }

@@ -1385,4 +1385,27 @@ class NodeTest extends TestBase {
         );
     }
 
+    /** @test */
+    function it_checks_if_the_node_can_have_more_translations()
+    {
+        $node = $this->getNode();
+        $node->fill([
+            'en' => [
+                'title' => 'Node',
+                'node_name' => 'node'
+            ]
+        ])->save();
+
+        $this->assertTrue($node->canHaveMoreTranslations());
+
+        $node->fill([
+            'tr' => [
+                'title' => 'Düğüm',
+                'node_name' => 'dugum'
+            ]
+        ])->save();
+
+        $this->assertFalse($node->canHaveMoreTranslations());
+    }
+
 }

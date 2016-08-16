@@ -1194,4 +1194,14 @@ class Node extends Eloquent implements TrackableInterface {
         );
     }
 
+    /**
+     * Checks if the node can have more translations
+     *
+     * @return bool
+     */
+    public function canHaveMoreTranslations()
+    {
+        return (locale_count() > count($this->translations));
+    }
+
 }

@@ -63,6 +63,8 @@ class HelpersTest extends TestBase {
     {
         $this->assertTrue(function_exists('set_app_locale'));
         $this->assertTrue(function_exists('set_time_locale'));
+        $this->assertTrue(function_exists('locales'));
+        $this->assertTrue(function_exists('locale_count'));
     }
 
 }
