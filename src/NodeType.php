@@ -19,7 +19,7 @@ class NodeType extends Eloquent implements NodeTypeContract {
      *
      * @var array
      */
-    protected $fillable = ['name', 'label', 'description',
+    protected $fillable = ['name', 'label',
         'visible', 'hides_children', 'color',
         'taggable', 'newsletter', 'allowed_children'];
 
