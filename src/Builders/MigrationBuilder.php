@@ -66,6 +66,7 @@ class MigrationBuilder implements MigrationBuilderContract, WriterContract {
             'date'     => 'timestamp',
             'node_collection' => 'text',
             'node'     => 'integer',
+            'relation' => 'text',
         ]);
 
         $this->defaultType = config('hierarchy.default_type', 'string');
