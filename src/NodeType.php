@@ -3,6 +3,7 @@
 namespace Nuclear\Hierarchy;
 
 
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model as Eloquent;
 use Kenarkose\Chronicle\RecordsActivity;
 use Kenarkose\Sortable\Sortable;
@@ -143,6 +144,28 @@ class NodeType extends Eloquent implements NodeTypeContract {
     public function isTypeNewsletter()
     {
         return (bool)$this->newsletter;
+    }
+
+    /**
+     * Scope for selecting types for nodes
+     *
+     * @param Builder $query
+     * @return Builder
+     */
+    public function scopeForNodes(Builder $query)
+    {
+        return $query->whereNewsletter(0);
+    }
+
+    /**
+     * Scope for selecting types for newsletters
+     *
+     * @param Builder $query
+     * @return Builder
+     */
+    public function scopeForNewsletters(Builder $query)
+    {
+        return $query->whereNewsletter(1);
     }
 
 }
