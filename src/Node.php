@@ -1204,4 +1204,14 @@ class Node extends Eloquent implements TrackableInterface {
         return (locale_count() > count($this->translations));
     }
 
+    /**
+     * Returns the node title
+     *
+     * @return string
+     */
+    public function getTitle()
+    {
+        return $this->translateOrFirst()->title;
+    }
+
 }

@@ -168,4 +168,14 @@ class NodeType extends Eloquent implements NodeTypeContract {
         return $query->whereNewsletter(1);
     }
 
+    /**
+     * Returns the node type title
+     *
+     * @return string
+     */
+    public function getTitle()
+    {
+        return $this->label;
+    }
+
 }
