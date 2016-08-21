@@ -109,6 +109,21 @@ if ( ! function_exists('get_nodes_by_ids'))
     }
 }
 
+{
+    /**
+     * Returns the node types by given ids
+     * (alias for NodeTypeRepository::getNodeTypesByIds)
+     *
+     * @param array|string $ids
+     * @return Collection
+     */
+    function get_nodetypes_by_ids($ids)
+    {
+        return app()->make('Nuclear\Hierarchy\Repositories\NodeTypeRepository')
+            ->getNodeTypesByIds($ids);
+    }
+}
+
 if ( ! function_exists('set_app_locale'))
 {
     /**

@@ -49,6 +49,40 @@ class NodeTypeRepository extends Repository {
     }
 
     /**
+     * Returns node types by ids
+     *
+     * @param array|string $ids
+     * @return Collection
+     */
+    public function getNodeTypesByIds($ids)
+    {
+        if (empty($ids))
+        {
+            return null;
+        }
+
+        if (is_string($ids))
+        {
+            $ids = json_decode($ids, true);
+        }
+
+        if (is_array($ids) && ! empty($ids))
+        {
+            $model = $this->getModelName();
+
+            $placeholders = implode(',', array_fill(0, count($ids), '?'));
+
+            $nodeTypes = $model::whereIn('id', $ids)
+                ->orderByRaw('field(id,' . $placeholders . ')', $ids)
+                ->get();
+
+            return (count($nodeTypes) > 0) ? $nodeTypes : null;
+        }
+
+        return null;
+    }
+
+    /**
      * Getter for node type class name
      */
     public function getModelName()

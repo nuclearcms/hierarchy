@@ -59,6 +59,13 @@ class HelpersTest extends TestBase {
     }
 
     /** @test */
+    function it_registers_nodetype_getter_helper()
+    {
+        // Cannot test this since there is no field function in sqlite
+        $this->assertTrue(function_exists('get_nodetypes_by_ids'));
+    }
+
+    /** @test */
     function it_registers_locale_helpers()
     {
         $this->assertTrue(function_exists('set_app_locale'));
