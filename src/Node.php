@@ -153,6 +153,13 @@ class Node extends Eloquent implements TrackableInterface {
     protected $with = ['translations'];
 
     /**
+     * Node type name cache
+     *
+     * @var string
+     */
+    protected $nodeTypeName = null;
+
+    /**
      * Status codes
      *
      * @var int
@@ -289,9 +296,14 @@ class Node extends Eloquent implements TrackableInterface {
             $nodeType = $this->load('nodeType')->getRelation('nodeType');
         }
 
-        $bag->addNodeType($nodeType);
+        if ($nodeType)
+        {
+            $bag->addNodeType($nodeType);
 
-        return $nodeType;
+            return $nodeType;
+        }
+
+        return null;
     }
 
     /**
@@ -311,7 +323,8 @@ class Node extends Eloquent implements TrackableInterface {
      */
     public function getNodeTypeName()
     {
-        return $this->getNodeType()->getName();
+        return $this->nodeTypeName ?:
+            (is_null($this->getNodeType()) ? null : $this->getNodeType()->getName());
     }
 
     /**
@@ -350,7 +363,9 @@ class Node extends Eloquent implements TrackableInterface {
             return false;
         }
 
-        return $this->_isTranslationAttribute($key) || $this->isSourceAttribute($key);
+        // When there is no node type we exclude source attributes
+        return $this->_isTranslationAttribute($key) ||
+        (is_null($this->getNodeTypeName()) ? false : $this->isSourceAttribute($key));
     }
 
     /**
@@ -365,7 +380,8 @@ class Node extends Eloquent implements TrackableInterface {
         return in_array($key, [
             $this->nodeTypeKey,
             $this->getKeyName(),
-            'translationForeignKey'
+            'translationForeignKey',
+            'nodeTypeName'
         ]);
     }
 
@@ -548,12 +564,33 @@ class Node extends Eloquent implements TrackableInterface {
      *
      * @param Builder $query
      * @param string $type
-     * @param string|null $locale
      * @return Builder
      */
-    public function scopeWithType(Builder $query, $type, $locale = null)
+    public function scopeWithType(Builder $query, $type)
     {
-        return $this->scopeWhereTranslation($query, 'source_type', $type, $locale);
+        // We do this for searching and sorting with source attributes
+        $this->nodeTypeName = $type;
+
+        return $this->scopeWhereTranslation($query, 'source_type', $type, null);
+    }
+
+    /**
+     * Status filter scope
+     *
+     * @param Builder $query
+     * @param string $status
+     * @return Builder
+     */
+    public function scopeFilteredByStatus(Builder $query, $status = null)
+    {
+        $status = is_null($status) ? request('f', 'all') : $status;
+
+        if (in_array($status, ['published', 'withheld', 'draft', 'pending', 'archived', 'invisible', 'locked']))
+        {
+            $query->{$status}();
+        }
+
+        return $query;
     }
 
 
@@ -577,12 +614,12 @@ class Node extends Eloquent implements TrackableInterface {
     }
 
     /**
-     * Not published scope
+     * Withheld scope
      *
      * @param Builder $query
      * @return Builder
      */
-    public function scopeNotPublished(Builder $query)
+    public function scopeWithheld(Builder $query)
     {
         return $query->where(function ($query)
         {
@@ -1186,6 +1223,12 @@ class Node extends Eloquent implements TrackableInterface {
      */
     public function getSearchable()
     {
+        // When there is no node type we exclude source attributes
+        if (is_null($this->getNodeTypeName()))
+        {
+            return $this->searchable;
+        }
+
         $modelName = source_model_name($this->getNodeTypeName(), true);
 
         return array_merge_recursive(
