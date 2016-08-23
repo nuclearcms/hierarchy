@@ -1357,14 +1357,6 @@ class NodeTest extends TestBase {
     }
 
     /** @test */
-    function it_checks_if_node_is_a_newsletter()
-    {
-        $node = $this->getNode();
-
-        $this->assertFalse($node->isNewsletter());
-    }
-
-    /** @test */
     function it_gets_searchable_property()
     {
         $node = $this->getNode();

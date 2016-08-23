@@ -1207,16 +1207,6 @@ class Node extends Eloquent implements TrackableInterface {
     }
 
     /**
-     * Checks if the node is a newsletter node
-     *
-     * @return bool
-     */
-    public function isNewsletter()
-    {
-        return $this->getNodeType()->isTypeNewsletter();
-    }
-
-    /**
      * It returns the searchable
      *
      * @return array

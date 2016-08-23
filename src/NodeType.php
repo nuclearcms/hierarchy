@@ -22,7 +22,7 @@ class NodeType extends Eloquent implements NodeTypeContract {
      */
     protected $fillable = ['name', 'label',
         'visible', 'hides_children', 'color',
-        'taggable', 'newsletter', 'allowed_children', 'custom_form'];
+        'taggable', 'mailing', 'allowed_children', 'custom_form'];
 
     /**
      * Sortable columns
@@ -137,13 +137,13 @@ class NodeType extends Eloquent implements NodeTypeContract {
     }
 
     /**
-     * Checks if the node type is newsletter type
+     * Checks if the node type is mailing type
      *
      * @return bool
      */
-    public function isTypeNewsletter()
+    public function isTypeMailing()
     {
-        return (bool)$this->newsletter;
+        return (bool)$this->mailing;
     }
 
     /**
@@ -154,18 +154,18 @@ class NodeType extends Eloquent implements NodeTypeContract {
      */
     public function scopeForNodes(Builder $query)
     {
-        return $query->whereNewsletter(0);
+        return $query->whereMailing(0);
     }
 
     /**
-     * Scope for selecting types for newsletters
+     * Scope for selecting types for mailings
      *
      * @param Builder $query
      * @return Builder
      */
-    public function scopeForNewsletters(Builder $query)
+    public function scopeForMailings(Builder $query)
     {
-        return $query->whereNewsletter(1);
+        return $query->whereMailing(1);
     }
 
     /**
