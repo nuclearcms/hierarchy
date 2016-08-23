@@ -18,7 +18,6 @@ use Kenarkose\Sortable\Sortable;
 use Kenarkose\Tracker\Trackable;
 use Kenarkose\Tracker\TrackableInterface;
 use Nuclear\Hierarchy\Exception\InvalidParentNodeTypeException;
-use Nuclear\Hierarchy\Exception\NodeNameNotUniqueException;
 use Nuclear\Hierarchy\Tags\Taggable;
 
 class Node extends Eloquent implements TrackableInterface {
