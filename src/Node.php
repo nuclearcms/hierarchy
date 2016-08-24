@@ -1197,7 +1197,7 @@ class Node extends Eloquent implements TrackableInterface {
 
         if ($this->hidesChildren())
         {
-            return route('reactor.nodes.' . $this->children_display_mode,
+            return route('reactor.nodes.children.' . $this->children_display_mode,
                 $parameters);
         }
 

@@ -9,7 +9,7 @@ use Nuclear\Hierarchy\Cache\Accessor;
 
 class HierarchyServiceProvider extends ServiceProvider {
 
-    const version = '2.0.19';
+    const version = '2.0.20';
 
     /**
      * Indicates if loading of the provider is deferred.
