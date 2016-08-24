@@ -27,6 +27,11 @@ class HelpersTest extends TestBase {
             'EditProjectForm',
             source_form_name('project')
         );
+
+        $this->assertEquals(
+            'gen\\Forms\\EditProjectForm',
+            source_form_name('project', true)
+        );
     }
 
     /** @test */

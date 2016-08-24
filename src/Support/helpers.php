@@ -39,11 +39,12 @@ if ( ! function_exists('source_form_name'))
      * Returns the name of the source form by key
      *
      * @param string $key
+     * @param bool $withNamespace
      * @return string
      */
-    function source_form_name($key)
+    function source_form_name($key, $withNamespace = false)
     {
-        return 'Edit' . ucfirst($key) . 'Form';
+        return ($withNamespace ? 'gen\\Forms\\' : '') . 'Edit' . ucfirst($key) . 'Form';
     }
 }
 
