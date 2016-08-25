@@ -1200,7 +1200,7 @@ class Node extends Eloquent implements TrackableInterface {
 
         if ($this->hidesChildren())
         {
-            if ($this->children_mode === 'tree')
+            if ($this->children_display_mode === 'tree')
             {
                 $parameters = current($parameters);
             }
