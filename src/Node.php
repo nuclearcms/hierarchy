@@ -804,14 +804,17 @@ class Node extends Eloquent implements TrackableInterface {
      * @param string $locale
      * @return Collection
      */
-    public function hasTranslatedChildren($locale)
+    public function hasTranslatedChildren($locale = null)
     {
-        $children = $this->getChildren()->filter(function ($item) use ($locale)
+        foreach($this->getChildren() as $child)
         {
-            return $item->hasTranslation($locale);
-        });
+            if($child->hasTranslation($locale))
+            {
+                return true;
+            }
+        }
 
-        return (count($children) > 0);
+        return false;
     }
 
     /**

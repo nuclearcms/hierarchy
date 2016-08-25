@@ -180,3 +180,29 @@ if ( ! function_exists('locale_count'))
         return count(config('translatable.locales'));
     }
 }
+
+
+if ( ! function_exists('has_translated'))
+{
+    /**
+     * Checks if the given array/collection has any translated children
+     *
+     * @param array|Collection $items
+     * @param string $locale
+     * @return bool
+     */
+    function has_translated($items, $locale = null)
+    {
+        $hasItem = false;
+
+        foreach ($items as $item)
+        {
+            if ($item->hasTranslation($locale))
+            {
+                return true;
+            }
+        }
+
+        return $hasItem;
+    }
+}
