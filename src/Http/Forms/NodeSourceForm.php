@@ -13,7 +13,8 @@ class NodeSourceForm extends Form {
             'rules' => 'required|max:255'
         ]);
         $this->add('node_name', 'slug', [
-            'rules' => 'max:255|alpha_dash|unique:node_sources,node_name'
+            'rules' => 'max:255|alpha_dash|unique:node_sources,node_name',
+            'help_block' => ['text' => trans('hints.slug')]
         ]);
     }
 
