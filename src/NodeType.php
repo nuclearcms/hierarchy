@@ -147,6 +147,16 @@ class NodeType extends Eloquent implements NodeTypeContract {
     }
 
     /**
+     * Checks if the node type is mailing type
+     *
+     * @return bool
+     */
+    public function isTaggable()
+    {
+        return (bool)$this->taggable;
+    }
+
+    /**
      * Scope for selecting types for nodes
      *
      * @param Builder $query

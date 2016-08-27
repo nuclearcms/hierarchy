@@ -173,6 +173,22 @@ class NodeTypeTest extends TestBase {
         $nodeType = $this->getNodeType();
 
         $this->assertFalse($nodeType->isTypeMailing());
+
+        $nodeType->mailing = 1;
+
+        $this->assertTrue($nodeType->isTypeMailing());
+    }
+
+    /** @test */
+    function it_checks_if_node_type_is_taggable()
+    {
+        $nodeType = $this->getNodeType();
+
+        $this->assertFalse($nodeType->isTaggable());
+
+        $nodeType->taggable = 1;
+        
+        $this->assertTrue($nodeType->isTaggable());
     }
 
 }

@@ -1254,4 +1254,14 @@ class Node extends Eloquent implements TrackableInterface {
         return $this->translateOrFirst()->title;
     }
 
+    /**
+     * Checks if the node is taggable
+     *
+     * @return bool
+     */
+    public function isTaggable()
+    {
+        return $this->getNodeType()->isTaggable();
+    }
+
 }
