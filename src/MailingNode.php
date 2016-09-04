@@ -4,6 +4,8 @@
 namespace Nuclear\Hierarchy;
 
 
+use Illuminate\Database\Eloquent\Builder;
+
 class MailingNode extends Node {
 
     /**
