@@ -113,9 +113,13 @@ class NodeRepository {
      */
     public function getSearchNodeBuilder($keywords, $limit = null, $locale = null)
     {
-        $builder = PublishedNode::translatedIn($locale)
-            ->search($keywords)
-            ->distinct();
+        // Because of the searchable trait we have to reset global scopes
+        $builder = PublishedNode::withoutGlobalScopes()
+            ->published()
+            ->typeMailing()
+            ->translatedIn($locale)
+            ->groupBy('id')
+            ->search($keywords, 20, true);
 
         if ( ! is_null($limit))
         {
