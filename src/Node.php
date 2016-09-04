@@ -1286,4 +1286,14 @@ class Node extends Eloquent implements TrackableInterface {
         return $this->getNodeType()->isTaggable();
     }
 
+    /**
+     * Checks if the node is a mailing node
+     *
+     * @return bool
+     */
+    public function isMailing()
+    {
+        return $this->isTypeMailing;
+    }
+
 }

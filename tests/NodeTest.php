@@ -1400,4 +1400,12 @@ class NodeTest extends TestBase {
         $this->assertFalse($node->canHaveMoreTranslations());
     }
 
+    /** @test */
+    function it_checks_if_the_node_is_mailing()
+    {
+        $node = $this->getNode();
+
+        $this->assertFalse($node->isMailing());
+    }
+
 }
