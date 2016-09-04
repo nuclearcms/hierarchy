@@ -37,6 +37,10 @@ class HierarchyCreateNodesTable extends Migration {
 
             $table->timestamps();
 
+            $table->index('mailing');
+            $table->index('home');
+            $table->index('node_type_id');
+
             $table->foreign('node_type_id')
                 ->references('id')
                 ->on('node_types')
