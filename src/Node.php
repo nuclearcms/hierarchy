@@ -159,13 +159,6 @@ class Node extends Eloquent implements TrackableInterface {
     protected $nodeTypeName = null;
 
     /**
-     * Determines if the model type is mailing
-     *
-     * @var bool
-     */
-    protected $isTypeMailing = false;
-
-    /**
      * Status codes
      *
      * @var int
@@ -182,7 +175,7 @@ class Node extends Eloquent implements TrackableInterface {
     {
         parent::boot();
 
-        static::addGlobalScope(new MailingScope());
+        static::addGlobalScope(new MailingScope);
 
         static::creating(function ($node)
         {
@@ -1004,6 +997,16 @@ class Node extends Eloquent implements TrackableInterface {
     }
 
     /**
+     * Checks if the node is a mailing node
+     *
+     * @return bool
+     */
+    public function isMailing()
+    {
+        return (bool)$this->getAttribute('mailing');
+    }
+
+    /**
      * Transforms the node type with to given type
      *
      * @param int $id
@@ -1184,7 +1187,7 @@ class Node extends Eloquent implements TrackableInterface {
      */
     public function scopeTypeMailing(Builder $query)
     {
-        return $query->where('mailing', $this->isTypeMailing);
+        return $query->where('mailing', 0);
     }
 
     /**
@@ -1284,16 +1287,6 @@ class Node extends Eloquent implements TrackableInterface {
     public function isTaggable()
     {
         return $this->getNodeType()->isTaggable();
-    }
-
-    /**
-     * Checks if the node is a mailing node
-     *
-     * @return bool
-     */
-    public function isMailing()
-    {
-        return $this->isTypeMailing;
     }
 
 }

@@ -857,6 +857,14 @@ class NodeTest extends TestBase {
     }
 
     /** @test */
+    function it_checks_if_the_node_is_mailing()
+    {
+        $node = $this->getNode();
+
+        $this->assertFalse($node->isMailing());
+    }
+
+    /** @test */
     function it_sets_and_gets_base_attributes()
     {
         $node = $this->getNode();
@@ -1398,14 +1406,6 @@ class NodeTest extends TestBase {
         ])->save();
 
         $this->assertFalse($node->canHaveMoreTranslations());
-    }
-
-    /** @test */
-    function it_checks_if_the_node_is_mailing()
-    {
-        $node = $this->getNode();
-
-        $this->assertFalse($node->isMailing());
     }
 
 }

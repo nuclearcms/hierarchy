@@ -7,13 +7,6 @@ namespace Nuclear\Hierarchy;
 class MailingNode extends Node {
 
     /**
-     * Determines if the model type is mailing
-     *
-     * @var bool
-     */
-    protected $isTypeMailing = true;
-
-    /**
      * Determines the default edit link for node
      *
      * @param null|string $locale
@@ -22,6 +15,17 @@ class MailingNode extends Node {
     public function getDefaultEditUrl($locale = null)
     {
         return route('reactor.mailings.edit', $this->getKey());
+    }
+
+    /**
+     * Scopes the model for regular and mailing nodes
+     *
+     * @param Builder $query
+     * @return Builder
+     */
+    public function scopeTypeMailing(Builder $query)
+    {
+        return $query->where('mailing', 1);
     }
 
 }
