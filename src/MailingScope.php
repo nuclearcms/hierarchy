@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Scope;
 
-class PublishedScope implements Scope  {
+class MailingScope implements Scope  {
 
     /**
      * Apply the scope to a given Eloquent query builder.
@@ -18,7 +18,7 @@ class PublishedScope implements Scope  {
      */
     public function apply(Builder $builder, Model $model)
     {
-        return $model->scopePublished($builder);
+        return $model->scopeTypeMailing($builder);
     }
 
 }

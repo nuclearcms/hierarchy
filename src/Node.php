@@ -159,6 +159,13 @@ class Node extends Eloquent implements TrackableInterface {
     protected $nodeTypeName = null;
 
     /**
+     * Determines if the model type is mailing
+     *
+     * @var bool
+     */
+    protected $isTypeMailing = false;
+
+    /**
      * Status codes
      *
      * @var int
@@ -174,6 +181,8 @@ class Node extends Eloquent implements TrackableInterface {
     protected static function boot()
     {
         parent::boot();
+
+        static::addGlobalScope(new MailingScope());
 
         static::creating(function ($node)
         {
@@ -344,9 +353,11 @@ class Node extends Eloquent implements TrackableInterface {
      */
     public function setNodeTypeByKey($id)
     {
-        $this->nodeType()->associate(
-            NodeType::findOrFail($id)
-        );
+        $nodeType = NodeType::findOrFail($id);
+
+        $this->nodeType()->associate($nodeType);
+
+        $this->mailing = $nodeType->isTypeMailing();
     }
 
     /**
@@ -1089,7 +1100,7 @@ class Node extends Eloquent implements TrackableInterface {
      * @param int|null $limit
      * @return Builder
      */
-    public function scopeMostVisited($query, $limit = null)
+    public function scopeMostVisited(Builder $query, $limit = null)
     {
         $query->select(\DB::raw('nodes.*, count(*) as `aggregate`'))
             ->join('node_site_view', 'nodes.id', '=', 'node_site_view.node_id')
@@ -1111,7 +1122,7 @@ class Node extends Eloquent implements TrackableInterface {
      * @param int|null $limit
      * @return Builder
      */
-    public function scopeRecentlyVisited($query, $limit = null)
+    public function scopeRecentlyVisited(Builder $query, $limit = null)
     {
         $query
             ->select(\DB::raw('nodes.*, MAX(node_site_view.site_view_id) as `aggregate`'))
@@ -1134,7 +1145,7 @@ class Node extends Eloquent implements TrackableInterface {
      * @param int|null $limit
      * @return Builder
      */
-    public function scopeRecentlyEdited($query, $limit = null)
+    public function scopeRecentlyEdited(Builder $query, $limit = null)
     {
         $query->orderBy('updated_at', 'desc');
 
@@ -1153,7 +1164,7 @@ class Node extends Eloquent implements TrackableInterface {
      * @param int|null $limit
      * @return Builder
      */
-    public function scopeRecentlyCreated($query, $limit = null)
+    public function scopeRecentlyCreated(Builder $query, $limit = null)
     {
         $query->orderBy('created_at', 'desc');
 
@@ -1163,6 +1174,17 @@ class Node extends Eloquent implements TrackableInterface {
         }
 
         return $query;
+    }
+
+    /**
+     * Scopes the model for regular and mailing nodes
+     *
+     * @param Builder $query
+     * @return Builder
+     */
+    public function scopeTypeMailing(Builder $query)
+    {
+        return $query->where('mailing', $this->isTypeMailing);
     }
 
     /**

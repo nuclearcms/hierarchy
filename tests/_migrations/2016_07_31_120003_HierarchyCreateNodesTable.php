@@ -21,6 +21,7 @@ class HierarchyCreateNodesTable extends Migration {
 
             NestedSet::columns($table);
 
+            $table->boolean('mailing')->default(0);
             $table->boolean('visible')->default(1);
             $table->boolean('sterile')->default(0);
             $table->boolean('home')->default(0);
