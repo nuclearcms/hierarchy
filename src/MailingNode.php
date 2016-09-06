@@ -5,6 +5,7 @@ namespace Nuclear\Hierarchy;
 
 
 use Illuminate\Database\Eloquent\Builder;
+use Nuclear\Hierarchy\Mailings\MailingList;
 
 class MailingNode extends Node {
 
@@ -28,6 +29,42 @@ class MailingNode extends Node {
     public function scopeTypeMailing(Builder $query)
     {
         return $query->where('mailing', 1);
+    }
+
+    /**
+     * Lists relation
+     *
+     * @return Relation
+     */
+    public function lists()
+    {
+        return $this->belongsToMany(MailingList::class, 'mailing_list_node', 'node_id' , 'mailing_list_id');
+    }
+
+    /**
+     * Link a list to subscriber
+     *
+     * @param int $id
+     * @return MailingList
+     */
+    public function associateList($id)
+    {
+        return $this->lists()->attach(
+            MailingList::findOrFail($id)
+        );
+    }
+
+    /**
+     * Unlink a list from subscriber
+     *
+     * @param int $id
+     * @return MailingList
+     */
+    public function dissociateList($id)
+    {
+        return $this->lists()->detach(
+            MailingList::findOrFail($id)
+        );
     }
 
 }
