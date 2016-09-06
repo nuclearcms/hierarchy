@@ -63,4 +63,24 @@ class MailingList extends Model {
         return $this->belongsToMany(MailingNode::class, 'mailing_list_node', 'mailing_list_id', 'node_id');
     }
 
+    /**
+     * Subscribers relation
+     *
+     * @return Relation
+     */
+    public function subscribers()
+    {
+        return $this->belongsToMany(Subscriber::class, 'mailing_list_subscriber');
+    }
+
+    /**
+     * Returns all subscriber mails
+     *
+     * @return array
+     */
+    public function getSubscriberAddresses()
+    {
+        return $this->subscribers->pluck('email')->toArray();
+    }
+
 }
