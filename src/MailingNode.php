@@ -38,7 +38,11 @@ class MailingNode extends Node {
      */
     public function lists()
     {
-        return $this->belongsToMany(MailingList::class, 'mailing_list_node', 'node_id' , 'mailing_list_id');
+        return $this->belongsToMany(
+            MailingList::class,
+            'mailing_list_node',
+            'node_id', 'mailing_list_id')
+            ->withPivot('external_mailing_id');
     }
 
     /**
@@ -65,6 +69,28 @@ class MailingNode extends Node {
         return $this->lists()->detach(
             MailingList::findOrFail($id)
         );
+    }
+
+    /**
+     * Getter for the external mailing id
+     *
+     * @return string
+     */
+    public function getExternalId()
+    {
+        return $this->pivot->external_mailing_id;
+    }
+
+    /**
+     * Getter for the external mailing id
+     *
+     * @param int $id
+     * @param string $value
+     * @return string
+     */
+    public function setExternalId($id, $value)
+    {
+        return $this->lists()->updateExistingPivot($id, ['external_mailing_id' => $value]);
     }
 
 }
