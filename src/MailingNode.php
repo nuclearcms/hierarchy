@@ -76,9 +76,10 @@ class MailingNode extends Node {
      *
      * @return string
      */
-    public function getExternalId()
+    public function getExternalId($id)
     {
-        return $this->pivot->external_mailing_id;
+        return $this->lists->find($id)
+            ->pivot->external_mailing_id;
     }
 
     /**
