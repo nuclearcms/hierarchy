@@ -13,7 +13,7 @@
         "laravel",
         "laravel5"
     ],
-    "version": "2.2.3",
+    "version": "2.2.4",
     "authors": [
         {
             "name": "Hyleeh",
@@ -34,7 +34,7 @@
         "kalnoy/nestedset": "~4.0",
         "doctrine/dbal": "~2.5",
         "dimsav/laravel-translatable": "~5.5",
-        "kris/laravel-form-builder": "^1.7"
+        "kris/laravel-form-builder": "1.8.*"
     },
     "require-dev": {
         "orchestra/testbench": "~3.2",
