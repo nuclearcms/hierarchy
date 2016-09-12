@@ -1196,7 +1196,7 @@ class Node extends Eloquent implements TrackableInterface {
      * @param string $locale
      * @return string
      */
-    public function getNodeUrl($locale = null)
+    public function getPreviewURL($locale = null)
     {
         $node = $this;
         $uri = '';
@@ -1205,7 +1205,7 @@ class Node extends Eloquent implements TrackableInterface {
         {
             $uri = '/' . $node->getTranslationAttribute('node_name', $locale) . $uri;
             $node = $node->parent;
-        } while ( ! is_null($node));
+        } while ( ! is_null($node) && $node->home != '1');
 
         return url($uri);
     }

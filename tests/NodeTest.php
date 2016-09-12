@@ -1306,17 +1306,17 @@ class NodeTest extends TestBase {
         ])->save();
 
         $this->assertEquals(
-            $root->getNodeUrl(),
+            $root->getPreviewURL(),
             'http://localhost/root'
         );
 
         $this->assertEquals(
-            $root->getNodeUrl('en'),
+            $root->getPreviewURL('en'),
             'http://localhost/root'
         );
 
         $this->assertEquals(
-            $root->getNodeUrl('tr'),
+            $root->getPreviewURL('tr'),
             'http://localhost/kok'
         );
 
@@ -1343,17 +1343,17 @@ class NodeTest extends TestBase {
         $leaf->save();
 
         $this->assertEquals(
-            $leaf->getNodeUrl(),
+            $leaf->getPreviewURL(),
             'http://localhost/root/mid/leaf'
         );
 
         $this->assertEquals(
-            $leaf->getNodeUrl('en'),
+            $leaf->getPreviewURL('en'),
             'http://localhost/root/mid/leaf'
         );
 
         $this->assertEquals(
-            $leaf->getNodeUrl('tr'),
+            $leaf->getPreviewURL('tr'),
             'http://localhost/kok/mid/yaprak'
         );
     }
