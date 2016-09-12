@@ -1194,9 +1194,10 @@ class Node extends Eloquent implements TrackableInterface {
      * Gets the full url for node
      *
      * @param string $locale
+     * @param array $parameters
      * @return string
      */
-    public function getPreviewURL($locale = null)
+    public function getSiteURL($locale = null, array $parameters = [])
     {
         $node = $this;
         $uri = '';
@@ -1207,7 +1208,22 @@ class Node extends Eloquent implements TrackableInterface {
             $node = $node->parent;
         } while ( ! is_null($node) && $node->home != '1');
 
-        return url($uri);
+        return url($uri, $parameters);
+    }
+
+    /**
+     * Returns the preview url
+     *
+     * @param string $locale
+     * @param array $parameters
+     * @return string
+     */
+    public function getPreviewURL($locale = null, array $parameters = [])
+    {
+        $parameters['preview_token'] = app()->make(TokenManager::class)
+            ->makeNewToken('preview_nodes');
+
+        return $this->getSiteURL($locale, $parameters);
     }
 
     /**
