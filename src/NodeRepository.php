@@ -105,24 +105,31 @@ class NodeRepository {
      * Gets node searching builder
      *
      * @param string $keywords
+     * @param string $type
      * @param int $limit
      * @param string $locale
      * @return Builder
      */
-    public function getSearchNodeBuilder($keywords, $limit = null, $locale = null)
+    public function getSearchNodeBuilder($keywords, $type = null, $limit = null, $locale = null)
     {
         // Because of the searchable trait we have to reset global scopes
         $builder = PublishedNode::withoutGlobalScopes()
             ->published()
             ->typeMailing()
             ->translatedIn($locale)
-            ->groupBy('id')
-            ->search($keywords, 20, true);
+            ->groupBy('id');
 
-        if ( ! is_null($limit))
+        if ($type)
+        {
+            $builder->withType($type);
+        }
+
+        if ($limit)
         {
             $builder->limit($limit);
         }
+
+        $builder->search($keywords, 20, true);
 
         return $builder;
     }
@@ -131,13 +138,58 @@ class NodeRepository {
      * Searches for nodes
      *
      * @param string $keywords
+     * @param string $type
      * @param int $limit
      * @param string $locale
      * @return Collection
      */
-    public function searchNodes($keywords, $limit = null, $locale = null)
+    public function searchNodes($keywords, $type = null, $limit = null, $locale = null)
     {
-        return $this->getSearchNodeBuilder($keywords, $limit, $locale)->get();
+        return $this->getSearchNodeBuilder($keywords, $type, $limit, $locale)->get();
+    }
+
+    /**
+     * Gets node sortable builder
+     *
+     * @param string $key
+     * @param string $direction
+     * @param string $type
+     * @param int $limit
+     * @param string $locale
+     * @return Builder
+     */
+    public function getSortedNodesBuilder($key = null, $direction = null, $type = null, $limit = null, $locale = null)
+    {
+        $builder = PublishedNode::sortable($key, $direction)
+            ->translatedIn($locale)
+            ->groupBy('id');
+
+        if ($type)
+        {
+            $builder->withType($type);
+        }
+
+        if ($limit)
+        {
+            $builder->limit($limit);
+        }
+
+        return $builder;
+    }
+
+    /**
+     * Gets sorted nodes
+     *
+     * @param string $key
+     * @param string $direction
+     * @param string $type
+     * @param int $limit
+     * @param string $locale
+     * @return Collection
+     */
+    public function getSortedNodes($key = null, $direction = null, $type = null, $limit = null, $locale = null)
+    {
+        return $this->getSortedNodesBuilder($key, $direction, $type, $limit, $locale)->paginate();
     }
 
     /**
