@@ -31,8 +31,6 @@ class NodeRepository {
         $home = PublishedNode::whereHome(1)
             ->firstOrFail();
 
-        set_app_locale();
-
         $this->track($track, $home);
 
         return $home;

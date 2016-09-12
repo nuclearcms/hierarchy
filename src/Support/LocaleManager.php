@@ -67,7 +67,7 @@ class LocaleManager {
     {
         $locale = $locale ?: $this->session->get('_locale', $this->app->getLocale());
 
-        setlocale(LC_TIME, $this->config->get('app.full_locales.' . $locale, null));
+        setlocale(LC_TIME, $this->config->get('translatable.full_locales.' . $locale, null));
 
         Carbon::setLocale($locale);
     }
