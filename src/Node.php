@@ -83,7 +83,7 @@ class Node extends Eloquent implements TrackableInterface {
      *
      * @var array
      */
-    protected $sortableColumns = ['title', 'created_at'];
+    protected $sortableColumns = ['title', 'created_at', 'published_at', '_lft'];
 
     /**
      * Default sortable key
