@@ -18,6 +18,7 @@ use Kenarkose\Sortable\Sortable;
 use Kenarkose\Tracker\Trackable;
 use Kenarkose\Tracker\TrackableInterface;
 use Nuclear\Hierarchy\Exception\InvalidParentNodeTypeException;
+use Nuclear\Hierarchy\Support\TokenManager;
 use Nuclear\Hierarchy\Tags\Taggable;
 
 class Node extends Eloquent implements TrackableInterface {
@@ -1194,10 +1195,9 @@ class Node extends Eloquent implements TrackableInterface {
      * Gets the full url for node
      *
      * @param string $locale
-     * @param array $parameters
      * @return string
      */
-    public function getSiteURL($locale = null, array $parameters = [])
+    public function getSiteURL($locale = null)
     {
         $node = $this;
         $uri = '';
@@ -1208,22 +1208,23 @@ class Node extends Eloquent implements TrackableInterface {
             $node = $node->parent;
         } while ( ! is_null($node) && $node->home != '1');
 
-        return url($uri, $parameters);
+        return url($uri);
     }
 
     /**
      * Returns the preview url
      *
      * @param string $locale
-     * @param array $parameters
      * @return string
      */
-    public function getPreviewURL($locale = null, array $parameters = [])
+    public function getPreviewURL($locale = null)
     {
-        $parameters['preview_token'] = app()->make(TokenManager::class)
+        $token = app()->make(TokenManager::class)
             ->makeNewToken('preview_nodes');
 
-        return $this->getSiteURL($locale, $parameters);
+        $url = $this->getSiteURL($locale);
+
+        return $url . '?preview_nodes=' . $token;
     }
 
     /**
