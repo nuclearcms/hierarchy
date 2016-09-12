@@ -1289,4 +1289,34 @@ class Node extends Eloquent implements TrackableInterface {
         return $this->getNodeType()->isTaggable();
     }
 
+    /**
+     * Meta title getter
+     *
+     * @return string
+     */
+    public function getMetaTitle()
+    {
+        return $this->translate()->meta_title ?: $this->translate()->title;
+    }
+
+    /**
+     * Meta title getter
+     *
+     * @return string
+     */
+    public function getMetaDescription()
+    {
+        return $this->translate()->meta_description;
+    }
+
+    /**
+     * Meta title getter
+     *
+     * @return string
+     */
+    public function getMetaKeywords()
+    {
+        return $this->translate()->meta_keywords;
+    }
+
 }
