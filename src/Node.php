@@ -31,6 +31,7 @@ class Node extends Eloquent implements TrackableInterface {
     use Sortable
     {
         scopeSortable as _scopeSortable;
+        determineSortableKey as _determineSortableKey;
     }
 
     /**
@@ -527,6 +528,23 @@ class Node extends Eloquent implements TrackableInterface {
         }
 
         return $query->orderBy($key, $direction);
+    }
+
+    /**
+     * Determines the sortable key from the map
+     *
+     * @param string $key
+     * @return string
+     */
+    protected function determineSortableKey($key)
+    {
+        // We need to allow source attributes here
+        if (in_array($key, $this->sortableColumns) || $this->isTranslationAttribute($key))
+        {
+            return $key;
+        }
+
+        return $this->getDefaultSortableKey();
     }
 
     /**

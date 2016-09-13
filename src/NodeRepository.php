@@ -117,7 +117,7 @@ class NodeRepository {
             ->published()
             ->typeMailing()
             ->translatedIn($locale)
-            ->groupBy('id');
+            ->groupBy('nodes.id');
 
         if ($type)
         {
@@ -160,9 +160,8 @@ class NodeRepository {
      */
     public function getSortedNodesBuilder($key = null, $direction = null, $type = null, $limit = null, $locale = null)
     {
-        $builder = PublishedNode::sortable($key, $direction)
-            ->translatedIn($locale)
-            ->groupBy('id');
+        $builder = PublishedNode::translatedIn($locale)
+            ->groupBy('nodes.id');
 
         if ($type)
         {
@@ -174,7 +173,7 @@ class NodeRepository {
             $builder->limit($limit);
         }
 
-        return $builder;
+        return $builder->sortable($key, $direction);
     }
 
     /**
