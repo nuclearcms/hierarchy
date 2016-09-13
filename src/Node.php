@@ -17,6 +17,8 @@ use Kenarkose\Ownable\Ownable;
 use Kenarkose\Sortable\Sortable;
 use Kenarkose\Tracker\Trackable;
 use Kenarkose\Tracker\TrackableInterface;
+use Nuclear\Documents\Media\EmbeddedMedia;
+use Nuclear\Documents\Media\Image;
 use Nuclear\Hierarchy\Exception\InvalidParentNodeTypeException;
 use Nuclear\Hierarchy\Support\TokenManager;
 use Nuclear\Hierarchy\Tags\Taggable;
@@ -158,6 +160,13 @@ class Node extends Eloquent implements TrackableInterface {
      * @var string
      */
     protected $nodeTypeName = null;
+
+    /**
+     * Cover image cache
+     *
+     * @var Image|null
+     */
+    protected $coverImage = null;
 
     /**
      * Status codes
@@ -453,15 +462,18 @@ class Node extends Eloquent implements TrackableInterface {
      * @param string $key
      * @param string $locale
      * @param bool $fallback
+     * @param bool $unmutated
      * @return string|null
      */
-    public function getTranslationAttribute($key, $locale = null, $fallback = true)
+    public function getTranslationAttribute($key, $locale = null, $fallback = true, $unmutated = false)
     {
         if ($this->isTranslationAttribute($key))
         {
             $translation = $this->translate($locale);
 
-            $attribute = ($translation) ? $translation->{$key} : null;
+            $attribute = ($translation) ?
+                ($unmutated ? $translation->getUnmutatedAttribute($key) : $translation->{$key}) :
+                null;
 
             if (empty($attribute) && $fallback)
             {
@@ -469,7 +481,7 @@ class Node extends Eloquent implements TrackableInterface {
 
                 if ($translation)
                 {
-                    return $translation->{$key};
+                    return $unmutated ? $translation->getUnmutatedAttribute($key) : $translation->{$key};
                 }
             }
 
@@ -811,9 +823,9 @@ class Node extends Eloquent implements TrackableInterface {
      */
     public function hasTranslatedChildren($locale = null)
     {
-        foreach($this->getChildren() as $child)
+        foreach ($this->getChildren() as $child)
         {
-            if($child->hasTranslation($locale))
+            if ($child->hasTranslation($locale))
             {
                 return true;
             }
@@ -1334,6 +1346,70 @@ class Node extends Eloquent implements TrackableInterface {
     public function getMetaKeywords()
     {
         return $this->translate()->meta_keywords;
+    }
+
+    /**
+     * Meta image getter
+     *
+     * @return Image|null
+     */
+    public function getMetaImage()
+    {
+        $metaImage = $this->getTranslationAttribute('meta_image');
+
+        if ($metaImage)
+        {
+            return get_nuclear_cover($metaImage);
+        }
+
+        if ($coverImage = $this->getCoverImage())
+        {
+            return $coverImage;
+        }
+
+        return null;
+    }
+
+    /**
+     * Gets the cover image
+     *
+     * @return Image|null
+     */
+    public function getCoverImage()
+    {
+        if ($this->coverImage)
+        {
+            return $this->coverImage;
+        }
+
+        $modelName = source_model_name($this->getNodeTypeName(), true);
+
+        $mutatables = call_user_func([$modelName, 'getMutatables']);
+
+        foreach ($mutatables as $mutatable => $type)
+        {
+            if ($type === 'gallery' && ($images = $this->getTranslationAttribute($mutatable, null, true, true)))
+            {
+                if ($cover = get_nuclear_cover($images))
+                {
+                    $this->coverImage = $cover;
+
+                    return $cover;
+                }
+            }
+
+            if ($type === 'document' && ($document = $this->getTranslationAttribute($mutatable, null, true, true)))
+            {
+                if ($document = get_nuclear_cover($document))
+                {
+                    $this->coverImage = $document;
+
+                    return $document;
+                }
+            }
+        }
+
+        return null;
     }
 
 }

@@ -260,6 +260,23 @@ class NodeSource extends Eloquent implements NodeSourceContract {
     }
 
     /**
+     * Gets a model attribute
+     *
+     * @param string $key
+     * @return mixed
+     */
+    public function getUnmutatedAttribute($key)
+    {
+        if ($this->isBaseAttribute($key))
+        {
+            return parent::getAttribute($key);
+        } else
+        {
+            return $this->getSource()->getAttributeFromArray($key);
+        }
+    }
+
+    /**
      * Sets a model attribute
      *
      * @param string $key
@@ -389,6 +406,5 @@ class NodeSource extends Eloquent implements NodeSourceContract {
             $source->save();
         }
     }
-
 
 }
