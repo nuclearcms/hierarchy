@@ -1357,9 +1357,9 @@ class Node extends Eloquent implements TrackableInterface {
     {
         $metaImage = $this->getTranslationAttribute('meta_image');
 
-        if ($metaImage)
+        if ($metaImage = get_nuclear_cover($metaImage))
         {
-            return get_nuclear_cover($metaImage);
+            return $metaImage;
         }
 
         if ($coverImage = $this->getCoverImage())
