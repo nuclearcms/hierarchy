@@ -825,6 +825,22 @@ class NodeTest extends TestBase {
     }
 
     /** @test */
+    function it_checks_if_node_is_archived()
+    {
+        $node = $this->getNode();
+
+        $this->assertFalse(
+            $node->isArchived()
+        );
+
+        $node->archive()->save();
+
+        $this->assertTrue(
+            $node->isArchived()
+        );
+    }
+
+    /** @test */
     function it_checks_if_node_is_locked()
     {
         $node = $this->getNode();

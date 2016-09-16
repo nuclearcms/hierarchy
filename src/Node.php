@@ -9,7 +9,7 @@ use Illuminate\Pagination\LengthAwarePaginator;
 use Carbon\Carbon;
 use Dimsav\Translatable\Translatable;
 use Illuminate\Database\Eloquent\Model as Eloquent;
-use Illuminate\Support\Collection;
+use Illuminate\Database\Eloquent\Collection;
 use Kalnoy\Nestedset\NodeTrait;
 use Kenarkose\Chronicle\RecordsActivity;
 use Kenarkose\Ownable\AutoAssociatesOwner;
@@ -17,7 +17,6 @@ use Kenarkose\Ownable\Ownable;
 use Kenarkose\Sortable\Sortable;
 use Kenarkose\Tracker\Trackable;
 use Kenarkose\Tracker\TrackableInterface;
-use Nuclear\Documents\Media\EmbeddedMedia;
 use Nuclear\Documents\Media\Image;
 use Nuclear\Hierarchy\Exception\InvalidParentNodeTypeException;
 use Nuclear\Hierarchy\Support\TokenManager;
@@ -997,7 +996,7 @@ class Node extends Eloquent implements TrackableInterface {
     }
 
     /**
-     * Checks if a node is published
+     * Checks if the node is published
      *
      * @return bool
      */
@@ -1005,6 +1004,16 @@ class Node extends Eloquent implements TrackableInterface {
     {
         return ($this->status >= Node::PUBLISHED)
         || ($this->status >= Node::PENDING && $this->published_at <= Carbon::now());
+    }
+
+    /**
+     * Checks if the node is archived
+     *
+     * @return bool
+     */
+    public function isArchived()
+    {
+        return ($this->status === Node::ARCHIVED);
     }
 
     /**
