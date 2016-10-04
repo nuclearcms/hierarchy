@@ -57,8 +57,8 @@ class NodeSourceExtension extends Eloquent {
     /**
      * Set a given attribute on the model.
      *
-     * @param  string  $key
-     * @param  mixed  $value
+     * @param  string $key
+     * @param  mixed $value
      * @return $this
      */
     public function setAttribute($key, $value)
@@ -130,7 +130,7 @@ class NodeSourceExtension extends Eloquent {
      */
     protected function makeNodeTypeMutation($value)
     {
-        return get_node_by_id($value);
+        return node_bag($value);
     }
 
     /**

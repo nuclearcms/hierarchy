@@ -206,3 +206,24 @@ if ( ! function_exists('has_translated'))
         return $hasItem;
     }
 }
+
+if ( ! function_exists('node_bag'))
+{
+    /**
+     * Returns the node bag instance
+     *
+     * @param int $id
+     * @return Node|NodeBag|null
+     */
+    function node_bag($id = null)
+    {
+        $nodeBag = app('hierarchy.nodebag');
+
+        if ( ! is_null($id))
+        {
+            return $nodeBag->getOrFind($id);
+        }
+
+        return $nodeBag;
+    }
+}

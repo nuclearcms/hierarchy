@@ -9,7 +9,7 @@ use Nuclear\Hierarchy\Cache\Accessor;
 
 class HierarchyServiceProvider extends ServiceProvider {
 
-    const version = '2.3.2';
+    const version = '2.3.3';
 
     /**
      * Indicates if loading of the provider is deferred.
@@ -65,6 +65,11 @@ class HierarchyServiceProvider extends ServiceProvider {
         $this->app->singleton(
             'hierarchy.support.locale',
             'Nuclear\Hierarchy\Support\LocaleManager'
+        );
+
+        $this->app->singleton(
+            'hierarchy.nodebag',
+            'Nuclear\Hierarchy\NodeBag'
         );
     }
 

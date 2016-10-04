@@ -339,6 +339,16 @@ class Node extends Eloquent implements TrackableInterface {
     }
 
     /**
+     * Sets the node type name
+     *
+     * @param string $type
+     */
+    public function setNodeTypeName($type)
+    {
+        $this->nodeTypeName = $type;
+    }
+
+    /**
      * Sets the node type key
      *
      * @param int $id
@@ -409,6 +419,27 @@ class Node extends Eloquent implements TrackableInterface {
         $modelName = source_model_name($this->getNodeTypeName(), true);
 
         return in_array($key, call_user_func([$modelName, 'getSourceFields']));
+    }
+
+    /**
+     * This scope filters results by checking the translation fields.
+     *
+     * @param \Illuminate\Database\Eloquent\Builder $query
+     * @param string $type
+     * @param string $key
+     * @param string $value
+     *
+     * @return \Illuminate\Database\Eloquent\Builder|static
+     */
+    public function scopeWhereExtensionAttribute(Builder $query, $type, $key, $value)
+    {
+        // We do this for querying, searching and sorting with source attributes
+        $this->setNodeTypeName($type);
+
+        return $query->whereHas('nodeSourceExtensions', function (Builder $query) use ($key, $value)
+        {
+            $query->where(source_table_name($this->getNodeTypeName()) . '.' . $key, $value);
+        });
     }
 
     /**
@@ -601,8 +632,8 @@ class Node extends Eloquent implements TrackableInterface {
      */
     public function scopeWithType(Builder $query, $type)
     {
-        // We do this for searching and sorting with source attributes
-        $this->nodeTypeName = $type;
+        // We do this for querying, searching and sorting with source attributes
+        $this->setNodeTypeName($type);
 
         return $this->scopeWhereTranslation($query, 'source_type', $type, null);
     }
@@ -1013,7 +1044,7 @@ class Node extends Eloquent implements TrackableInterface {
      */
     public function isArchived()
     {
-        return ($this->status === Node::ARCHIVED);
+        return ($this->status == Node::ARCHIVED);
     }
 
     /**
@@ -1244,7 +1275,7 @@ class Node extends Eloquent implements TrackableInterface {
         do
         {
             $uri = '/' . $node->getTranslationAttribute('node_name', $locale) . $uri;
-            $node = $node->parent;
+            $node = node_bag($node->parent_id, false);
         } while ( ! is_null($node) && $node->home != '1');
 
         return url($uri);

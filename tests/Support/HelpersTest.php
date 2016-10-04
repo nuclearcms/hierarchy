@@ -80,4 +80,17 @@ class HelpersTest extends TestBase {
         $this->assertTrue(function_exists('has_translated'));
     }
 
+    /** @test */
+    function it_registers_nodebag_helper()
+    {
+        $this->assertInstanceOf(
+            'Nuclear\Hierarchy\NodeBag',
+            node_bag()
+        );
+
+        $this->assertNull(
+            node_bag(1337)
+        );
+    }
+
 }
