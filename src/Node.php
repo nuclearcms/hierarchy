@@ -1275,7 +1275,7 @@ class Node extends Eloquent implements TrackableInterface {
         do
         {
             $uri = '/' . $node->getTranslationAttribute('node_name', $locale) . $uri;
-            $node = node_bag($node->parent_id, false);
+            $node = is_null($node->parent_id) ? null : node_bag($node->parent_id, false);
         } while ( ! is_null($node) && $node->home != '1');
 
         return url($uri);
