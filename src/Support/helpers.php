@@ -213,15 +213,16 @@ if ( ! function_exists('node_bag'))
      * Returns the node bag instance
      *
      * @param int $id
+     * @param bool $published
      * @return Node|NodeBag|null
      */
-    function node_bag($id = null)
+    function node_bag($id = null, $published = true)
     {
         $nodeBag = app('hierarchy.nodebag');
 
         if ( ! is_null($id))
         {
-            return $nodeBag->getOrFind($id);
+            return $nodeBag->getOrFind($id, $published);
         }
 
         return $nodeBag;
