@@ -272,7 +272,7 @@ class Node extends Eloquent implements TrackableInterface {
      */
     public function nodeSourceExtensions()
     {
-        return $this->hasMany(source_model_name($this->getNodeTypeName(), true));
+        return $this->hasMany(source_model_name($this->getNodeTypeName(), true), $this->translationForeignKey);
     }
 
     /**
