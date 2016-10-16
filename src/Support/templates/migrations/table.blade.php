@@ -31,7 +31,8 @@ class {{ $migration }} extends Migration implements MigrationContract {
 
             $table->foreign('node_id')
                 ->references('id')
-                ->on('nodes');
+                ->on('nodes')
+                ->onDelete('cascade');
         });
     }
 
