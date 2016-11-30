@@ -31,7 +31,8 @@ class HierarchyCreateProjectSourceTable extends Migration implements MigrationCo
             $table->foreign('node_id')
                 ->references('id')
                 ->on('nodes')
-                ->onDelete('cascade');
+                ->onDelete('cascade')
+                ->onDelete('set null');
         });
     }
 
