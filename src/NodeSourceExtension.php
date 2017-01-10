@@ -130,7 +130,7 @@ class NodeSourceExtension extends Eloquent {
      */
     protected function makeNodeTypeMutation($value)
     {
-        return node_bag($value);
+        return node_bag()->getOrFind($value);
     }
 
     /**
