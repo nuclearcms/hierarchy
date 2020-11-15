@@ -1,0 +1,24 @@
+{
+	"name": "nuclear/hierarchy",
+	"description": "Content Management Scaffold For The Nuclear CMS",
+	"keywords": ["umomega", "laravel", "nuclear", "nuclearcms", "hierarchy", "php"],
+	"version": "3.0.0",
+	"license": "MIT",
+	"authors": [
+        {
+            "name": "Egemen Kızılcan",
+            "email": "egemen@umomega.com",
+            "homepage": "https://umomega.com",
+            "role": "Developer / Designer"
+        }
+    ],
+    "require": {
+    	"php": "^7.3|^8.0",
+        "laravel/framework": "^8.0"
+    },
+    "autoload": {
+    	"psr-4": {
+    		"Nuclear\\Hierarchy\\": "src/"
+    	}
+    }
+}
