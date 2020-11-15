@@ -1,2 +1,2 @@
 # Hiearchy
-Content Management Scaffold For The Nuclear CMS
+Content Management Infrastructure For The Nuclear CMS
