@@ -47,4 +47,14 @@ class ContentType extends Model implements Searchable {
 		return $this->hasMany(ContentField::class);
 	}
 
+	/**
+	 * Content relation
+	 *
+	 * @return HasMany
+	 */
+	public function contents()
+	{
+		return $this->hasMany(Content::class);
+	}
+
 }
