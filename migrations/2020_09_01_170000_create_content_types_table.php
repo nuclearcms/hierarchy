@@ -18,9 +18,9 @@ class CreateContentTypesTable extends Migration
 
             $table->string('name');
             $table->json('color');
-            $table->boolean('visible')->default(1);
+            $table->boolean('is_visible')->default(1);
             $table->boolean('hides_children')->default(0);
-            $table->boolean('taggable')->default(0);
+            $table->boolean('is_taggable')->default(0);
             $table->json('allowed_children_types');
             
             $table->timestamps();

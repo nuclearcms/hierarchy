@@ -20,13 +20,13 @@ class CreateContentsTable extends Migration
             $table->bigInteger('position', false, true);
             $table->softDeletes();
 
-            $table->boolean('visible')->default(1);
-            $table->boolean('sterile')->default(0);
-            $table->boolean('locked')->default(0);
-            $table->integer('status')->default(30);
+            $table->boolean('is_visible')->default(1);
+            $table->boolean('is_sterile')->default(0);
+            $table->boolean('is_locked')->default(0);
             $table->boolean('hides_children')->default(0);
-            $table->double('priority')->unsigned()->default(1);
+            $table->integer('status')->default(30);
             $table->timestamp('published_at')->nullable();
+            $table->double('priority')->unsigned()->default(1);
             $table->enum('children_display_mode', ['tree', 'list'])->default('list');
 
             $table->json('title');

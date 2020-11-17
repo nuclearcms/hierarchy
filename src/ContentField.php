@@ -12,8 +12,8 @@ class ContentField extends Model {
      * @var array
      */
     protected $fillable = [
-        'name', 'label', 'description', 'position', 'type', 'visible', 'search_priority',
-        'default_value', 'rules', 'options',
+        'name', 'label', 'description', 'position', 'type', 'is_visible',
+        'search_priority', 'default_value', 'rules', 'options',
     ];
 
     /**

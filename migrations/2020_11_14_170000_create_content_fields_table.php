@@ -24,7 +24,7 @@ class CreateContentFieldsTable extends Migration
             $table->text('description')->nullable();
             $table->integer('position')->unsigned();
             $table->integer('search_priority')->default(0);
-            $table->boolean('visible');
+            $table->boolean('is_visible');
 
             $table->text('rules')->nullable();
             $table->text('default_value')->nullable();

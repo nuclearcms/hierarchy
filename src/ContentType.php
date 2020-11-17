@@ -14,7 +14,7 @@ class ContentType extends Model implements Searchable {
      * @var array
      */
     protected $fillable = [
-        'name', 'visible', 'hides_children', 'color', 'taggable', 'allowed_children_types'
+        'name', 'is_visible', 'hides_children', 'color', 'is_taggable', 'allowed_children_types'
     ];
 
     /**
