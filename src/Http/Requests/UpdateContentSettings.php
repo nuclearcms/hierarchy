@@ -4,7 +4,7 @@ namespace Nuclear\Hierarchy\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class StoreContentType extends FormRequest
+class UpdateContentSettings extends FormRequest
 {
     /**
      * Get the validation rules that apply to the request.
@@ -14,12 +14,14 @@ class StoreContentType extends FormRequest
     public function rules()
     {
         return [
-            'name' => 'required|max:255',
-            'color' => 'required|array',
             'is_visible' => 'required|boolean',
+            'is_sterile' => 'required|boolean',
+            'is_locked' => 'required|boolean',
+            'priority' => 'required|numeric',
+            'published_at' => 'required|date',
+            'status' => 'required|integer',
             'hides_children' => 'required|boolean',
-            'is_taggable' => 'required|boolean',
-            'allowed_children_types' => 'nullable|array'
+            'children_display_mode' => 'required|string|in:tree,list',
         ];
     }
 }

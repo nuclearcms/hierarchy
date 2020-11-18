@@ -14,7 +14,7 @@ class ContentExtension extends Model {
      *
      * @var array
      */
-    protected $fillable = ['type', 'value'];
+    protected $fillable = ['name', 'type', 'value'];
 
     /**
      * The attributes that should be cast to native types.
@@ -29,6 +29,13 @@ class ContentExtension extends Model {
      * @var array
      */
     public $translatable = ['value'];
+
+    /**
+     * Indicates if the model should be timestamped.
+     *
+     * @var bool
+     */
+    public $timestamps = false;
 
 	/**
      * Content relation

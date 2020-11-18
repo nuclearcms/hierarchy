@@ -57,4 +57,16 @@ class ContentType extends Model implements Searchable {
 		return $this->hasMany(Content::class);
 	}
 
+	/**
+	 * Returns allowed children types
+	 *
+	 * @return Collection
+	 */
+	public function getAllowedChildrenTypes()
+	{
+		$types = collect($this->allowed_children_types)->pluck('id');
+
+		return self::where('is_visible', true)->whereIn('id', $types)->get();
+	}
+
 }

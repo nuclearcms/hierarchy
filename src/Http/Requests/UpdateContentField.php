@@ -17,11 +17,10 @@ class UpdateContentField extends FormRequest
             'label' => 'required|max:255',
             'description' => 'nullable',
             'search_priority' => 'required|integer',
-            'visible' => 'required|boolean',
+            'is_visible' => 'required|boolean',
             'rules' => 'nullable',
             'default_value' => 'nullable',
             'options' => 'nullable|json'
-
         ];
     }
 }

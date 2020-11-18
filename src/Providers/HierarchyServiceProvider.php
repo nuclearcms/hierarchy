@@ -28,6 +28,8 @@ class HierarchyServiceProvider extends ServiceProvider
         $this->loadTranslationsFrom(__DIR__ . '/../../resources/lang', 'hierarchy');
 
         $this->loadMigrationsFrom(__DIR__ . '/../../migrations');
+
+        require __DIR__ . '/../Support/helpers.php';
     }
 
 }

@@ -19,7 +19,7 @@ class StoreContentField extends FormRequest
             'type' => 'required',
             'description' => 'nullable',
             'search_priority' => 'required|integer',
-            'visible' => 'required|boolean',
+            'is_visible' => 'required|boolean',
             'rules' => 'nullable',
             'default_value' => 'nullable',
             'options' => 'nullable|json'

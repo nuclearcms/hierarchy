@@ -34,7 +34,7 @@ return [
 
 	'hint_name' => 'Can only contain lowercase ASCII letters and underscores(_).',
 	'hint_label' => 'Pretty name for the node field.',
-	'hint_rules' => 'Validation rules for the content field. Should be rules separated with | or an array definition.<br>See Laravel documentation for further information.',
-	'hint_default_value' => 'Default value for the content field.<br>Accepts static values as well as closure function definitions.',
+	'hint_rules' => 'Validation rules for the content field. Should be rules separated with |.<br>See Laravel documentation for further information.',
+	'hint_default_value' => 'Default value for the content field.<br>Accepts static values.',
 	'hint_options' => 'Other options for the content field. Accepts JSON format.'
 ];

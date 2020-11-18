@@ -31,11 +31,11 @@ class CreateContentsTable extends Migration
 
             $table->json('title');
             $table->json('slug');
-            $table->json('keywords');
-            $table->json('meta_title');
-            $table->json('meta_description');
-            $table->json('meta_author');
-            $table->json('meta_image');
+            $table->json('keywords')->nullable();
+            $table->json('meta_title')->nullable();
+            $table->json('meta_description')->nullable();
+            $table->json('meta_author')->nullable();
+            $table->json('meta_image')->nullable();
 
             $table->timestamps();
 
@@ -71,8 +71,9 @@ class CreateContentsTable extends Migration
         Schema::create('content_extensions', function (Blueprint $table) {
             $table->bigIncrements('id');
             $table->bigInteger('content_id')->unsigned()->nullable();
+            $table->string('name');
             $table->string('type');
-            $table->json('value');
+            $table->json('value')->nullable();
 
             $table->foreign('content_id')
                 ->references('id')
