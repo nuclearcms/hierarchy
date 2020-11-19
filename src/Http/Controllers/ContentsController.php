@@ -5,12 +5,14 @@ namespace Nuclear\Hierarchy\Http\Controllers;
 use Umomega\Foundation\Http\Controllers\Controller;
 use Nuclear\Hierarchy\Content;
 use Nuclear\Hierarchy\ContentType;
+use Umomega\Tags\Tag;
 use Nuclear\Hierarchy\Http\Requests\StoreContent;
 use Nuclear\Hierarchy\Http\Requests\UpdateContent;
 use Nuclear\Hierarchy\Http\Requests\UpdateContentSettings;
 use Nuclear\Hierarchy\Http\Requests\UpdateContentState;
 use Nuclear\Hierarchy\Http\Requests\TranslateContent;
 use Spatie\Searchable\Search;
+use Illuminate\Http\Request;
 
 class ContentsController extends Controller
 {
@@ -23,10 +25,14 @@ class ContentsController extends Controller
 	 */
 	public function index(Request $request)
 	{
-		$contents = Content::orderBy($request->get('s', 'created_at'), $request->get('d', 'desc'));
+		$s = $request->get('s', 'created_at');
+
+		if($s == 'title') $s .= '->' . app()->getLocale();
+
+		$contents = Content::orderBy($s, $request->get('d', 'desc'))->with('contentType');
 
 		if($request->get('f', 'all') != 'all') {
-			$contents = $contents->whereType($request->get('f'));
+			$contents = $contents->filteredByStatus($request->get('f'));
 		}
 
 		return $contents->paginate();
@@ -41,7 +47,15 @@ class ContentsController extends Controller
 	public function search(Request $request)
 	{
 		return ['data' => (new Search())
-			->registerModel(Content::class, ['title', 'keywords', 'meta_title', 'meta_description', 'meta_author'])
+			->registerModel(Content::class, function($aspect) {
+				$aspect
+					->addSearchableAttribute('title')
+					->addSearchableAttribute('keywords')
+					->addSearchableAttribute('meta_title')
+					->addSearchableAttribute('meta_description')
+					->addSearchableAttribute('meta_author')
+					->with('contentType');
+			})
 			->search($request->get('q'))
 			->map(function($content) {
 				return $content->searchable;
@@ -118,6 +132,23 @@ class ContentsController extends Controller
 	public function show(Content $content)
 	{
 		return $content->setAppends(['contentType', 'locales', 'ancestors', 'is_published', 'schema', 'extensions', 'tags']);
+	}
+
+
+	/**
+	 * Retrieves the tag contents
+	 *
+	 * @param Request $request
+	 * @param Tag $tag
+	 * @return json
+	 */
+	public function tagged(Request $request, Tag $tag)
+	{
+		$s = $request->get('s', 'created_at');
+
+		if($s == 'title') $s .= '->' . app()->getLocale();
+
+		return Content::withAnyTags([$tag])->orderBy($s, $request->get('d', 'desc'))->with('contentType')->paginate();
 	}
 
 	/**
@@ -254,6 +285,25 @@ class ContentsController extends Controller
 			'message' => __('foundation::general.deleted_translation'),
 			'fallback' => ['name' => 'contents.edit', 'params' => ['id' => $content->id]]
 		];
+	}
+
+	/**
+	 * Bulk deletes contents
+	 *
+	 * @param Request $request
+	 * @return json
+	 */
+	public function destroyBulk(Request $request)
+	{
+		$items = $this->validate($request, ['items' => 'required|array'])['items'];
+		
+		$names = Content::whereIn('id', $items)->where('is_locked', false)->pluck('title')->toArray();
+		
+		Content::whereIn('id', $items)->where('is_locked', false)->delete();
+
+		activity()->withProperties(compact('names'))->log('ContentsDestroyedBulk');
+
+		return ['message' => __('hierarchy::contents.deleted_multiple')];
 	}
 
 	/**

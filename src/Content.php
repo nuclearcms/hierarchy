@@ -2,12 +2,13 @@
 
 namespace Nuclear\Hierarchy;
 
+use Carbon\Carbon;
 use Franzose\ClosureTable\Models\Entity;
 use Spatie\Translatable\HasTranslations;
 use Spatie\Tags\HasTags;
-use Carbon\Carbon;
 use Spatie\Searchable\Searchable;
 use Spatie\Searchable\SearchResult;
+use Illuminate\Database\Eloquent\Builder;
 
 class Content extends Entity implements Searchable {
 
@@ -200,7 +201,7 @@ class Content extends Entity implements Searchable {
      */
     public function getAncestorsAttribute()
     {
-        return array_reverse($this->getAncestors()->toArray());
+        return array_reverse($this->ancestors()->with('contentType')->get()->toArray());
     }
 
     /**

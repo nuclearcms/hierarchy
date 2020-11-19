@@ -55,5 +55,28 @@ return [
 	'add_child' => 'Add Child Content',
 	'tags_hint' => 'Create a tag by pressing the return key.',
 	'tags_search' => 'Type to add tags...',
-	'no_tags' => 'No tags were found.'
+	'no_tags' => 'No tags were found.',
+
+	'c_unpublished' => 'Unpublished Content',
+	'c_invisible' => 'Invisible Content',
+	'c_locked' => 'Locked Content',
+
+	's_published' => 'Published',
+	's_unpublished' => 'Unpublished',
+	's_draft' => 'Draft',
+	's_pending' => 'Pending',
+	's_archived' => 'Archived',
+	's_invisible' => 'Invisible',
+	's_locked' => 'Locked',
+
+	's_edit' => 'Edit',
+	's_delete' => 'Delete',
+	's_add_child' => 'Add Child',
+	's_lock' => 'Lock',
+	's_unlock' => 'Unlock',
+	's_move' => 'Move',
+	's_publish' => 'Publish',
+	's_unpublish' => 'Unpublish'
+
+
 ];

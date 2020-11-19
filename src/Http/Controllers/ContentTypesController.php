@@ -81,6 +81,22 @@ class ContentTypesController extends Controller
 	}
 
 	/**
+	 * Retrieves the content type contents
+	 *
+	 * @param Request $request
+	 * @param ContentType $contentType
+	 * @return json
+	 */
+	public function contents(Request $request, ContentType $contentType)
+	{
+		$s = $request->get('s', 'created_at');
+
+		if($s == 'title') $s .= '->' . app()->getLocale();
+
+		return $contentType->contents()->orderBy($s, $request->get('d', 'desc'))->with('contentType')->paginate();
+	}
+
+	/**
 	 * Sorts the content type fields
 	 *
 	 * @param Request $request
