@@ -5,10 +5,11 @@ namespace Nuclear\Hierarchy;
 use Franzose\ClosureTable\Models\Entity;
 use Spatie\Translatable\HasTranslations;
 use Spatie\Tags\HasTags;
-use Umomega\Tags\Tag;
 use Carbon\Carbon;
+use Spatie\Searchable\Searchable;
+use Spatie\Searchable\SearchResult;
 
-class Content extends Entity {
+class Content extends Entity implements Searchable {
 
     use HasSlug, HasTags, HasTranslations {
         getAttributeValue as _getAttributeValue;
@@ -107,6 +108,16 @@ class Content extends Entity {
         {
             if(empty($content->published_at)) $content->published_at = Carbon::now();
         });
+    }
+
+    /**
+     * Searchable config
+     *
+     * @return SearchResult
+     */
+    public function getSearchResult(): SearchResult
+    {
+        return new SearchResult($this, $this->title);
     }
 
     /**
@@ -248,6 +259,119 @@ class Content extends Entity {
     public function isExtensionAttribute($key)
     {
         return isset($this->schema['fields'][$key]);
+    }
+
+    /**
+     * Status filter scope
+     *
+     * @param Builder $query
+     * @param string $status
+     * @return Builder
+     */
+    public function scopeFilteredByStatus(Builder $query, $status = null)
+    {
+        $status = is_null($status) ? request('f', 'all') : $status;
+
+        if (in_array($status, ['published', 'unpublished', 'draft', 'pending', 'archived', 'invisible', 'locked']))
+        {
+            $query->{$status}();
+        }
+
+        return $query;
+    }
+
+    /**
+     * Published scope
+     *
+     * @param Builder $query
+     * @return Builder
+     */
+    public function scopePublished(Builder $query)
+    {
+        return $query->where(function ($query)
+        {
+            $query->where('status', '>=', Content::PUBLISHED)
+                ->orWhere(function ($query)
+                {
+                    $query->where('status', '>=', Content::PENDING)
+                        ->where('published_at', '<=', Carbon::now());
+                });
+        });
+    }
+
+    /**
+     * Unpublished scope
+     *
+     * @param Builder $query
+     * @return Builder
+     */
+    public function scopeUnpublished(Builder $query)
+    {
+        return $query->where(function ($query)
+        {
+            $query->where('status', '<=', Content::DRAFT)
+                ->orWhere(function ($query)
+                {
+                    $query->where('status', '<=', Content::PENDING)
+                        ->where('published_at', '>', Carbon::now());
+                });
+        });
+    }
+
+    /**
+     * Draft scope
+     *
+     * @param Builder $query
+     * @return Builder
+     */
+    public function scopeDraft(Builder $query)
+    {
+        return $query->where('status', Content::DRAFT);
+    }
+
+    /**
+     * Pending scope
+     *
+     * @param Builder $query
+     * @return Builder
+     */
+    public function scopePending(Builder $query)
+    {
+        return $query->where('status', Content::PENDING)
+            ->where('published_at', '>', Carbon::now());
+    }
+
+    /**
+     * Archived scope
+     *
+     * @param Builder $query
+     * @return Builder
+     */
+    public function scopeArchived(Builder $query)
+    {
+        return $query->where('status', Content::ARCHIVED);
+    }
+
+    /**
+     * Scope invisible
+     *
+     * @param Builder $query
+     * @return Builder
+     */
+    public function scopeInvisible(Builder $query)
+    {
+        return $query->where('is_visible', false);
+    }
+
+    /**
+     * Scope locked
+     *
+     * @param Builder $query
+     * @return Builder
+     */
+    public function scopeLocked(Builder $query)
+    {
+        return $query->where('is_locked', true);
     }
 
 }

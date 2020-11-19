@@ -10,9 +10,43 @@ use Nuclear\Hierarchy\Http\Requests\UpdateContent;
 use Nuclear\Hierarchy\Http\Requests\UpdateContentSettings;
 use Nuclear\Hierarchy\Http\Requests\UpdateContentState;
 use Nuclear\Hierarchy\Http\Requests\TranslateContent;
+use Spatie\Searchable\Search;
 
 class ContentsController extends Controller
 {
+
+	/**
+	 * Returns a list of contents
+	 *
+	 * @param Request $request
+	 * @return json
+	 */
+	public function index(Request $request)
+	{
+		$contents = Content::orderBy($request->get('s', 'created_at'), $request->get('d', 'desc'));
+
+		if($request->get('f', 'all') != 'all') {
+			$contents = $contents->whereType($request->get('f'));
+		}
+
+		return $contents->paginate();
+	}
+
+	/**
+	 * Returns a list of content filtered by search
+	 *
+	 * @param Request $request
+	 * @return json
+	 */
+	public function search(Request $request)
+	{
+		return ['data' => (new Search())
+			->registerModel(Content::class, ['title', 'keywords', 'meta_title', 'meta_description', 'meta_author'])
+			->search($request->get('q'))
+			->map(function($content) {
+				return $content->searchable;
+			})];
+	}
 
 	/**
 	 * Returns relevent information before creating a content
@@ -152,7 +186,7 @@ class ContentsController extends Controller
 		if($state != 'is_locked') $this->validateContentIsEditable($content);
 
 		if($state == 'is_published') {
-			$content->status = $content->is_published ? 30 : 50;
+			$content->status = $content->is_published ? Content::DRAFT : Content::PUBLISHED;
 			$message = $content->is_published ? 'published_content' : 'unpublished_content';
 		} else {
 			$content->{$state} = !$content->{$state};
