@@ -4,11 +4,13 @@ namespace Nuclear\Hierarchy;
 
 use Franzose\ClosureTable\Models\Entity;
 use Spatie\Translatable\HasTranslations;
+use Spatie\Tags\HasTags;
+use Umomega\Tags\Tag;
 use Carbon\Carbon;
 
 class Content extends Entity {
 
-    use HasSlug, HasTranslations {
+    use HasSlug, HasTags, HasTranslations {
         getAttributeValue as _getAttributeValue;
     }
 
@@ -210,6 +212,16 @@ class Content extends Entity {
         if($this->schema == null) $this->schema = get_schema_for($this->content_type_id);
         
         return $this->schema;
+    }
+
+    /**
+     * Get tags attribute
+     *
+     * @return array
+     */
+    public function getTagsAttribute()
+    {
+        return $this->contentType->is_taggable ? $this->tags()->get() : [];
     }
 
     /**

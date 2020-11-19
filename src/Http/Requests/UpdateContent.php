@@ -20,7 +20,8 @@ class UpdateContent extends FormRequest
             'meta_description' => 'required|array|min:1',
             'meta_author' => 'required|array|min:1',
             'keywords' => 'required|array|min:1',
-            'status' => 'required|integer'
+            'status' => 'required|integer',
+            'tags' => 'nullable|array'
         ], get_schema_for($this->input('content_type_id'))['rules']);
     }
 }

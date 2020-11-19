@@ -53,4 +53,7 @@ return [
 	'mode_tree' => 'Tree',
 
 	'add_child' => 'Add Child Content',
+	'tags_hint' => 'Create a tag by pressing the return key.',
+	'tags_search' => 'Type to add tags...',
+	'no_tags' => 'No tags were found.'
 ];

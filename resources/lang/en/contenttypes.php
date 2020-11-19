@@ -15,6 +15,7 @@ return [
 	'deleted_multiple' => 'Deleted content types.',
 
 	'search' => 'Search content types',
+	'no_fields_found' => 'No fields were found.',
 
 	'event_stored' => 'has created a new content type',
 	'event_updated' => 'has modified a content type',

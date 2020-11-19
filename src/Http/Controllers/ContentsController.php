@@ -83,7 +83,7 @@ class ContentsController extends Controller
 	 */
 	public function show(Content $content)
 	{
-		return $content->setAppends(['contentType', 'locales', 'ancestors', 'is_published', 'schema', 'extensions']);
+		return $content->setAppends(['contentType', 'locales', 'ancestors', 'is_published', 'schema', 'extensions', 'tags']);
 	}
 
 	/**
@@ -103,6 +103,10 @@ class ContentsController extends Controller
 
 		foreach($extensionFieldNames as $name => $type) {
 			$content->getExtension($name)->update(['value' => $request->get($name)]);
+		}
+
+		if($content->contentType->is_taggable) {
+			$content->tags()->sync(collect($request->get('tags'))->pluck('id')->toArray());
 		}
 
 		activity()->on($content)->log('ContentUpdated');
