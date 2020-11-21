@@ -39,6 +39,37 @@ class ContentsController extends Controller
 	}
 
 	/**
+	 * Returns root contents with the tree structure
+	 *
+	 * @return json
+	 */
+	public function roots()
+	{
+		return $this->compileVisibleTree(
+			Content::with('contentType')
+			->whereNull('parent_id')->get());
+	}
+
+	/**
+	 * Recursively compiles the given contents for a visible tree
+	 *
+	 * @param Collection $contents
+	 * @return Collection
+	 */
+	protected function compileVisibleTree($contents)
+	{
+		foreach($contents as $content)
+		{
+			if(!$content->hides_children && !$content->contentType->hides_children)
+			{
+				$content->tree = $this->compileVisibleTree($content->children()->with('contentType')->get());
+			}
+		}
+
+		return $contents;
+	}
+
+	/**
 	 * Returns a list of content filtered by search
 	 *
 	 * @param Request $request
