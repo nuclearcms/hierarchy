@@ -135,7 +135,8 @@ class ContentTypesController extends Controller
 
 		return [
 			'message' => __('hierarchy::contenttypes.edited'),
-			'payload' => $contentType
+			'payload' => $contentType,
+			'event' => 'content-tree-modified'
 		];
 	}
 
@@ -155,7 +156,10 @@ class ContentTypesController extends Controller
 
 		activity()->withProperties(compact('names'))->log('ContentTypesDestroyedBulk');
 
-		return ['message' => __('hierarchy::contenttypes.deleted_multiple')];
+		return [
+			'message' => __('hierarchy::contenttypes.deleted_multiple'),
+			'event' => 'content-tree-modified'
+		];
 	}
 
 	/**
@@ -172,7 +176,10 @@ class ContentTypesController extends Controller
 
 		activity()->withProperties(compact('name'))->log('ContentTypeDestroyed');
 
-		return ['message' => __('hierarchy::contenttypes.deleted')];
+		return [
+			'message' => __('hierarchy::contenttypes.deleted'),
+			'event' => 'content-tree-modified'
+		];
 	}
 
 }

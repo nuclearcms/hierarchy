@@ -60,6 +60,8 @@ class ContentsController extends Controller
 	{
 		foreach($contents as $content)
 		{
+			$content->tree = [];
+			
 			if(!$content->hides_children && !$content->contentType->hides_children)
 			{
 				$content->tree = $this->compileVisibleTree($content->children()->with('contentType')->get());
@@ -150,7 +152,8 @@ class ContentsController extends Controller
 
 		return [
 			'message' => __('hierarchy::contents.created'),
-			'payload' => $content
+			'payload' => $content,
+			'event' => 'content-tree-modified'
 		];
 	}
 
@@ -209,7 +212,8 @@ class ContentsController extends Controller
 
 		return [
 			'message' => __('hierarchy::contents.edited'),
-			'payload' => $content->setAppends(['contentType', 'locales', 'ancestors', 'is_published'])
+			'payload' => $content->setAppends(['contentType', 'locales', 'ancestors', 'is_published']),
+			'event' => 'content-tree-modified'
 		];
 	}
 
@@ -230,7 +234,8 @@ class ContentsController extends Controller
 
 		return [
 			'message' => __('hierarchy::contents.edited_settings'),
-			'payload' => $content->setAppends(['contentType', 'locales', 'ancestors', 'is_published'])
+			'payload' => $content->setAppends(['contentType', 'locales', 'ancestors', 'is_published']),
+			'event' => 'content-tree-modified'
 		];
 	}
 
@@ -262,7 +267,8 @@ class ContentsController extends Controller
 
 		return [
 			'message' => __('hierarchy::contents.' . $message),
-			'payload' => $content->setAppends(['contentType', 'locales', 'ancestors', 'is_published'])
+			'payload' => $content->setAppends(['contentType', 'locales', 'ancestors', 'is_published']),
+			'event' => 'content-tree-modified'
 		];
 	}
 
@@ -285,7 +291,8 @@ class ContentsController extends Controller
 		return [
 			'message' => __('hierarchy::contents.translated'),
 			'payload' => $content,
-			'action' => ['locale', $request->get('locale')] 
+			'action' => ['locale', $request->get('locale')],
+			'event' => 'content-tree-modified'
 		];
 	}
 
@@ -314,7 +321,8 @@ class ContentsController extends Controller
 
 		return [
 			'message' => __('foundation::general.deleted_translation'),
-			'fallback' => ['name' => 'contents.edit', 'params' => ['id' => $content->id]]
+			'fallback' => ['name' => 'contents.edit', 'params' => ['id' => $content->id]],
+			'event' => 'content-tree-modified'
 		];
 	}
 
@@ -334,7 +342,10 @@ class ContentsController extends Controller
 
 		activity()->withProperties(compact('names'))->log('ContentsDestroyedBulk');
 
-		return ['message' => __('hierarchy::contents.deleted_multiple')];
+		return [
+			'message' => __('hierarchy::contents.deleted_multiple'),
+			'event' => 'content-tree-modified'
+		];
 	}
 
 	/**
@@ -355,7 +366,8 @@ class ContentsController extends Controller
 
 		return [
 			'message' => __('hierarchy::contents.deleted'),
-			'redirect' => 'contents.index'
+			'redirect' => 'contents.index',
+			'event' => 'content-tree-modified'
 		];
 	}
 
