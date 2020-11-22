@@ -10,6 +10,7 @@ use Nuclear\Hierarchy\Http\Requests\StoreContent;
 use Nuclear\Hierarchy\Http\Requests\UpdateContent;
 use Nuclear\Hierarchy\Http\Requests\UpdateContentSettings;
 use Nuclear\Hierarchy\Http\Requests\UpdateContentState;
+use Nuclear\Hierarchy\Http\Requests\MoveContent;
 use Nuclear\Hierarchy\Http\Requests\TranslateContent;
 use Spatie\Searchable\Search;
 use Illuminate\Http\Request;
@@ -47,7 +48,9 @@ class ContentsController extends Controller
 	{
 		return $this->compileVisibleTree(
 			Content::with('contentType')
-			->whereNull('parent_id')->get());
+				->orderBy('parent_id')
+				->orderBy('position')
+				->whereNull('parent_id')->get());
 	}
 
 	/**
@@ -64,7 +67,12 @@ class ContentsController extends Controller
 			
 			if(!$content->hides_children && !$content->contentType->hides_children)
 			{
-				$content->tree = $this->compileVisibleTree($content->children()->with('contentType')->get());
+				$content->tree = $this->compileVisibleTree(
+					$content->children()
+						->with('contentType')
+						->orderBy('parent_id')
+						->orderBy('position')
+						->get());
 			}
 		}
 
@@ -268,6 +276,39 @@ class ContentsController extends Controller
 		return [
 			'message' => __('hierarchy::contents.' . $message),
 			'payload' => $content->setAppends(['contentType', 'locales', 'ancestors', 'is_published']),
+			'event' => 'content-tree-modified'
+		];
+	}
+
+	/**
+	 * Moves a content
+	 *
+	 * @param MoveContent $request
+	 * @param Content $content
+	 * @param Content $parent
+	 * @return json
+	 */
+	public function move(MoveContent $request, Content $content, Content $parent = null)
+	{
+		$this->validateContentIsEditable($content);
+
+		if($parent) {
+			if((!is_null($content->parent_id) && ($content->parent->is_locked || $parent->is_locked)) || (is_null($content->parent_id) && $parent->is_locked)) abort(403, __('hierarchy::contents.content_is_locked'));
+
+			if($parent->is_sterile) abort(403, __('hierarchy::contents.parent_is_sterile'));
+
+			if(!in_array($content->contentType->id, collect($parent->contentType->allowed_children_types)->pluck('id')->toArray())) abort(403, __('hierarchy::contents.parent_does_not_allow_type'));
+		}
+		
+		if((is_null($content->parent_id) && is_null($parent)) || (!is_null($parent) && $content->parent_id == $parent->id)) {
+			$content->position = $request->get('position');
+			$content->save();
+		} else {
+			$content->moveTo($request->get('position'), $parent);
+		}
+
+		return [
+			'message' => __('hierarchy::contents.moved_content'),
 			'event' => 'content-tree-modified'
 		];
 	}

@@ -30,6 +30,8 @@ return [
 	'unlock_content' => 'Unlock Content',
 	'unlocked_content' => 'Unlocked content.',
 	'content_is_locked' => 'Content is locked.',
+	'parent_is_sterile' => 'Parent content cannot have children.',
+	'parent_does_not_allow_type' => 'Parent does not accept content type.',
 
 	'search' => 'Search contents',
 	'seo_and_search' => 'SEO & Search',
