@@ -143,11 +143,13 @@ class ContentsController extends Controller
 	 */
 	public function store(StoreContent $request, $parent = null)
 	{	
-		// Check first if parent exists or sterile
+		// Check first if parent exists, not sterile and allows content type
 		if(!is_null($parent)) {
 			$parent = Content::findOrFail($parent);
 
 			if($parent->is_sterile) abort(422, __('hierarchy::contents.content_cannot_have_children'));
+
+			if(!in_array($request->get('content_type_id'), collect($parent->contentType->allowed_children_types)->pluck('id')->toArray())) abort(422, __('hierarchy::contents.parent_does_not_allow_type'));
 		}
 
 		// Proceed to saving
@@ -293,11 +295,11 @@ class ContentsController extends Controller
 		$this->validateContentIsEditable($content);
 
 		if($parent) {
-			if((!is_null($content->parent_id) && ($content->parent->is_locked || $parent->is_locked)) || (is_null($content->parent_id) && $parent->is_locked)) abort(403, __('hierarchy::contents.content_is_locked'));
+			if((!is_null($content->parent_id) && ($content->parent->is_locked || $parent->is_locked)) || (is_null($content->parent_id) && $parent->is_locked)) abort(422, __('hierarchy::contents.content_is_locked'));
 
-			if($parent->is_sterile) abort(403, __('hierarchy::contents.parent_is_sterile'));
+			if($parent->is_sterile) abort(422, __('hierarchy::contents.parent_is_sterile'));
 
-			if(!in_array($content->contentType->id, collect($parent->contentType->allowed_children_types)->pluck('id')->toArray())) abort(403, __('hierarchy::contents.parent_does_not_allow_type'));
+			if(!in_array($content->contentType->id, collect($parent->contentType->allowed_children_types)->pluck('id')->toArray())) abort(422, __('hierarchy::contents.parent_does_not_allow_type'));
 		}
 		
 		if((is_null($content->parent_id) && is_null($parent)) || (!is_null($parent) && $content->parent_id == $parent->id)) {
@@ -419,7 +421,7 @@ class ContentsController extends Controller
 	 */
 	protected function validateContentIsEditable($content)
 	{
-		if($content->is_locked) abort(403, __('hierarchy::contents.content_is_locked'));
+		if($content->is_locked) abort(422, __('hierarchy::contents.content_is_locked'));
 	}
 
 }
