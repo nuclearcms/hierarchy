@@ -82,6 +82,13 @@ class Content extends Entity implements Searchable {
     protected $dates = ['published_at'];
 
     /**
+     * The accessors to append to the model's array form.
+     *
+     * @var array
+     */
+    protected $appends = ['cover_thumbnail'];
+
+    /**
      * Status codes
      *
      * @var int
@@ -373,6 +380,16 @@ class Content extends Entity implements Searchable {
     public function scopeLocked(Builder $query)
     {
         return $query->where('is_locked', true);
+    }
+
+    /**
+     * Returns the cover image thumbnail for the content
+     *
+     * @return string
+     */
+    public function getCoverThumbnailAttribute()
+    {
+        return url(config('imagecache.route') . '/thumbnail/2020/06/930c3451b23e75e68c6a8d7036df0f51.jpg');
     }
 
 }
