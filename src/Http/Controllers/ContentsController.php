@@ -331,6 +331,8 @@ class ContentsController extends Controller
 			$content->moveTo($request->get('position'), $parent);
 		}
 
+		activity()->on($content)->log('ContentMoved');
+
 		return [
 			'message' => __('hierarchy::contents.moved_content'),
 			'event' => 'content-tree-modified'
