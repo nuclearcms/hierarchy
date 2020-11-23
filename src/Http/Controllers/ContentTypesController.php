@@ -129,7 +129,12 @@ class ContentTypesController extends Controller
 	 */
 	public function update(UpdateContentType $request, ContentType $contentType)
 	{
-		$contentType->update($request->validated());
+		$validated = $request->validated();
+
+		// Just save the ids
+		$validated['allowed_children_types'] = collect($validated['allowed_children_types'])->pluck('id')->toArray();
+
+		$contentType->update($validated);
 
 		activity()->on($contentType)->log('ContentTypeUpdated');
 

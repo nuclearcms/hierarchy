@@ -13,9 +13,7 @@ class ContentType extends Model implements Searchable {
      *
      * @var array
      */
-    protected $fillable = [
-        'name', 'is_visible', 'hides_children', 'color', 'is_taggable', 'allowed_children_types'
-    ];
+    protected $fillable = ['name', 'is_visible', 'hides_children', 'color', 'is_taggable', 'allowed_children_types'];
 
     /**
 	 * Casts
@@ -64,9 +62,7 @@ class ContentType extends Model implements Searchable {
 	 */
 	public function getAllowedChildrenTypes()
 	{
-		$types = collect($this->allowed_children_types)->pluck('id');
-
-		return self::where('is_visible', true)->whereIn('id', $types)->get();
+		return self::where('is_visible', true)->whereIn('id', $this->allowed_children_types)->get();
 	}
 
 }
