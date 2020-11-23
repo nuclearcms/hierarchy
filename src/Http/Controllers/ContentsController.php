@@ -54,6 +54,28 @@ class ContentsController extends Controller
 	}
 
 	/**
+	 * Returns a list of children content
+	 *
+	 * @param Request $request
+	 * @param Content $content
+	 * @return json
+	 */
+	public function children(Request $request, Content $content)
+	{
+		if($content->children_display_mode == 'list') {
+			$s = $request->get('s', 'created_at');
+
+			if($s == 'title') $s .= '->' . app()->getLocale();
+
+			return $content->children()->orderBy($s, $request->get('d', 'desc'))->with('contentType')->paginate();
+		}
+
+		return $this->compileVisibleTree($content
+			->children()->with('contentType')
+			->orderBy('parent_id')->orderBy('position')->get());
+	}
+
+	/**
 	 * Recursively compiles the given contents for a visible tree
 	 *
 	 * @param Collection $contents
@@ -295,7 +317,7 @@ class ContentsController extends Controller
 		$this->validateContentIsEditable($content);
 
 		if($parent) {
-			if((!is_null($content->parent_id) && ($content->parent->is_locked || $parent->is_locked)) || (is_null($content->parent_id) && $parent->is_locked)) abort(422, __('hierarchy::contents.content_is_locked'));
+			if($parent->is_locked) abort(422, __('hierarchy::contents.content_is_locked'));
 
 			if($parent->is_sterile) abort(422, __('hierarchy::contents.parent_is_sterile'));
 
