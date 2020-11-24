@@ -22,5 +22,6 @@ return [
 	'event_stored' => 'has created a new content type',
 	'event_updated' => 'has modified a content type',
 	'event_destroyed' => 'has deleted a content type',
-	'event_destroyed_bulk' => 'has deleted content types'
+	'event_destroyed_bulk' => 'has deleted content types',
+	'event_duplicated' => 'has duplicated a content type'
 ];

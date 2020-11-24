@@ -43,6 +43,13 @@ return [
 	'event_updated' => 'has modified a content',
 	'event_destroyed' => 'has deleted a content',
 	'event_destroyed_bulk' => 'has deleted contents',
+	'event_duplicated' => 'has duplicated a content',
+	'event_moved' => 'has moved a content',
+	'event_updated_settings' => 'has updated a content\'s settings',
+	'event_updated_state' => 'has updated a content\'s state',
+	'event_transformed' => 'has transformed a content',
+	'event_translated' => 'has translated a content',
+	'event_destroyed_translation' => 'has deleted a content\'s translation',
 
 	'content_cannot_have_children' => 'This content cannot have children.',
 	'settings' => 'Settings',
