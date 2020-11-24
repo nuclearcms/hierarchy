@@ -9,10 +9,11 @@ use Spatie\Tags\HasTags;
 use Spatie\Searchable\Searchable;
 use Spatie\Searchable\SearchResult;
 use Illuminate\Database\Eloquent\Builder;
+use Bkwld\Cloner\Cloneable;
 
 class Content extends Entity implements Searchable {
 
-    use HasSlug, HasTags, HasTranslations {
+    use HasSlug, HasTags, HasTranslations, Cloneable {
         getAttributeValue as _getAttributeValue;
     }
 
@@ -104,6 +105,14 @@ class Content extends Entity implements Searchable {
      * @var null|array
      */
     protected $schema = null;
+
+    /**
+     * Cloneable relations for duplication
+     *
+     * @var array
+     */
+    protected $cloneable_relations = ['extensions', 'tags', 'children'];
+    protected $clone_exempt_attributes = ['position'];
 
     /**
      * The "booted" method of the model.
@@ -390,6 +399,20 @@ class Content extends Entity implements Searchable {
     public function getCoverThumbnailAttribute()
     {
         return url(config('imagecache.route') . '/thumbnail/2020/06/930c3451b23e75e68c6a8d7036df0f51.jpg');
+    }
+
+    /**
+     * Modifier for duplication
+     *
+     * @param $source
+     * @param $child
+     */
+    public function onCloning($source, $child)
+    {
+        foreach($this->getTranslations('title') as $locale => $title)
+        {
+            $this->setTranslation('title', $locale, $title . ' [' . __('foundation::general.copy') . ']');
+        }
     }
 
 }

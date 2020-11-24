@@ -29,6 +29,8 @@ return [
 	'unpublished_content' => 'Unpublished content.',
 	'unlock_content' => 'Unlock Content',
 	'unlocked_content' => 'Unlocked content.',
+	'duplicate' => 'Duplicate Content',
+	'duplicated' => 'Duplicated content.',
 	'content_is_locked' => 'Content is locked.',
 	'parent_is_sterile' => 'Parent content cannot have children.',
 	'parent_does_not_allow_type' => 'Parent does not accept content type.',
@@ -79,7 +81,7 @@ return [
 	's_unlock' => 'Unlock',
 	's_move' => 'Move',
 	's_publish' => 'Publish',
-	's_unpublish' => 'Unpublish'
-
+	's_unpublish' => 'Unpublish',
+	's_duplicate' => 'Duplicate'
 
 ];

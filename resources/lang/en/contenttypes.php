@@ -13,6 +13,8 @@ return [
 	'delete' => 'Delete Content Type',
 	'deleted' => 'Deleted content type.',
 	'deleted_multiple' => 'Deleted content types.',
+	'duplicate' => 'Duplicate Content Type',
+	'duplicated' => 'Duplicated content type.',
 
 	'search' => 'Search content types',
 	'no_fields_found' => 'No fields were found.',

@@ -190,4 +190,21 @@ class ContentTypesController extends Controller
 		];
 	}
 
+	/**
+	 * Duplicates the content type
+	 *
+	 * @param ContentType $contentType
+	 * @return json
+	 */
+	public function duplicate(ContentType $contentType)
+	{
+		$clone = $contentType->duplicate();
+
+		activity()->on($contentType)->log('ContentTypeDuplicated');
+
+		return [
+			'message' => __('hierarchy::contenttypes.duplicated'),
+			'payload' => $clone
+		];
+	}
 }

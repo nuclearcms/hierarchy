@@ -508,4 +508,22 @@ class ContentsController extends Controller
 		if($content->is_locked) abort(422, __('hierarchy::contents.content_is_locked'));
 	}
 
+	/**
+	 * Duplicates the content
+	 *
+	 * @param Content $content
+	 * @return json
+	 */
+	public function duplicate(Content $content)
+	{
+		$clone = $content->duplicate();
+
+		activity()->on($content)->log('ContentDuplicated');
+
+		return [
+			'message' => __('hierarchy::contents.duplicated'),
+			'payload' => $clone
+		];
+	}
+
 }
