@@ -12,6 +12,7 @@ use Nuclear\Hierarchy\Http\Requests\UpdateContentSettings;
 use Nuclear\Hierarchy\Http\Requests\UpdateContentState;
 use Nuclear\Hierarchy\Http\Requests\MoveContent;
 use Nuclear\Hierarchy\Http\Requests\TranslateContent;
+use Nuclear\Hierarchy\Http\Requests\TransformContent;
 use Spatie\Searchable\Search;
 use Illuminate\Http\Request;
 
@@ -157,6 +158,38 @@ class ContentsController extends Controller
 	}
 
 	/**
+	 * Returns relevent information before transforming a content
+	 *
+	 * @param Content $content
+	 * @return json
+	 */
+	public function pretransform(Content $content)
+	{
+		if(is_null($content->parent_id)) return [
+			'action' => 'populate',
+			'types' => ContentType::where('is_visible', true)->where('id', '<>', $content->content_type_id)->orderBy('name')->get()
+		];
+
+		$parent = $content->parent;
+
+		if(count($parent->contentType->allowed_children_types) > 0) {
+			$allowedChildrenTypes = $parent->contentType->getAllowedChildrenTypes()->filter(function($type, $key) use ($content) {
+				return $type->id != $content->content_type_id;
+			});
+
+			if(count($allowedChildrenTypes) > 0) return [
+				'action' => 'populate',
+				'types' => array_values($allowedChildrenTypes->toArray())
+			];
+		}
+
+		return [
+			'action' => 'redirect',
+			'message' => __('hierarchy::contents.content_cannot_have_children')
+		];
+	}
+
+	/**
 	 * Stores the new content
 	 *
 	 * @param StoreContent $request
@@ -171,7 +204,7 @@ class ContentsController extends Controller
 
 			if($parent->is_sterile) abort(422, __('hierarchy::contents.content_cannot_have_children'));
 
-			if(!in_array($request->get('content_type_id'), collect($parent->contentType->allowed_children_types)->pluck('id')->toArray())) abort(422, __('hierarchy::contents.parent_does_not_allow_type'));
+			if(!in_array($request->get('content_type_id'), $parent->contentType->allowed_children_types)) abort(422, __('hierarchy::contents.parent_does_not_allow_type'));
 		}
 
 		// Proceed to saving
@@ -321,7 +354,7 @@ class ContentsController extends Controller
 
 			if($parent->is_sterile) abort(422, __('hierarchy::contents.parent_is_sterile'));
 
-			if(!in_array($content->contentType->id, collect($parent->contentType->allowed_children_types)->pluck('id')->toArray())) abort(422, __('hierarchy::contents.parent_does_not_allow_type'));
+			if(!in_array($content->contentType->id, $parent->contentType->allowed_children_types)) abort(422, __('hierarchy::contents.parent_does_not_allow_type'));
 		}
 		
 		if((is_null($content->parent_id) && is_null($parent)) || (!is_null($parent) && $content->parent_id == $parent->id)) {
@@ -335,6 +368,33 @@ class ContentsController extends Controller
 
 		return [
 			'message' => __('hierarchy::contents.moved_content'),
+			'event' => 'content-tree-modified'
+		];
+	}
+
+	/**
+	 * Transforms a content
+	 *
+	 * @param TransformContent $request
+	 * @param Content $content
+	 * @return json
+	 */
+	public function transform(TransformContent $request, Content $content)
+	{
+		$this->validateContentIsEditable($content);
+
+		if(!is_null($content->parent_id)) {
+			if(!in_array($request->get('content_type_id'), $content->parent->contentType->allowed_children_types)) abort(422, __('hierarchy::contents.parent_does_not_allow_type'));
+		}
+
+		$content->content_type_id = $request->get('content_type_id');
+		$content->save();
+
+		activity()->on($content)->log('ContentTransformed');
+
+		return [
+			'message' => __('hierarchy::contents.transformed_content'),
+			'payload' => $content,
 			'event' => 'content-tree-modified'
 		];
 	}

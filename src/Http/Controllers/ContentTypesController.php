@@ -66,6 +66,8 @@ class ContentTypesController extends Controller
 	 */
 	public function show(ContentType $contentType)
 	{
+		$contentType->allowed_children_types = $contentType->getAllowedChildrenTypes();
+
 		return $contentType;
 	}
 
@@ -135,6 +137,7 @@ class ContentTypesController extends Controller
 		$validated['allowed_children_types'] = collect($validated['allowed_children_types'])->pluck('id')->toArray();
 
 		$contentType->update($validated);
+		$contentType->allowed_children_types = $contentType->getAllowedChildrenTypes();
 
 		activity()->on($contentType)->log('ContentTypeUpdated');
 
