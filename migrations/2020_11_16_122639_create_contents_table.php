@@ -34,8 +34,8 @@ class CreateContentsTable extends Migration
             $table->json('keywords')->nullable();
             $table->json('meta_title')->nullable();
             $table->json('meta_description')->nullable();
-            $table->json('meta_author')->nullable();
-            $table->json('meta_image')->nullable();
+            $table->json('author')->nullable();
+            $table->json('cover_image')->nullable();
 
             $table->timestamps();
 
@@ -80,6 +80,13 @@ class CreateContentsTable extends Migration
                 ->on('contents')
                 ->onDelete('cascade');
         });
+
+        Schema::table('taggables', function (Blueprint $table) {
+            $table->foreign('taggable_id')
+                ->references('id')
+                ->on('contents')
+                ->onDelete('cascade');
+        });
     }
 
     /**
@@ -89,6 +96,9 @@ class CreateContentsTable extends Migration
      */
     public function down()
     {
+        Schema::table('taggables', function (Blueprint $table) {
+            $table->dropForeign('taggables_taggable_id_foreign');
+        });
         Schema::dropIfExists('content_extensions');
         Schema::dropIfExists('content_closure');
         Schema::dropIfExists('contents');

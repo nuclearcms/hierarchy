@@ -117,7 +117,7 @@ class ContentsController extends Controller
 					->addSearchableAttribute('keywords')
 					->addSearchableAttribute('meta_title')
 					->addSearchableAttribute('meta_description')
-					->addSearchableAttribute('meta_author')
+					->addSearchableAttribute('author')
 					->with('contentType');
 			})
 			->search($request->get('q'))
@@ -230,7 +230,8 @@ class ContentsController extends Controller
 	 */
 	public function show(Content $content)
 	{
-		return $content->setAppends(['contentType', 'locales', 'ancestors', 'is_published', 'schema', 'extensions', 'tags']);
+		return $content->loadMedia()->formcastExtensions()
+			->setAppends(['content_type', 'locales', 'ancestors', 'is_published', 'schema', 'tags']);
 	}
 
 
@@ -261,12 +262,32 @@ class ContentsController extends Controller
 	{
 		$this->validateContentIsEditable($content);
 
-		$content->update($request->validated());
+		$validated = $request->validated();
+
+		$cover = $validated['cover_image'];
+
+		foreach($cover as $locale => $v) {
+			if(isset($v['id'])) $cover[$locale] = $v['id'];
+		}
+
+		$validated['cover_image'] = $cover;
+
+		$content->update($validated);
 
 		$extensionFieldNames = $content->schema['fields'];
 
 		foreach($extensionFieldNames as $name => $type) {
-			$content->getExtension($name)->update(['value' => $request->get($name)]);
+			$value = $request->get($name);
+
+			if($type == 'MediaField') {
+				foreach($value as $locale => $v) {
+					$value[$locale] = isset($v['id'])
+						? $v['id']
+						: collect($v)->pluck('id')->toArray();
+				}
+			}
+
+			$content->getExtension($name)->update(compact('value'));
 		}
 
 		if($content->contentType->is_taggable) {
@@ -277,7 +298,8 @@ class ContentsController extends Controller
 
 		return [
 			'message' => __('hierarchy::contents.edited'),
-			'payload' => $content->setAppends(['contentType', 'locales', 'ancestors', 'is_published']),
+			'payload' => $content->loadMedia()->formcastExtensions()
+			->setAppends(['content_type', 'locales', 'ancestors', 'is_published', 'schema', 'tags']),
 			'event' => 'content-tree-modified'
 		];
 	}
@@ -299,7 +321,7 @@ class ContentsController extends Controller
 
 		return [
 			'message' => __('hierarchy::contents.edited_settings'),
-			'payload' => $content->setAppends(['contentType', 'locales', 'ancestors', 'is_published']),
+			'payload' => $content->setAppends(['content_type', 'locales', 'ancestors', 'is_published']),
 			'event' => 'content-tree-modified'
 		];
 	}

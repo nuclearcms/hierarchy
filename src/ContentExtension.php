@@ -47,4 +47,23 @@ class ContentExtension extends Model {
         return $this->belongsTo(Content::class);
     }
 
+    /**
+     * Loads media for the extension
+     *
+     * @return self
+     */
+    public function loadMedia()
+    {
+        if(is_null($translations = $this->getTranslations('value'))) return $this;
+
+        foreach($translations as $locale => $translation)
+        {
+            if(empty($translation)) continue;
+
+            $this->setTranslation('value', $locale, is_array($translation) ? get_media($translation) : get_medium($translation));
+        }
+
+        return $this;
+    }
+
 }

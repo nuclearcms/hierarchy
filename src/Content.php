@@ -47,7 +47,7 @@ class Content extends Entity implements Searchable {
         'content_type_id', 'parent_id',
         'is_visible', 'is_sterile', 'is_locked', 'status', 'hides_children', 'priority',
         'published_at', 'children_display_mode', 'title', 'slug', 'keywords',
-        'meta_title', 'meta_description', 'meta_author', 'meta_image'
+        'meta_title', 'meta_description', 'author', 'cover_image'
     ];
 
     /**
@@ -61,8 +61,8 @@ class Content extends Entity implements Searchable {
         'keywords' => 'array',
         'meta_title' => 'array',
         'meta_description' => 'array',
-        'meta_author' => 'array',
-        'meta_image' => 'array'
+        'author' => 'array',
+        'cover_image' => 'array'
     ];
 
     /**
@@ -72,7 +72,7 @@ class Content extends Entity implements Searchable {
      */
     public $translatable = [
         'title', 'slug', 'keywords', 'meta_title',
-        'meta_description', 'meta_author', 'meta_image'
+        'meta_description', 'author', 'cover_image'
     ];
 
     /**
@@ -172,16 +172,16 @@ class Content extends Entity implements Searchable {
      *
      * @return array
      */
-    public function getExtensionsAttribute()
+    public function formcastExtensions()
     {
-        $extensions = [];
+        $schema = $this->getSchemaAttribute();
 
-        foreach($this->schema['fields'] as $name => $type) {
+        foreach($schema['fields'] as $name => $type) {
             $extension = $this->getExtension($name);
-            $extensions[$extension->name] = $extension->getTranslations('value');
+            $this->setAttribute($extension->name, ($extension->type == 'MediaField' ? $extension->loadMedia()->getTranslations('value') : $extension->getTranslations('value')));
         }
 
-        return $extensions;
+        return $this;
     }
 
     /**
@@ -192,7 +192,7 @@ class Content extends Entity implements Searchable {
      */
     public function getExtension($name)
     {
-        if($extension = $this->extensions()->get()->firstWhere('name', $name)) return $extension;
+        if($extension = $this->extensions->firstWhere('name', $name)) return $extension;
 
         return $this->extensions()->save(new ContentExtension([
             'name' => $name,
@@ -398,7 +398,9 @@ class Content extends Entity implements Searchable {
      */
     public function getCoverThumbnailAttribute()
     {
-        return url(config('imagecache.route') . '/thumbnail/2020/06/930c3451b23e75e68c6a8d7036df0f51.jpg');
+        if($this->cover_image == null || is_null($cover = get_medium($this->cover_image))) return null;
+
+        return $cover->imageURLFor('thumbnail');
     }
 
     /**
@@ -413,6 +415,26 @@ class Content extends Entity implements Searchable {
         {
             $this->setTranslation('title', $locale, $title . ' [' . __('foundation::general.copy') . ']');
         }
+    }
+
+    /**
+     * Loads media for the content
+     *
+     * @return self
+     */
+    public function loadMedia()
+    {
+        // Load cover
+        if(is_null($translations = $this->getTranslations('cover_image'))) return $this;
+
+        foreach($translations as $locale => $translation)
+        {
+            if(empty($translation)) continue;
+
+            $this->setTranslation('cover_image', $locale, is_array($translation) ? get_media($translation) : get_medium($translation));
+        }
+
+        return $this;
     }
 
 }
