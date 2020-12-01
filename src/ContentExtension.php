@@ -60,10 +60,32 @@ class ContentExtension extends Model {
         {
             if(empty($translation)) continue;
 
-            $this->setTranslation('value', $locale, is_array($translation) ? get_media($translation) : get_medium($translation));
+            if($this->type == 'MediaField') {
+                $this->setTranslation('value', $locale, is_array($translation) ? get_media($translation) : get_medium($translation));
+            } elseif($this->type == 'TextEditorField') {
+                $this->setTranslation('value', $locale, $this->loadEditorMedia($translation));
+            }
+            
         }
 
         return $this;
+    }
+
+    /**
+     * Loads media for text editor fields
+     *
+     * @param array $translation
+     * @return array
+     */
+    protected function loadEditorMedia($content)
+    {
+        foreach($content['blocks'] as &$block) {
+            if($block['type'] == 'media') {
+                if(!empty($block['data']['media'])) $block['data']['media'] = get_media($block['data']['media']);
+            }
+        }
+
+        return $content;
     }
 
 }

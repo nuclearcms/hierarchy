@@ -72,6 +72,8 @@ class ContentType extends Model implements Searchable {
 	 */
 	public function getAllowedChildrenTypes()
 	{
+		if(empty($this->allowed_children_types)) return [];
+		
 		return self::where('is_visible', true)->whereIn('id', $this->allowed_children_types)->orderByRaw('FIELD (id, ' . implode(', ', $this->allowed_children_types) . ') ASC')->get();
 	}
 

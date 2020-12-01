@@ -285,6 +285,16 @@ class ContentsController extends Controller
 						? $v['id']
 						: collect($v)->pluck('id')->toArray();
 				}
+			} elseif($type == 'TextEditorField') {
+				foreach($value as $locale => &$v) {
+					if(isset($v['blocks'])) {
+						foreach($v['blocks'] as &$block) {
+							if($block['type'] == 'media') {
+								if(!empty($block['data']['media'])) $block['data']['media'] = collect($block['data']['media'])->pluck('id')->toArray();
+							}
+						}
+					}
+				}
 			}
 
 			$content->getExtension($name)->update(compact('value'));

@@ -178,7 +178,7 @@ class Content extends Entity implements Searchable {
 
         foreach($schema['fields'] as $name => $type) {
             $extension = $this->getExtension($name);
-            $this->setAttribute($extension->name, ($extension->type == 'MediaField' ? $extension->loadMedia()->getTranslations('value') : $extension->getTranslations('value')));
+            $this->setAttribute($extension->name, ($extension->type == 'MediaField' || $extension->type == 'TextEditorField' ? $extension->loadMedia()->getTranslations('value') : $extension->getTranslations('value')));
         }
 
         return $this;
