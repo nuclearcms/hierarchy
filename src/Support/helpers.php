@@ -14,7 +14,7 @@ if (! function_exists('get_schema_for')) {
 	{
 		return Cache::rememberForever('contentType.' . $contentTypeId, function() use ($contentTypeId) {
 
-			$fieldsData = ContentType::findOrFail($contentTypeId)->fields()->where('is_visible', true)->orderBy('position')->get();
+			$fieldsData = ContentType::findOrFail($contentTypeId)->fields()->orderBy('position')->get();
 
 			$rules = [];
 			$fields = [];
@@ -22,12 +22,21 @@ if (! function_exists('get_schema_for')) {
 
 			foreach($fieldsData as $field)
 			{
-				$fields[$field->name] = $field->type;
+				$fields[$field->name] = ['type' => $field->type, 'field_id' => $field->id];
+
+				if(!$field->is_visible) continue;
+
+				$options = json_decode($field->options, true);
+
 				$schema[] = [
-					'type' => $field->type,
+					'type' => ($field->type == 'ContentRelationField' ? 'RelationField' : $field->type),
 					'name' => $field->name,
 					'label' => $field->label,
-					'options' => json_decode($field->options, true),
+					'options' => ($field->type == 'ContentRelationField'
+						? (is_array($options)
+							? array_merge(['searchroute' => 'contents/search/relatable', 'namekey' => 'title', 'translated' => true, 'multiple' => true], $options)
+							: ['searchroute' => 'contents/search/relatable', 'namekey' => 'title', 'translated' => true, 'multiple' => true])
+						: $options),
 					'default_value' => $field->default_value,
 					'hint' => $field->description
 				];

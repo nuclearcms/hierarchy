@@ -48,7 +48,11 @@ class ContentTypesController extends Controller
 	 */
 	public function store(StoreContentType $request)
 	{
-		$contentType = ContentType::create($request->validated());
+		$validated = $request->validated();
+		// Just save the ids
+		$validated['allowed_children_types'] = collect($validated['allowed_children_types'])->pluck('id')->toArray();
+
+		$contentType = ContentType::create($validated);
 
 		activity()->on($contentType)->log('ContentTypeStored');
 
@@ -132,7 +136,6 @@ class ContentTypesController extends Controller
 	public function update(UpdateContentType $request, ContentType $contentType)
 	{
 		$validated = $request->validated();
-
 		// Just save the ids
 		$validated['allowed_children_types'] = collect($validated['allowed_children_types'])->pluck('id')->toArray();
 

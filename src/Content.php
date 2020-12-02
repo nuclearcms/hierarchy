@@ -176,9 +176,16 @@ class Content extends Entity implements Searchable {
     {
         $schema = $this->getSchemaAttribute();
 
-        foreach($schema['fields'] as $name => $type) {
+        foreach($schema['fields'] as $name => $d) {
             $extension = $this->getExtension($name);
-            $this->setAttribute($extension->name, ($extension->type == 'MediaField' || $extension->type == 'TextEditorField' ? $extension->loadMedia()->getTranslations('value') : $extension->getTranslations('value')));
+
+            if($extension->type == 'MediaField' || $extension->type == 'TextEditorField') {
+                $extension->loadMedia();
+            } elseif($extension->type == 'ContentRelationField') {
+                $extension->loadRelations();
+            }
+
+            $this->setAttribute($extension->name, $extension->getTranslations('value'));
         }
 
         return $this;
@@ -196,7 +203,8 @@ class Content extends Entity implements Searchable {
 
         return $this->extensions()->save(new ContentExtension([
             'name' => $name,
-            'type' => $this->schema['fields'][$name]
+            'type' => $this->schema['fields'][$name]['type'],
+            'field_id' => $this->schema['fields'][$name]['field_id']
         ]));
     }
 
@@ -435,6 +443,76 @@ class Content extends Entity implements Searchable {
         }
 
         return $this;
+    }
+
+    /**
+     * Extensively updates the model with all data
+     *
+     * @param array $validated
+     */
+    public function extensiveUpdate(array $validated)
+    {
+        $cover = $validated['cover_image'];
+
+        foreach($cover as $locale => $v) {
+            if(isset($v['id'])) $cover[$locale] = $v['id'];
+        }
+
+        $validated['cover_image'] = $cover;
+
+        $this->update($validated);
+
+        $this->updateExtensions($validated);
+
+        if($this->contentType->is_taggable) {
+            $this->tags()->sync(collect($validated['tags'])->pluck('id')->toArray());
+        }
+    }
+
+    /**
+     * Updates content extensions
+     */
+    protected function updateExtensions(array $validated)
+    {
+        $extensionFieldNames = $this->getSchemaAttribute()['fields'];
+
+        foreach($extensionFieldNames as $name => $d) {
+            $value = $validated[$name];
+
+            if($d['type'] == 'MediaField' || $d['type'] == 'ContentRelationField') {
+                foreach($value as $locale => $v) {
+                    $value[$locale] = isset($v['id'])
+                        ? $v['id']
+                        : collect($v)->pluck('id')->toArray();
+                }
+            } elseif($d['type'] == 'TextEditorField') {
+                foreach($value as $locale => &$v) {
+                    if(isset($v['blocks'])) {
+                        foreach($v['blocks'] as &$block) {
+                            if($block['type'] == 'media') {
+                                if(!empty($block['data']['media'])) $block['data']['media'] = collect($block['data']['media'])->pluck('id')->toArray();
+                            }
+                        }
+                    }
+                }
+            }
+
+            $this->getExtension($name)->update(compact('value'));
+        }
+    }
+
+    /**
+     * Transforms the model
+     *
+     * @param int $contentTypeId
+     */
+    public function transform($contentTypeId)
+    {
+        $this->content_type_id = $contentTypeId;
+        $this->save();
+
+        $newFields = array_keys(get_schema_for($contentTypeId)['fields']);
+        $this->extensions()->whereNotIn('name', $newFields)->delete();
     }
 
 }

@@ -79,6 +79,11 @@ class CreateContentsTable extends Migration
                 ->references('id')
                 ->on('contents')
                 ->onDelete('cascade');
+
+            $table->foreign('field_id')
+                ->references('id')
+                ->on('content_fields')
+                ->onDelete('cascade');
         });
 
         Schema::table('taggables', function (Blueprint $table) {

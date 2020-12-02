@@ -127,6 +127,31 @@ class ContentsController extends Controller
 	}
 
 	/**
+	 * Returns a list of content filtered by search for relations
+	 *
+	 * @param Request $request
+	 * @return json
+	 */
+	public function searchRelatable(Request $request)
+	{
+		return ['data' => (new Search())
+			->registerModel(Content::class, function($aspect) use($request) {
+				$aspect
+					->addSearchableAttribute('title')
+					->addSearchableAttribute('keywords');
+
+				if(!empty($request->get('of'))) {
+					$filters = explode(',', urldecode($request->get('of', '')));
+					$aspect->whereIn('content_type_id', $filters);
+				}
+			})
+			->search($request->get('q'))
+			->map(function($content) {
+				return $content->searchable;
+			})];
+	}
+
+	/**
 	 * Returns relevent information before creating a content
 	 *
 	 * @param int|null $parent
@@ -264,45 +289,7 @@ class ContentsController extends Controller
 
 		$validated = $request->validated();
 
-		$cover = $validated['cover_image'];
-
-		foreach($cover as $locale => $v) {
-			if(isset($v['id'])) $cover[$locale] = $v['id'];
-		}
-
-		$validated['cover_image'] = $cover;
-
-		$content->update($validated);
-
-		$extensionFieldNames = $content->schema['fields'];
-
-		foreach($extensionFieldNames as $name => $type) {
-			$value = $request->get($name);
-
-			if($type == 'MediaField') {
-				foreach($value as $locale => $v) {
-					$value[$locale] = isset($v['id'])
-						? $v['id']
-						: collect($v)->pluck('id')->toArray();
-				}
-			} elseif($type == 'TextEditorField') {
-				foreach($value as $locale => &$v) {
-					if(isset($v['blocks'])) {
-						foreach($v['blocks'] as &$block) {
-							if($block['type'] == 'media') {
-								if(!empty($block['data']['media'])) $block['data']['media'] = collect($block['data']['media'])->pluck('id')->toArray();
-							}
-						}
-					}
-				}
-			}
-
-			$content->getExtension($name)->update(compact('value'));
-		}
-
-		if($content->contentType->is_taggable) {
-			$content->tags()->sync(collect($request->get('tags'))->pluck('id')->toArray());
-		}
+		$content->extensiveUpdate($validated);
 
 		activity()->on($content)->log('ContentUpdated');
 
@@ -419,8 +406,7 @@ class ContentsController extends Controller
 			if(!in_array($request->get('content_type_id'), $content->parent->contentType->allowed_children_types)) abort(422, __('hierarchy::contents.parent_does_not_allow_type'));
 		}
 
-		$content->content_type_id = $request->get('content_type_id');
-		$content->save();
+		$content->transform($request->get('content_type_id'));
 
 		activity()->on($content)->log('ContentTransformed');
 

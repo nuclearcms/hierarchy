@@ -14,7 +14,7 @@ class ContentExtension extends Model {
      *
      * @var array
      */
-    protected $fillable = ['name', 'type', 'value'];
+    protected $fillable = ['field_id', 'name', 'type', 'value'];
 
     /**
      * The attributes that should be cast to native types.
@@ -86,6 +86,27 @@ class ContentExtension extends Model {
         }
 
         return $content;
+    }
+
+    /**
+     * Loads relations for the extension
+     *
+     * @return self
+     */
+    public function loadRelations()
+    {
+        if(is_null($translations = $this->getTranslations('value'))) return $this;
+
+        foreach($translations as $locale => $translation)
+        {
+            if(empty($translation)) continue;
+
+            $this->setTranslation('value', $locale, is_array($translation)
+                ? Content::whereIn('id', $translation)->orderByRaw('FIELD (id, ' . implode(', ', $translation) . ') ASC')->get()
+                : Content::find($translation));            
+        }
+
+        return $this;
     }
 
 }
