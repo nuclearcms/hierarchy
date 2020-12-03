@@ -10,10 +10,12 @@ use Spatie\Searchable\Searchable;
 use Spatie\Searchable\SearchResult;
 use Illuminate\Database\Eloquent\Builder;
 use Bkwld\Cloner\Cloneable;
+use CyrildeWit\EloquentViewable\InteractsWithViews;
+use CyrildeWit\EloquentViewable\Contracts\Viewable;
 
-class Content extends Entity implements Searchable {
+class Content extends Entity implements Searchable, Viewable {
 
-    use HasSlug, HasTags, HasTranslations, Cloneable {
+    use InteractsWithViews, HasSlug, HasTags, HasTranslations, Cloneable {
         getAttributeValue as _getAttributeValue;
     }
 

@@ -23,5 +23,12 @@
     	"psr-4": {
     		"Nuclear\\Hierarchy\\": "src/"
     	}
+    },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "Nuclear\\Hierarchy\\Providers\\HierarchyServiceProvider"
+            ]
+        }
     }
 }
