@@ -15,6 +15,7 @@
     "require": {
     	"php": "^7.3|^8.0",
         "laravel/framework": "^8.0",
+        "cyrildewit/eloquent-viewable": "^5.2",
         "franzose/closure-table": "^6.1",
         "spatie/laravel-translatable": "^4.1",
         "bkwld/cloner": "^3.9"

@@ -15,6 +15,7 @@ use Nuclear\Hierarchy\Http\Requests\TranslateContent;
 use Nuclear\Hierarchy\Http\Requests\TransformContent;
 use Spatie\Searchable\Search;
 use Illuminate\Http\Request;
+use Nuclear\Hierarchy\Support\ViewsCounter;
 
 class ContentsController extends Controller
 {
@@ -542,6 +543,18 @@ class ContentsController extends Controller
 			'message' => __('hierarchy::contents.duplicated'),
 			'payload' => $clone
 		];
+	}
+
+	/**
+	 * Returns view statistics for the content
+	 *
+	 * @param ViewsCounter $counter
+	 * @param Content $content
+	 * @return json
+	 */
+	public function statistics(ViewsCounter $counter, Content $content)
+	{
+		return ['views' => $counter->countFor($content)];
 	}
 
 }
