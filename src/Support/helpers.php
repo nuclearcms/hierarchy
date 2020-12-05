@@ -2,7 +2,7 @@
 
 use Nuclear\Hierarchy\ContentType;
 
-if (! function_exists('get_schema_for')) {
+if (!function_exists('get_schema_for')) {
 
 	/**
 	 * Returns the form schema for a content type

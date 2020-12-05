@@ -2,7 +2,7 @@
 
 namespace Nuclear\Hierarchy\Support;
 
-use Nuclear\Hierarchy\Content;
+use Nuclear\Hierarchy\SiteContent;
 use CyrildeWit\EloquentViewable\Support\Period;
 use CyrildeWit\EloquentViewable\View;
 use Carbon\Carbon;
@@ -12,10 +12,10 @@ class ViewsCounter {
 	/**
 	 * Crunches statistics for a given model
 	 *
-	 * @param string|Content $content
+	 * @param string|SiteContent $content
 	 * @return array
 	 */
-	public function countFor($content = Content::class)
+	public function countFor($content = SiteContent::class)
 	{
 		$data = $this->compileStarterData($content);
 
@@ -27,19 +27,27 @@ class ViewsCounter {
 	/**
 	 * Compiles starter data
 	 *
-	 * @param string|Content $content
+	 * @param string|SiteContent $content
 	 * @return array
 	 */
 	protected function compileStarterData($content)
 	{
-		$latest = is_object($content)
-			? $content->views()->latest('viewed_at')->first()
-			: View::latest('viewed_at')->first();
+		Carbon::setLocale(auth()->user()->locale);
+
+		if(is_object($content)) {
+			$latest = $content->views()->latest('viewed_at')->first();
+			$totalViews = View::where('viewable_id', $content->id)->count();
+			$viewsToday = View::where('viewable_id', $content->id)->whereBetween('viewed_at', [Carbon::today(), Carbon::tomorrow()])->count();
+		} else {
+			$latest = View::latest('viewed_at')->first();
+			$totalViews = View::where('viewable_type', $content)->count();
+			$viewsToday = View::where('viewable_type', $content)->whereBetween('viewed_at', [Carbon::today(), Carbon::tomorrow()])->count();
+		}
 
 		return [
-			'total_views' => views($content)->unique()->count(),
-			'views_today' => views($content)->unique()->period(Period::create(Carbon::today(), Carbon::tomorrow()))->count(),
-			'latest_view' => $latest ? $latest->viewed_at->diffForHumans() : __('foundation::general.never'),
+			'total_views' =>$totalViews,
+			'views_today' => $viewsToday,
+			'latest_view' => $latest ? (new Carbon($latest->viewed_at))->diffForHumans() : __('foundation::general.never'),
 			'labels' => [],
 			'data' => []
 		];
@@ -87,7 +95,7 @@ class ViewsCounter {
 	/**
 	 * Returns the views counts for given periods
 	 *
-	 * @param string|Content $content
+	 * @param string|SiteContent $content
 	 * @param array $periods
 	 * @param array $data
 	 * @return array
@@ -98,7 +106,7 @@ class ViewsCounter {
 			foreach(config('app.locales') as $locale) {
 				$c = count($periodSet);
 				for($i = 0; $i < $c; $i++) {
-					$query = views($content)->unique()->collection($locale)->period(Period::create($periodSet[$i][0], $periodSet[$i][1]));
+					$query = views($content)->collection($locale)->period(Period::create($periodSet[$i][0], $periodSet[$i][1]));
 
 					if($i < ($c-1)) $query->remember();
 

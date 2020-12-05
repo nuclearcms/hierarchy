@@ -4,6 +4,7 @@ namespace Nuclear\Hierarchy\Http\Controllers;
 
 use Umomega\Foundation\Http\Controllers\Controller;
 use Nuclear\Hierarchy\Content;
+use Nuclear\Hierarchy\SiteContent;
 use Nuclear\Hierarchy\ContentType;
 use Umomega\Tags\Tag;
 use Nuclear\Hierarchy\Http\Requests\StoreContent;
@@ -549,10 +550,10 @@ class ContentsController extends Controller
 	 * Returns view statistics for the content
 	 *
 	 * @param ViewsCounter $counter
-	 * @param Content $content
+	 * @param SiteContent $content
 	 * @return json
 	 */
-	public function statistics(ViewsCounter $counter, Content $content)
+	public function statistics(ViewsCounter $counter, SiteContent $content)
 	{
 		return ['views' => $counter->countFor($content)];
 	}
