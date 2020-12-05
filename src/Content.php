@@ -89,7 +89,7 @@ class Content extends Entity implements Searchable, Viewable {
      *
      * @var array
      */
-    protected $appends = ['cover_thumbnail'];
+    protected $appends = ['cover_thumbnail', 'is_published'];
 
     /**
      * Status codes
@@ -126,7 +126,27 @@ class Content extends Entity implements Searchable, Viewable {
         static::creating(function($content)
         {
             if(empty($content->published_at)) $content->published_at = Carbon::now();
+
+            $content->fireEvent('creating');
         });
+
+        foreach(['created', 'updating', 'updated', 'deleting', 'deleted', 'saving', 'saved'] as $event)
+        {
+            static::$event(function($content) use($event)
+            {
+                $content->fireEvent($event);
+            });
+        }
+    }
+
+    /**
+     * Fires a content event
+     *
+     * @param string $event
+     */
+    public function fireEvent($event)
+    {
+        event($event . '.content.type.' . $this->content_type_id, $this);
     }
 
     /**
