@@ -49,7 +49,7 @@ class Content extends Entity implements Searchable, Viewable {
         'content_type_id', 'parent_id',
         'is_visible', 'is_sterile', 'is_locked', 'status', 'hides_children', 'priority',
         'published_at', 'children_display_mode', 'title', 'slug', 'keywords',
-        'meta_title', 'meta_description', 'author', 'cover_image'
+        'meta_title', 'meta_description', 'meta_author', 'cover_image'
     ];
 
     /**
@@ -63,7 +63,7 @@ class Content extends Entity implements Searchable, Viewable {
         'keywords' => 'array',
         'meta_title' => 'array',
         'meta_description' => 'array',
-        'author' => 'array',
+        'meta_author' => 'array',
         'cover_image' => 'array'
     ];
 
@@ -74,7 +74,7 @@ class Content extends Entity implements Searchable, Viewable {
      */
     public $translatable = [
         'title', 'slug', 'keywords', 'meta_title',
-        'meta_description', 'author', 'cover_image'
+        'meta_description', 'meta_author', 'cover_image'
     ];
 
     /**

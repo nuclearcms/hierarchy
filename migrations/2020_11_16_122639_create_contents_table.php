@@ -34,7 +34,7 @@ class CreateContentsTable extends Migration
             $table->json('keywords')->nullable();
             $table->json('meta_title')->nullable();
             $table->json('meta_description')->nullable();
-            $table->json('author')->nullable();
+            $table->json('meta_author')->nullable();
             $table->json('cover_image')->nullable();
 
             $table->timestamps();
