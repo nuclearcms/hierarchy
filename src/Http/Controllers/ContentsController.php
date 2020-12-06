@@ -14,6 +14,7 @@ use Nuclear\Hierarchy\Http\Requests\UpdateContentState;
 use Nuclear\Hierarchy\Http\Requests\MoveContent;
 use Nuclear\Hierarchy\Http\Requests\TranslateContent;
 use Nuclear\Hierarchy\Http\Requests\TransformContent;
+use Nuclear\Reactor\Support\TokenManager;
 use Spatie\Searchable\Search;
 use Illuminate\Http\Request;
 use Nuclear\Hierarchy\Support\ViewsCounter;
@@ -257,8 +258,11 @@ class ContentsController extends Controller
 	 */
 	public function show(Content $content)
 	{
+		$content->preview_token = app()->make(TokenManager::class)
+            ->makeNewToken('preview_contents');
+
 		return $content->loadMedia()->formcastExtensions()
-			->setAppends(['content_type', 'locales', 'ancestors', 'is_published', 'schema', 'tags']);
+			->setAppends(['content_type', 'locales', 'ancestors', 'is_published', 'schema', 'tags', 'site_urls']);
 	}
 
 

@@ -170,6 +170,59 @@ class Content extends Entity implements Searchable, Viewable {
     }
 
     /**
+     * Getter for site URLs
+     *
+     * @return array
+     */
+    public function getSiteURLsAttribute()
+    {
+        $locales = $this->getLocalesAttribute();
+        $ancestors = $this->getAncestorsAttribute();
+
+        $urls = [];
+
+        foreach($locales as $locale)
+        {
+            if($url = $this->getSiteURL($locale)) $urls[$locale] = $url;
+        }
+
+        return $urls;
+    }
+
+    /**
+     * Returns the site URL optionally for a locale
+     *
+     * @param string|null $locale
+     * @param collection|null $ancestors
+     * @return string
+     */
+    public function getSiteURL($locale = null, $ancestors = null)
+    {
+        $locale = $locale ?: $this->getLocale();
+        $ancestors = $ancestors ?: $this->getAncestorsAttribute();
+
+        $ancestors[] = $this;
+
+        $slugs = [];
+
+        if($locale != config('app.locale')) $slugs[] = $locale;
+
+        $canHaveURL = true;
+
+        foreach($ancestors as $ancestor) {
+            if($ancestor->id == config('app.home_content')) continue;
+            if($ancestor->hasTranslation('slug', $locale)) {
+                $slugs[] = $ancestor->getTranslation('slug', $locale);
+            } else {
+                $canHaveURL = false;
+                break;
+            }
+        }
+
+        return $canHaveURL ? '/' . implode('/', $slugs) : null;
+    }
+
+    /**
      * Getter for the content type
      *
      * @return ContentType
@@ -247,7 +300,7 @@ class Content extends Entity implements Searchable, Viewable {
      */
     public function getAncestorsAttribute()
     {
-        return array_reverse($this->ancestors()->with('contentType')->get()->toArray());
+        return $this->ancestors()->with('contentType')->get()->reverse()->values();
     }
 
     /**

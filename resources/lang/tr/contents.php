@@ -35,6 +35,7 @@ return [
 	'parent_is_sterile' => 'Ebeveyn içerik çocuk içerik kabul etmiyor.',
 	'parent_does_not_allow_type' => 'Ebeveyn içerik çocuk içerik tipini kabul etmiyor.',
 	'children' => 'Çocuklar',
+	'preview' => 'Sitede Önizle',
 
 	'search' => 'İçerik ara',
 	'seo_and_search' => 'SEO & Arama',

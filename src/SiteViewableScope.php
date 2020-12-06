@@ -18,7 +18,7 @@ class SiteViewableScope implements Scope {
     public function apply(Builder $builder, Model $model)
     {
     	// We check for the token, otherwise we publish the scope
-    	if(app('Nuclear\Reactor\Support\TokenManager')->requestHasToken('preview_nodes')) return $model;
+    	if(app('Nuclear\Reactor\Support\TokenManager')->requestHasToken('preview_contents')) return $model;
 
         return $model->scopePublished($builder);
     }

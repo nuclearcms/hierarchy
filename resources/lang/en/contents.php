@@ -35,6 +35,7 @@ return [
 	'parent_is_sterile' => 'Parent content cannot have children.',
 	'parent_does_not_allow_type' => 'Parent does not accept content type.',
 	'children' => 'Children',
+	'preview' => 'Preview on Site',
 
 	'search' => 'Search contents',
 	'seo_and_search' => 'SEO & Search',
