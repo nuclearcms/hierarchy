@@ -102,13 +102,6 @@ class Content extends Entity implements Searchable, Viewable {
     const ARCHIVED = 60;
 
     /**
-     * Schema cache
-     *
-     * @var null|array
-     */
-    protected $schema = null;
-
-    /**
      * Cloneable relations for duplication
      *
      * @var array
@@ -249,7 +242,7 @@ class Content extends Entity implements Searchable, Viewable {
      */
     public function formcastExtensions()
     {
-        $schema = $this->getSchemaAttribute();
+        $schema = $this->getSchema();
 
         foreach($schema['fields'] as $name => $d) {
             $extension = $this->getExtension($name);
@@ -276,10 +269,12 @@ class Content extends Entity implements Searchable, Viewable {
     {
         if($extension = $this->extensions->firstWhere('name', $name)) return $extension;
 
+        $field = $this->getSchema()['fields'][$name];
+
         return $this->extensions()->save(new ContentExtension([
             'name' => $name,
-            'type' => $this->schema['fields'][$name]['type'],
-            'field_id' => $this->schema['fields'][$name]['field_id']
+            'type' => $field['type'],
+            'field_id' => $field['field_id']
         ]));
     }
 
@@ -318,19 +313,45 @@ class Content extends Entity implements Searchable, Viewable {
      *
      * @return array
      */
-    public function getSchemaAttribute()
+    public function getSchema()
     {
-        $this->loadSchema();
-        
-        return $this->schema;
-    }
+        $contentTypeId = $this->attributes['content_type_id'];
 
-    /**
-     * Loads the schema
-     */
-    protected function loadSchema()
-    {
-        if($this->schema == null) $this->schema = get_schema_for($this->content_type_id);
+        return \Cache::rememberForever('contentType.' . $contentTypeId, function() use ($contentTypeId) {
+
+            $fieldsData = ContentType::findOrFail($contentTypeId)->fields()->orderBy('position')->get();
+
+            $rules = [];
+            $fields = [];
+            $schema = [];
+
+            foreach($fieldsData as $field)
+            {
+                $fields[$field->name] = ['type' => $field->type, 'field_id' => $field->id];
+
+                if(!$field->is_visible) continue;
+
+                $options = json_decode($field->options, true);
+
+                $schema[] = [
+                    'type' => ($field->type == 'ContentRelationField' ? 'RelationField' : $field->type),
+                    'name' => $field->name,
+                    'label' => $field->label,
+                    'options' => ($field->type == 'ContentRelationField'
+                        ? (is_array($options)
+                            ? array_merge(['searchroute' => 'contents/search/relatable', 'namekey' => 'title', 'translated' => true, 'multiple' => true], $options)
+                            : ['searchroute' => 'contents/search/relatable', 'namekey' => 'title', 'translated' => true, 'multiple' => true])
+                        : $options),
+                    'default_value' => $field->default_value,
+                    'hint' => $field->description
+                ];
+
+                $rules[$field->name] = 'required|array|min:1';
+                if(!empty($field->rules)) $rules[$field->name . '.*'] = $field->rules;
+            }
+
+            return compact('rules', 'fields', 'schema');
+        });
     }
 
     /**
@@ -366,7 +387,7 @@ class Content extends Entity implements Searchable, Viewable {
      */
     public function isExtensionAttribute($key)
     {
-        return isset($this->schema['fields'][$key]);
+        return isset($this->getSchema()['fields'][$key]);
     }
 
     /**
@@ -557,7 +578,7 @@ class Content extends Entity implements Searchable, Viewable {
      */
     protected function updateExtensions(array $validated)
     {
-        $extensionFieldNames = $this->getSchemaAttribute()['fields'];
+        $extensionFieldNames = $this->getSchema()['fields'];
 
         foreach($extensionFieldNames as $name => $d) {
             $value = $validated[$name];

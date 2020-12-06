@@ -58,10 +58,8 @@ class SiteContent extends Content {
      * @param string $key
      * @return mixed
      */
-    public function loadable($key)
+    public function getAttribute($key)
     {
-        $this->loadSchema();
-        
         if($this->isExtensionAttribute($key)) return $this->loadExtensionValue($key);
 
         if(array_key_exists($key, $this->loadableKeys)) return $this->loadSelfValue($key);

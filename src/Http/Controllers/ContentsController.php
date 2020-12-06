@@ -260,9 +260,10 @@ class ContentsController extends Controller
 	{
 		$content->preview_token = app()->make(TokenManager::class)
             ->makeNewToken('preview_contents');
+        $content->schema = $content->getSchema();
 
 		return $content->loadMedia()->formcastExtensions()
-			->setAppends(['content_type', 'locales', 'ancestors', 'is_published', 'schema', 'tags', 'site_urls']);
+			->setAppends(['content_type', 'locales', 'ancestors', 'is_published', 'tags', 'site_urls']);
 	}
 
 
@@ -299,10 +300,12 @@ class ContentsController extends Controller
 
 		activity()->on($content)->log('ContentUpdated');
 
+		$content->schema = $content->getSchema();
+
 		return [
 			'message' => __('hierarchy::contents.edited'),
 			'payload' => $content->loadMedia()->formcastExtensions()
-			->setAppends(['content_type', 'locales', 'ancestors', 'is_published', 'schema', 'tags']),
+			->setAppends(['content_type', 'locales', 'ancestors', 'is_published', 'tags']),
 			'event' => 'content-tree-modified'
 		];
 	}
