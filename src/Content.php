@@ -198,7 +198,7 @@ class Content extends Entity implements Searchable, Viewable {
 
         $slugs = [];
 
-        if($locale != config('app.locale')) $slugs[] = $locale;
+        if($locale != config('app.fallback_locale')) $slugs[] = $locale;
 
         $canHaveURL = true;
 
@@ -316,7 +316,7 @@ class Content extends Entity implements Searchable, Viewable {
     public function getSchema()
     {
         if(!isset($this->attributes['content_type_id'])) return ['fields' => []];
-        
+
         $contentTypeId = $this->attributes['content_type_id'];
 
         return \Cache::rememberForever('contentType.' . $contentTypeId, function() use ($contentTypeId) {
