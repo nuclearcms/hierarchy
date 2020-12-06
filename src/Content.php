@@ -239,7 +239,7 @@ class Content extends Entity implements Searchable, Viewable {
      */
     public function extensions()
     {
-        return $this->hasMany(ContentExtension::class);
+        return $this->hasMany(ContentExtension::class, 'content_id');
     }
 
     /**
@@ -320,9 +320,17 @@ class Content extends Entity implements Searchable, Viewable {
      */
     public function getSchemaAttribute()
     {
-        if($this->schema == null) $this->schema = get_schema_for($this->content_type_id);
+        $this->loadSchema();
         
         return $this->schema;
+    }
+
+    /**
+     * Loads the schema
+     */
+    protected function loadSchema()
+    {
+        if($this->schema == null) $this->schema = get_schema_for($this->content_type_id);
     }
 
     /**
