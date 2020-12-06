@@ -15,10 +15,14 @@
     "require": {
     	"php": "^7.3|^8.0",
         "laravel/framework": "^8.0",
+        "bkwld/cloner": "^3.9",
         "cyrildewit/eloquent-viewable": "^5.2",
         "franzose/closure-table": "^6.1",
+        "nuclear/reactor": "^1.0",
+        "spatie/laravel-searchable": "^1.5",
         "spatie/laravel-translatable": "^4.1",
-        "bkwld/cloner": "^3.9"
+        "umomega/foundation": "^1.0",
+        "umomega/tags": "^1.0"
     },
     "autoload": {
     	"psr-4": {
