@@ -77,7 +77,7 @@ class ContentExtension extends Model {
      * @param array $translation
      * @return array
      */
-    protected function loadEditorMedia($content)
+    public function loadEditorMedia($content)
     {
         foreach($content['blocks'] as &$block) {
             if($block['type'] == 'media') {

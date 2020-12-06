@@ -530,7 +530,7 @@ class Content extends Entity implements Searchable, Viewable {
         $cover = $validated['cover_image'];
 
         foreach($cover as $locale => $v) {
-            if(isset($v['id'])) $cover[$locale] = $v['id'];
+            $cover[$locale] = isset($v['id']) ? $v['id'] : null;
         }
 
         $validated['cover_image'] = $cover;
