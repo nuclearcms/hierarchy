@@ -315,6 +315,8 @@ class Content extends Entity implements Searchable, Viewable {
      */
     public function getSchema()
     {
+        if(!isset($this->attributes['content_type_id'])) return ['fields' => []];
+        
         $contentTypeId = $this->attributes['content_type_id'];
 
         return \Cache::rememberForever('contentType.' . $contentTypeId, function() use ($contentTypeId) {
