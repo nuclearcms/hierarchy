@@ -71,6 +71,7 @@ class CreateContentsTable extends Migration
         Schema::create('content_extensions', function (Blueprint $table) {
             $table->bigIncrements('id');
             $table->bigInteger('content_id')->unsigned()->nullable();
+            $table->bigInteger('field_id')->unsigned()->nullable();
             $table->string('name');
             $table->string('type');
             $table->json('value')->nullable();
