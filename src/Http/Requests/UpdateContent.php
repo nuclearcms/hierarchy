@@ -3,6 +3,7 @@
 namespace Nuclear\Hierarchy\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
+use Nuclear\Hierarchy\ContentType;
 
 class UpdateContent extends FormRequest
 {
@@ -13,6 +14,25 @@ class UpdateContent extends FormRequest
      */
     public function rules()
     {
+        $contentTypeId = $this->input('content_type_id');
+
+        $rules = \Cache::rememberForever('contentType.' . $contentTypeId . '.rules', function() use ($contentTypeId) {
+
+            $fieldsData = ContentType::findOrFail($contentTypeId)->fields()->orderBy('position')->get();
+
+            $rules = [];
+
+            foreach($fieldsData as $field)
+            {
+                if(!$field->is_visible) continue;
+
+                $rules[$field->name] = 'required|array|min:1';
+                if(!empty($field->rules)) $rules[$field->name . '.*'] = $field->rules;
+            }
+
+            return $rules;
+        });
+
         return array_merge([
             'title' => 'required|array|min:1',
             'title.*' => 'required|max:255',
@@ -23,6 +43,6 @@ class UpdateContent extends FormRequest
             'keywords' => 'required|array|min:1',
             'status' => 'required|integer',
             'tags' => 'nullable|array'
-        ], get_schema_for($this->input('content_type_id'))['rules']);
+        ], $rules);
     }
 }

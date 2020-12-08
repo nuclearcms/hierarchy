@@ -617,7 +617,7 @@ class Content extends Entity implements Searchable, Viewable {
         $this->content_type_id = $contentTypeId;
         $this->save();
 
-        $newFields = array_keys(get_schema_for($contentTypeId)['fields']);
+        $newFields = array_keys($this->getSchema()['fields']);
         $this->extensions()->whereNotIn('name', $newFields)->delete();
     }
 
