@@ -31,6 +31,7 @@ return [
 	'PasswordField' => 'Şifre',
 	'RelationField' => 'İlişki',
 	'EmailField' => 'E-posta',
+	'CodeField' => 'Kod',
 
 	'hint_name' => 'Yalnızca küçük ASCII harfler ve alt çizgiler (_) içerebilir.',
 	'hint_label' => 'İçerik alanı için güzel bir isim.',

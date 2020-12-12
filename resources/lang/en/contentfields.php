@@ -31,6 +31,7 @@ return [
 	'PasswordField' => 'Password',
 	'RelationField' => 'Relation',
 	'EmailField' => 'E-mail',
+	'CodeField' => 'Code',
 
 	'hint_name' => 'Can only contain lowercase ASCII letters and underscores(_).',
 	'hint_label' => 'Pretty name for the content field.',
