@@ -122,6 +122,7 @@ class ContentTypesController extends Controller
 		}
 
 		\Cache::forget('contentType.' . $contentType->id);
+		\Cache::forget('contentType.' . $contentType->id . '.rules');
 
 		return;
 	}

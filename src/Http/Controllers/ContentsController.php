@@ -120,7 +120,7 @@ class ContentsController extends Controller
 					->addSearchableAttribute('keywords')
 					->addSearchableAttribute('meta_title')
 					->addSearchableAttribute('meta_description')
-					->addSearchableAttribute('author')
+					->addSearchableAttribute('meta_author')
 					->with('contentType');
 			})
 			->search($request->get('q'))
@@ -180,7 +180,7 @@ class ContentsController extends Controller
 
 		return [
 			'action' => 'populate',
-			'types' => $parent->contentType->getAllowedChildrenTypes(),
+			'types' => $parent->contentType->getAllowedChildrenTypes(true),
 			'parent' => $parent
 		];
 	}

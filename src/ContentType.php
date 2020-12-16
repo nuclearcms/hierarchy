@@ -68,13 +68,18 @@ class ContentType extends Model implements Searchable {
 	/**
 	 * Returns allowed children types
 	 *
+	 * @param bool $visibleOnly
 	 * @return Collection
 	 */
-	public function getAllowedChildrenTypes()
+	public function getAllowedChildrenTypes($visibleOnly = false)
 	{
 		if(empty($this->allowed_children_types)) return [];
+
+		$q = self::whereIn('id', $this->allowed_children_types)->orderByRaw('FIELD (id, ' . implode(', ', $this->allowed_children_types) . ') ASC');
+
+		if($visibleOnly) $q = $q->where('is_visible', true);
 		
-		return self::where('is_visible', true)->whereIn('id', $this->allowed_children_types)->orderByRaw('FIELD (id, ' . implode(', ', $this->allowed_children_types) . ') ASC')->get();
+		return $q->get();
 	}
 
 	/**

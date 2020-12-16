@@ -32,8 +32,6 @@ class ViewsCounter {
 	 */
 	protected function compileStarterData($content)
 	{
-		Carbon::setLocale(auth()->user()->locale);
-
 		if(is_object($content)) {
 			$latest = $content->views()->latest('viewed_at')->first();
 			$totalViews = View::where('viewable_id', $content->id)->count();

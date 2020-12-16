@@ -183,6 +183,26 @@ class Content extends Entity implements Searchable, Viewable {
     }
 
     /**
+     * Shorthand for the site URL
+     *
+     * @return string
+     */
+    public function getSiteURLAttribute()
+    {
+        return $this->getSiteURL();
+    }
+
+    /**
+     * Shorthand for returning ordered children
+     *
+     * @return Collection
+     */
+    public function getOrderedChildrenAttribute()
+    {
+        return $this->children()->orderBy('position')->get();
+    }
+
+    /**
      * Returns the site URL optionally for a locale
      *
      * @param string|null $locale
