@@ -464,7 +464,7 @@ class ContentsController extends Controller
 		$title = $content->getTranslation('title', $locale);
 		$content->forgetAllTranslations($locale);
 
-		$extensionFields = $content->schema['fields'];
+		$extensionFields = $content->getSchema()['fields'];
 		foreach($extensionFields as $field => $type) {
 			$content->getExtension($field)->forgetAllTranslations($locale)->save();
 		}

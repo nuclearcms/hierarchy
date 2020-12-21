@@ -2,7 +2,7 @@
 	"name": "nuclear/hierarchy",
 	"description": "Content Management Scaffold For The Nuclear CMS",
 	"keywords": ["umomega", "laravel", "nuclear", "nuclearcms", "hierarchy", "php"],
-	"version": "3.0.4",
+	"version": "3.0.5",
 	"license": "MIT",
 	"authors": [
         {

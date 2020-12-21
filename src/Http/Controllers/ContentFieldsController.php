@@ -90,7 +90,7 @@ class ContentFieldsController extends Controller
 		$contentField->delete();
 
 		Cache::forget('contentType.' . $contentType);
-		Cache::forget('contentType.' . $contentType->id . '.rules');
+		Cache::forget('contentType.' . $contentType . '.rules');
 
 		activity()->withProperties(compact('name'))->log('ContentFieldDestroyed');
 
