@@ -4,10 +4,11 @@ namespace Nuclear\Hierarchy;
 
 use Illuminate\Database\Eloquent\Model;
 use Spatie\Translatable\HasTranslations;
+use GeneaLabs\LaravelModelCaching\Traits\Cachable;
 
 class ContentExtension extends Model {
 
-	use HasTranslations;
+	use HasTranslations, Cachable;
 
 	/**
      * The attributes that are mass assignable.

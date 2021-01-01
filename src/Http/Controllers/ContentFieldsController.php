@@ -27,8 +27,7 @@ class ContentFieldsController extends Controller
 
 		$contentType->fields()->save($contentField);
 
-		Cache::forget('contentType.' . $contentType->id);
-		Cache::forget('contentType.' . $contentType->id . '.rules');
+		flush_content_type_cache($contentType->id);
 
 		activity()->on($contentField)->log('ContentFieldStored');
 
@@ -65,8 +64,7 @@ class ContentFieldsController extends Controller
 		$contentField->update($request->validated());
 		$contentField->contentType = $contentType;
 
-		Cache::forget('contentType.' . $contentType->id);
-		Cache::forget('contentType.' . $contentType->id . '.rules');
+		flush_content_type_cache($contentType->id);
 
 		activity()->on($contentField)->log('ContentFieldUpdated');
 
@@ -89,8 +87,7 @@ class ContentFieldsController extends Controller
 
 		$contentField->delete();
 
-		Cache::forget('contentType.' . $contentType);
-		Cache::forget('contentType.' . $contentType . '.rules');
+		flush_content_type_cache($contentType);
 
 		activity()->withProperties(compact('name'))->log('ContentFieldDestroyed');
 

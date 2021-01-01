@@ -12,10 +12,11 @@ use Illuminate\Database\Eloquent\Builder;
 use Bkwld\Cloner\Cloneable;
 use CyrildeWit\EloquentViewable\InteractsWithViews;
 use CyrildeWit\EloquentViewable\Contracts\Viewable;
+use GeneaLabs\LaravelModelCaching\Traits\Cachable;
 
 class Content extends Entity implements Searchable, Viewable {
 
-    use InteractsWithViews, HasSlug, HasTags, HasTranslations, Cloneable {
+    use InteractsWithViews, HasSlug, HasTags, HasTranslations, Cloneable, Cachable {
         getAttributeValue as _getAttributeValue;
     }
 

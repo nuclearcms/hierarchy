@@ -24,10 +24,16 @@ class HierarchyServiceProvider extends ServiceProvider
      */
     public function boot()
     {
+        $this->commands([
+            \Nuclear\Hierarchy\Console\ImportContents::class
+        ]);
+
         $this->publishes([__DIR__ . '/../../resources/lang' => resource_path('lang/vendor/hierarchy')], 'lang');
         $this->loadTranslationsFrom(__DIR__ . '/../../resources/lang', 'hierarchy');
 
         $this->loadMigrationsFrom(__DIR__ . '/../../migrations');
+
+        require __DIR__ . '/../Support/helpers.php';
     }
 
 }

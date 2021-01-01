@@ -6,10 +6,11 @@ use Illuminate\Database\Eloquent\Model;
 use Spatie\Searchable\Searchable;
 use Spatie\Searchable\SearchResult;
 use Bkwld\Cloner\Cloneable;
+use GeneaLabs\LaravelModelCaching\Traits\Cachable;
 
 class ContentType extends Model implements Searchable {
 
-	use Cloneable;
+	use Cloneable, Cachable;
 
 	/**
      * The attributes that are mass assignable.

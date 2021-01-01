@@ -121,8 +121,7 @@ class ContentTypesController extends Controller
 			$i++;
 		}
 
-		\Cache::forget('contentType.' . $contentType->id);
-		\Cache::forget('contentType.' . $contentType->id . '.rules');
+		flush_content_type_cache($contentType->id);
 
 		return;
 	}

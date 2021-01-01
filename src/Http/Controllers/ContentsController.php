@@ -89,6 +89,7 @@ class ContentsController extends Controller
 	{
 		foreach($contents as $content)
 		{
+			$content->setAppends([]);
 			$content->tree = [];
 			
 			if(!$content->hides_children && !$content->contentType->hides_children)
@@ -557,11 +558,13 @@ class ContentsController extends Controller
 	 * Returns view statistics for the content
 	 *
 	 * @param ViewsCounter $counter
-	 * @param SiteContent $content
+	 * @param int $content
 	 * @return json
 	 */
-	public function statistics(ViewsCounter $counter, SiteContent $content)
+	public function statistics(ViewsCounter $counter, $content)
 	{
+		$content = SiteContent::withoutGlobalScopes()->findOrFail($content);
+
 		return ['views' => $counter->countFor($content)];
 	}
 
