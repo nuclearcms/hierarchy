@@ -99,14 +99,30 @@ class ImportHelper {
 	{
 		$content = Content::create($data);
 
-		foreach($content->getSchema()['fields'] as $name => $d) {
-			$value = isset($data[$name]) ? $data['name'] : null;
+		$schema = $content->getSchema();
+		$sInfo = collect($schema['schema']);
+
+		foreach($schema['fields'] as $name => $d) {
+			$value = isset($data[$name]) ? $data[$name] : null;
 
 			if($d['type'] == 'TextEditorField') {
-				$value = ['blocks' => [['data' => ['text' => $value], 'type' => 'paragraph']];
+				$value = ['blocks' => [['data' => ['text' => $value], 'type' => 'paragraph']]];
+			} elseif($d['type'] == 'ContentRelationField') {
+				$options = $sInfo->firstWhere('name', $name)['options'];
+				if($options['multiple']) {
+					$value = array_map(function($i) { return (int) $i; }, explode(',', $value));
+				} else {
+					$value = [(int)$value];
+				}
 			}
 
 			$value = [config('app.locale') => $value];
+
+			$content->getExtension($name)->update(compact('value'));
+		}
+
+		if(isset($data['tags']) && $content->contentType->is_taggable) {
+			$content->tags()->sync(explode(',', $data['tags']));
 		}
 	}
 

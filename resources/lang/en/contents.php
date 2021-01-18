@@ -53,6 +53,7 @@ return [
 	'event_destroyed_translation' => 'has deleted a content\'s translation',
 
 	'content_cannot_have_children' => 'This content cannot have children.',
+	'content_cannot_be_transformed' => 'This content cannot be transformed.',
 	'settings' => 'Settings',
 	'statistics' => 'Statistics',
 	'ancestors' => 'Ancestors',

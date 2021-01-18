@@ -306,7 +306,14 @@ class Content extends Entity implements Searchable, Viewable {
      */
     public function getLocalesAttribute()
     {
-        return $this->getTranslatedLocales('title');
+        $locales = $this->getTranslatedLocales('title');
+        $ordered = [];
+
+        foreach(config('app.locales') as $locale) {
+            if(in_array($locale, $locales)) $ordered[] = $locale;
+        }
+
+        return $ordered;
     }
 
     /**
@@ -344,7 +351,6 @@ class Content extends Entity implements Searchable, Viewable {
 
             $fieldsData = ContentType::findOrFail($contentTypeId)->fields()->orderBy('position')->get();
 
-            $rules = [];
             $fields = [];
             $schema = [];
 
@@ -368,12 +374,9 @@ class Content extends Entity implements Searchable, Viewable {
                     'default_value' => $field->default_value,
                     'hint' => $field->description
                 ];
-
-                $rules[$field->name] = 'required|array|min:1';
-                if(!empty($field->rules)) $rules[$field->name . '.*'] = $field->rules;
             }
 
-            return compact('rules', 'fields', 'schema');
+            return compact('fields', 'schema');
         });
     }
 

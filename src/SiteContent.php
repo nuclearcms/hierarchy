@@ -166,4 +166,14 @@ class SiteContent extends Content {
         return $this->getLoadable($key);
     }
 
+    /**
+     * Get the class name for polymorphic relations.
+     *
+     * @return string
+     */
+    public function getMorphClass()
+    {
+        return 'Nuclear\Hierarchy\Content';
+    }
+
 }

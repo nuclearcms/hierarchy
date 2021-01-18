@@ -53,6 +53,7 @@ return [
 	'event_destroyed_translation' => 'bir içeriğin çevirisini sildi',
 
 	'content_cannot_have_children' => 'Bu içeriğe çocuk içerik eklenemez.',
+	'content_cannot_be_transformed' => 'Bu içerik dönüştürülemez.',
 	'settings' => 'Ayarlar',
 	'statistics' => 'İstatistikler',
 	'ancestors' => 'Ebeveynler',

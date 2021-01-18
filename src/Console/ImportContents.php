@@ -7,7 +7,7 @@ use Illuminate\Console\Command;
 
 class ImportContents extends Command {
 
-	/**
+    /**
      * The console command name.
      *
      * @var string
@@ -69,14 +69,16 @@ class ImportContents extends Command {
             $defaultContentType = $this->getDefaultContentTypeByParent($defaultParent);
         }
 
-        if(!is_null($defaultParent) && !is_null($defaultContentType) && !in_array($getDefaultContentType->id, $defaultParent->contentType->allowed_children_types)) {
+        if(!is_null($defaultParent) && !is_null($defaultContentType) && !in_array($defaultContentType->id, $defaultParent->contentType->allowed_children_types)) {
             $this->error('Default parent does not accept the default content type.');
             return;
         }
 
+        $i = 1;
 
         // We loop through contents to be imported
         foreach($contents as $content) {
+            $this->line('Importing [' . $i . '/' . count($contents) . ']: ' . $content['title']);
             // We first infer the content type
             if(is_null($defaultContentType) && !isset($content['content_type_id'])) {
                 $this->line('Skipping: "' . $content['title'] . '" - Type for the content cannot be inferred.');
@@ -112,10 +114,14 @@ class ImportContents extends Command {
             }
 
             $content['parent_id'] = $p->id;
-            $content['content_type_id'] = $ct->id;                
+            $content['content_type_id'] = $ct->id;
 
             $c = $helper->createContent($content);
+
+            $i++;
         }
+
+        $this->info('Import complete.');
             
     }
 

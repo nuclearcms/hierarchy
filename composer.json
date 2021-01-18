@@ -16,7 +16,7 @@
     	"php": "^7.3|^8.0",
         "laravel/framework": "^8.0",
         "bkwld/cloner": "^3.9",
-        "cyrildewit/eloquent-viewable": "^5.2",
+        "cyrildewit/eloquent-viewable": "^6.0",
         "franzose/closure-table": "^6.1",
         "genealabs/laravel-model-caching": "^0.11.1",
         "nuclear/reactor": "^1.0",

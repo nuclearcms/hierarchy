@@ -54,7 +54,7 @@ class ContentsController extends Controller
 			Content::with('contentType')
 				->orderBy('parent_id')
 				->orderBy('position')
-				->whereNull('parent_id')->get());
+				->whereNull('parent_id')->get(), false);
 	}
 
 	/**
@@ -83,13 +83,16 @@ class ContentsController extends Controller
 	 * Recursively compiles the given contents for a visible tree
 	 *
 	 * @param Collection $contents
+	 * @param bool $withThumbnails
 	 * @return Collection
 	 */
-	protected function compileVisibleTree($contents)
+	protected function compileVisibleTree($contents, $withThumbnails = true)
 	{
 		foreach($contents as $content)
 		{
-			$content->setAppends([]);
+			if(!$withThumbnails) {
+				$content->setAppends(['is_published']);
+			}
 			$content->tree = [];
 			
 			if(!$content->hides_children && !$content->contentType->hides_children)
@@ -203,7 +206,7 @@ class ContentsController extends Controller
 
 		if(count($parent->contentType->allowed_children_types) > 0) {
 			$allowedChildrenTypes = $parent->contentType->getAllowedChildrenTypes()->filter(function($type, $key) use ($content) {
-				return $type->id != $content->content_type_id;
+				return ($type->id != $content->content_type_id) && $type->is_visible;
 			});
 
 			if(count($allowedChildrenTypes) > 0) return [
@@ -214,7 +217,7 @@ class ContentsController extends Controller
 
 		return [
 			'action' => 'redirect',
-			'message' => __('hierarchy::contents.content_cannot_have_children')
+			'message' => __('hierarchy::contents.content_cannot_be_transformed')
 		];
 	}
 
