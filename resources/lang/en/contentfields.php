@@ -27,6 +27,7 @@ return [
 	'CheckboxField' => 'Checkbox',
 	'SelectField' => 'Select',
 	'NumberField' => 'Number',
+	'RangeField' => 'Range',
 	'ColorField' => 'Color',
 	'PasswordField' => 'Password',
 	'RelationField' => 'Relation',
