@@ -27,7 +27,7 @@ return [
 	'CheckboxField' => 'Onay Kutusu',
 	'SelectField' => 'Seçim',
 	'NumberField' => 'Sayı',
-	'NumberField' => 'Aralık',
+	'RangeField' => 'Aralık',
 	'ColorField' => 'Renk',
 	'PasswordField' => 'Şifre',
 	'RelationField' => 'İlişki',
