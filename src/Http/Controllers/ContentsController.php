@@ -102,6 +102,8 @@ class ContentsController extends Controller
 						->with('contentType')
 						->orderBy('parent_id')
 						->orderBy('position')
+						->where('status', '<', 60)
+						->where('is_visible', true)
 						->get());
 			}
 		}

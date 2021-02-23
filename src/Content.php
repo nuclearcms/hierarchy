@@ -208,9 +208,10 @@ class Content extends Entity implements Searchable, Viewable {
      *
      * @param string|null $locale
      * @param collection|null $ancestors
+     * @param bool $includeHome
      * @return string
      */
-    public function getSiteURL($locale = null, $ancestors = null)
+    public function getSiteURL($locale = null, $ancestors = null, $includeHome = false)
     {
         $locale = $locale ?: $this->getLocale();
         $ancestors = $ancestors ?: $this->getAncestorsAttribute();
@@ -224,7 +225,7 @@ class Content extends Entity implements Searchable, Viewable {
         $canHaveURL = true;
 
         foreach($ancestors as $ancestor) {
-            if($ancestor->id == config('app.home_content')) continue;
+            if(!$includeHome && $ancestor->id == config('app.home_content')) continue;
             if($ancestor->hasTranslation('slug', $locale)) {
                 $slugs[] = $ancestor->getTranslation('slug', $locale);
             } else {
@@ -643,6 +644,20 @@ class Content extends Entity implements Searchable, Viewable {
 
         $newFields = array_keys($this->getSchema()['fields']);
         $this->extensions()->whereNotIn('name', $newFields)->delete();
+    }
+
+    /**
+     * Scope for translated contents
+     *
+     * @param Builder $query
+     * @param string $locale
+     * @return Builder
+     */
+    public function scopeTranslatedIn(Builder $query, $locale = null)
+    {
+        $locale = $locale ?: $this->getLocale();
+
+        return $query->where('title->'.$locale, '<>', '');
     }
 
 }
