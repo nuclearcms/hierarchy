@@ -603,11 +603,13 @@ class Content extends Entity implements Searchable, Viewable {
     /**
      * Updates content extensions
      */
-    protected function updateExtensions(array $validated)
+    public function updateExtensions(array $validated)
     {
         $extensionFieldNames = $this->getSchema()['fields'];
 
         foreach($extensionFieldNames as $name => $d) {
+            if(!isset($validated[$name])) continue;
+            
             $value = $validated[$name];
 
             if($d['type'] == 'MediaField' || $d['type'] == 'ContentRelationField') {
