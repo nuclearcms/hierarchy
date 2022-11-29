@@ -19,6 +19,7 @@ class UpdateContentSettings extends FormRequest
             'is_locked' => 'required|boolean',
             'priority' => 'required|numeric',
             'published_at' => 'required|date',
+            'unpublished_at' => 'nullable|date',
             'status' => 'required|integer',
             'hides_children' => 'required|boolean',
             'children_display_mode' => 'required|string|in:tree,list',

@@ -36,6 +36,8 @@ class UpdateContent extends FormRequest
         return array_merge([
             'title' => 'required|array|min:1',
             'title.*' => 'required|max:255',
+            'slug' => 'nullable|array|min:1',
+            'slug.*' => 'nullable|max:255',
             'meta_title' => 'required|array|min:1',
             'meta_description' => 'required|array|min:1',
             'meta_author' => 'required|array|min:1',

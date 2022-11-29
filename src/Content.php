@@ -21,6 +21,28 @@ class Content extends Entity implements Searchable, Viewable {
     }
 
     /**
+     * Ordered children cache
+     * 
+     * @var mixed
+     */
+    protected $orderedChildrenCache = false;
+
+    /**
+     * Ancestors cache
+     * 
+     * @var mixed
+     */
+    protected $ancestorsCache = false;
+    protected $ancestorsWithoutTypesCache = false;
+
+    /**
+     * Current locale site URL for Content
+     * 
+     * @var null|string
+     */
+    protected $siteURLCache = null;
+
+    /**
      * The table associated with the model.
      *
      * @var string
@@ -49,7 +71,7 @@ class Content extends Entity implements Searchable, Viewable {
     protected $fillable = [
         'content_type_id', 'parent_id',
         'is_visible', 'is_sterile', 'is_locked', 'status', 'hides_children', 'priority',
-        'published_at', 'children_display_mode', 'title', 'slug', 'keywords',
+        'published_at', 'unpublished_at', 'children_display_mode', 'title', 'slug', 'keywords',
         'meta_title', 'meta_description', 'meta_author', 'cover_image'
     ];
 
@@ -177,7 +199,7 @@ class Content extends Entity implements Searchable, Viewable {
 
         foreach($locales as $locale)
         {
-            if($url = $this->getSiteURL($locale)) $urls[$locale] = $url;
+            if($url = $this->getSiteURL($locale, $ancestors)) $urls[$locale] = $url;
         }
 
         return $urls;
@@ -200,7 +222,11 @@ class Content extends Entity implements Searchable, Viewable {
      */
     public function getOrderedChildrenAttribute()
     {
-        return $this->children()->orderBy('position')->get();
+        if($this->orderedChildrenCache === false) {
+            $this->orderedChildrenCache = $this->children()->orderBy('position')->get();
+        }
+
+        return $this->orderedChildrenCache;
     }
 
     /**
@@ -213,8 +239,10 @@ class Content extends Entity implements Searchable, Viewable {
      */
     public function getSiteURL($locale = null, $ancestors = null, $includeHome = false)
     {
+        if(!is_null($this->siteURLCache)) return $this->siteURLCache;
+        
         $locale = $locale ?: $this->getLocale();
-        $ancestors = $ancestors ?: $this->getAncestorsAttribute();
+        $ancestors = $ancestors ?: $this->getAncestorsWithoutTypes();
 
         $ancestors[] = $this;
 
@@ -324,7 +352,25 @@ class Content extends Entity implements Searchable, Viewable {
      */
     public function getAncestorsAttribute()
     {
-        return $this->ancestors()->with('contentType')->get()->reverse()->values();
+        if($this->ancestorsCache == false) {
+            $this->ancestorsCache = $this->ancestors()->with('contentType')->get();
+        }
+
+        return $this->ancestorsCache->reverse()->values();
+    }
+
+    /**
+     * Returns the ancestors without eager loading their types
+     * 
+     * @return Collection
+     */
+    public function getAncestorsWithoutTypes()
+    {
+        if($this->ancestorsWithoutTypesCache == false) {
+            $this->ancestorsWithoutTypesCache = $this->ancestors()->get();
+        }
+
+        return $this->ancestorsWithoutTypesCache->reverse()->values();
     }
 
     /**
@@ -399,10 +445,17 @@ class Content extends Entity implements Searchable, Viewable {
      */
     public function getAttributeValue($key)
     {
+        // Check if in base model first to skip extra queries
+        if(in_array($key, $this->getFillable())) {
+            return $this->_getAttributeValue($key);
+        }
+
+        // Check if extension
         if ($this->isExtensionAttribute($key)) {
             return $this->getExtension($key);
         }
 
+        // Fallback to basic
         return $this->_getAttributeValue($key);
     }
 
@@ -446,11 +499,23 @@ class Content extends Entity implements Searchable, Viewable {
     {
         return $query->where(function ($query)
         {
-            $query->where('status', '>=', Content::PUBLISHED)
-                ->orWhere(function ($query)
+            $now = Carbon::now();
+
+            $query->where(function ($query) use ($now) {
+                    $query->where('status', '>=', Content::PUBLISHED)
+                    ->where(function($query) use ($now) {
+                        $query->whereNull('unpublished_at')
+                            ->orWhere('unpublished_at', '>', $now);
+                    });
+                })
+                ->orWhere(function ($query) use ($now)
                 {
                     $query->where('status', '>=', Content::PENDING)
-                        ->where('published_at', '<=', Carbon::now());
+                        ->where('published_at', '<=', $now)
+                        ->where(function($query) use ($now) {
+                            $query->whereNull('unpublished_at')
+                                ->orWhere('unpublished_at', '>', $now);
+                        });
                 });
         });
     }

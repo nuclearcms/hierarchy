@@ -38,8 +38,8 @@ class ViewsCounter {
 			$viewsToday = View::where('viewable_id', $content->id)->whereBetween('viewed_at', [Carbon::today(), Carbon::tomorrow()])->count();
 		} else {
 			$latest = View::latest('viewed_at')->first();
-			$totalViews = View::where('viewable_type', $content)->count();
-			$viewsToday = View::where('viewable_type', $content)->whereBetween('viewed_at', [Carbon::today(), Carbon::tomorrow()])->count();
+			$totalViews = View::count();
+			$viewsToday = View::whereBetween('viewed_at', [Carbon::today(), Carbon::tomorrow()])->count();
 		}
 
 		return [

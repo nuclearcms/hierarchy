@@ -265,7 +265,7 @@ class ContentsController extends Controller
 	public function show(Content $content)
 	{
 		$content->preview_token = app()->make(TokenManager::class)
-            ->makeNewToken('preview_contents');
+            ->getOrMakeNewToken('preview_contents');
         $content->schema = $content->getSchema();
 
 		return $content->loadMedia()->formcastExtensions()
