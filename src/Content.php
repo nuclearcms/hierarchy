@@ -360,6 +360,29 @@ class Content extends Entity implements Searchable, Viewable {
     }
 
     /**
+     * Returns the filtered ancestors of the content depending on the logged in user
+     *
+     * @return Collection
+     */
+    public function getAncestorsFilteredAttribute()
+    {
+        if($this->ancestorsCache == false) {
+            $this->ancestorsCache = $this->ancestors()->with('contentType')->get();
+        }
+
+        $ancestors = [];
+
+        $accessibleContents = request()->user()->getAccessibleContents();
+
+        foreach($this->ancestorsCache as $ancestor)
+        {
+            if(is_null($accessibleContents) || in_array($ancestor->id, $accessibleContents)) $ancestors[] = $ancestor;
+        }
+
+        return collect($ancestors)->reverse()->values();
+    }
+
+    /**
      * Returns the ancestors without eager loading their types
      * 
      * @return Collection

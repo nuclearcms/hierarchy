@@ -30,11 +30,17 @@ class ContentsController extends Controller
 	 */
 	public function index(Request $request)
 	{
+		$accessibleContents = request()->user()->getAccessibleContents();
+		
 		$s = $request->get('s', 'created_at');
 
 		if($s == 'title') $s .= '->' . app()->getLocale();
 
 		$contents = Content::orderBy($s, $request->get('d', 'desc'))->with('contentType');
+
+		if($accessibleContents) {
+			$contents = $contents->whereIn('id', $accessibleContents);
+		}
 
 		if($request->get('f', 'all') != 'all') {
 			$contents = $contents->filteredByStatus($request->get('f'));
@@ -50,6 +56,11 @@ class ContentsController extends Controller
 	 */
 	public function roots()
 	{
+		if(($roots = request()->user()->contents()->with('contentType')->orderBy('parent_id')->orderBy('position')->get()) && count($roots))
+		{
+			return $this->compileVisibleTree($roots, false);
+		}
+
 		return $this->compileVisibleTree(
 			Content::with('contentType')
 				->orderBy('parent_id')
@@ -128,6 +139,10 @@ class ContentsController extends Controller
 					->addSearchableAttribute('meta_description')
 					->addSearchableAttribute('meta_author')
 					->with('contentType');
+
+				if($accessibleContents = request()->user()->getAccessibleContents()) {
+					$aspect->whereIn('id', $accessibleContents);
+				}
 			})
 			->search($request->get('q'))
 			->map(function($content) {
@@ -152,6 +167,10 @@ class ContentsController extends Controller
 				if(!empty($request->get('of'))) {
 					$filters = explode(',', urldecode($request->get('of', '')));
 					$aspect->whereIn('content_type_id', $filters);
+				}
+
+				if($accessibleContents = request()->user()->getAccessibleContents()) {
+					$aspect->whereIn('id', $accessibleContents);
 				}
 			})
 			->search($request->get('q'))
@@ -264,12 +283,14 @@ class ContentsController extends Controller
 	 */
 	public function show(Content $content)
 	{
+		$this->validateContentIsViewable($content);
+
 		$content->preview_token = app()->make(TokenManager::class)
             ->getOrMakeNewToken('preview_contents');
         $content->schema = $content->getSchema();
 
 		return $content->loadMedia()->formcastExtensions()
-			->setAppends(['content_type', 'locales', 'ancestors', 'is_published', 'tags', 'site_urls']);
+			->setAppends(['content_type', 'locales', 'ancestors_filtered', 'is_published', 'tags', 'site_urls']);
 	}
 
 
@@ -286,7 +307,13 @@ class ContentsController extends Controller
 
 		if($s == 'title') $s .= '->' . app()->getLocale();
 
-		return Content::withAnyTags([$tag])->orderBy($s, $request->get('d', 'desc'))->with('contentType')->paginate();
+		$contents = Content::withAnyTags([$tag])->orderBy($s, $request->get('d', 'desc'))->with('contentType');
+
+		if($accessibleContents = request()->user()->getAccessibleContents()) {
+			$aspect->whereIn('id', $accessibleContents);
+		}
+
+		return $contents->paginate();
 	}
 
 	/**
@@ -532,12 +559,28 @@ class ContentsController extends Controller
 	}
 
 	/**
+	 * Checks if the content is viewable
+	 *
+	 * @param Content $content
+	 */
+	protected function validateContentIsViewable($content)
+	{
+		$accessibleContents = request()->user()->getAccessibleContents();
+
+		if(!is_null($accessibleContents) && !in_array($content->id, $accessibleContents)) abort(403, __('hierarchy::contents.you_do_not_have_access_to_this_content'));
+	}
+
+	/**
 	 * Checks if the content is editable
 	 *
 	 * @param Content $content
 	 */
 	protected function validateContentIsEditable($content)
 	{
+		$accessibleContents = request()->user()->getAccessibleContents();
+
+		if(!is_null($accessibleContents) && !in_array($content->id, $accessibleContents)) abort(403, __('hierarchy::contents.you_do_not_have_access_to_this_content'));
+
 		if($content->is_locked) abort(422, __('hierarchy::contents.content_is_locked'));
 	}
 

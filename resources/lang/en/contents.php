@@ -54,6 +54,7 @@ return [
 
 	'content_cannot_have_children' => 'This content cannot have children.',
 	'content_cannot_be_transformed' => 'This content cannot be transformed.',
+	'you_do_not_have_access_to_this_content' => 'You do not have access to this content.',
 	'settings' => 'Settings',
 	'statistics' => 'Statistics',
 	'ancestors' => 'Ancestors',

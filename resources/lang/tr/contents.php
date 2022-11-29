@@ -54,6 +54,7 @@ return [
 
 	'content_cannot_have_children' => 'Bu içeriğe çocuk içerik eklenemez.',
 	'content_cannot_be_transformed' => 'Bu içerik dönüştürülemez.',
+	'you_do_not_have_access_to_this_content' => 'Bu içeriğe erişiminiz yok.',
 	'settings' => 'Ayarlar',
 	'statistics' => 'İstatistikler',
 	'ancestors' => 'Ebeveynler',
