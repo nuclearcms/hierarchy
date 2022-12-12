@@ -338,7 +338,7 @@ class ContentsController extends Controller
 		return [
 			'message' => __('hierarchy::contents.edited'),
 			'payload' => $content->loadMedia()->formcastExtensions()
-			->setAppends(['content_type', 'locales', 'ancestors', 'is_published', 'tags']),
+			->setAppends(['content_type', 'locales', 'ancestors_filtered', 'is_published', 'tags', 'site_urls']),
 			'event' => 'content-tree-modified'
 		];
 	}
@@ -360,7 +360,7 @@ class ContentsController extends Controller
 
 		return [
 			'message' => __('hierarchy::contents.edited_settings'),
-			'payload' => $content->setAppends(['content_type', 'locales', 'ancestors', 'is_published']),
+			'payload' => $content->setAppends(['content_type', 'locales', 'ancestors_filtered', 'is_published', 'tags', 'site_urls']),
 			'event' => 'content-tree-modified'
 		];
 	}
@@ -393,7 +393,7 @@ class ContentsController extends Controller
 
 		return [
 			'message' => __('hierarchy::contents.' . $message),
-			'payload' => $content->setAppends(['contentType', 'locales', 'ancestors', 'is_published']),
+			'payload' => $content->setAppends(['content_type', 'locales', 'ancestors_filtered', 'is_published', 'tags', 'site_urls']),
 			'event' => 'content-tree-modified'
 		];
 	}
