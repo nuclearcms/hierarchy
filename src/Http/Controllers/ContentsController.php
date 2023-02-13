@@ -19,6 +19,18 @@ use Spatie\Searchable\Search;
 use Illuminate\Http\Request;
 use Nuclear\Hierarchy\Support\ViewsCounter;
 
+use Nuclear\Hierarchy\Events\ContentCreated;
+use Nuclear\Hierarchy\Events\ContentDestroyed;
+use Nuclear\Hierarchy\Events\ContentDuplicated;
+use Nuclear\Hierarchy\Events\ContentMoved;
+use Nuclear\Hierarchy\Events\ContentsBulkDestroyed;
+use Nuclear\Hierarchy\Events\ContentSettingsUpdated;
+use Nuclear\Hierarchy\Events\ContentStateUpdated;
+use Nuclear\Hierarchy\Events\ContentTransformed;
+use Nuclear\Hierarchy\Events\ContentTranslated;
+use Nuclear\Hierarchy\Events\ContentTranslationDestroyed;
+use Nuclear\Hierarchy\Events\ContentUpdated;
+
 class ContentsController extends Controller
 {
 
@@ -266,6 +278,8 @@ class ContentsController extends Controller
 
 		$content = Content::create($validated);
 
+		ContentCreated::dispatch($content, auth()->user());
+
 		activity()->on($content)->log('ContentStored');
 
 		return [
@@ -333,6 +347,8 @@ class ContentsController extends Controller
 
 		activity()->on($content)->log('ContentUpdated');
 
+		ContentUpdated::dispatch($content, auth()->user());
+
 		$content->schema = $content->getSchema();
 
 		return [
@@ -357,6 +373,8 @@ class ContentsController extends Controller
 		$content->update($request->validated());
 
 		activity()->on($content)->log('ContentSettingsUpdated');
+
+		ContentSettingsUpdated::dispatch($content, auth()->user());
 
 		return [
 			'message' => __('hierarchy::contents.edited_settings'),
@@ -390,6 +408,8 @@ class ContentsController extends Controller
 		$content->save();
 
 		activity()->on($content)->log('ContentStateUpdated');
+		
+		ContentStateUpdated::dispatch($content, auth()->user());
 
 		return [
 			'message' => __('hierarchy::contents.' . $message),
@@ -427,6 +447,8 @@ class ContentsController extends Controller
 
 		activity()->on($content)->log('ContentMoved');
 
+		ContentMoved::dispatch($content, auth()->user());
+
 		return [
 			'message' => __('hierarchy::contents.moved_content'),
 			'event' => 'content-tree-modified'
@@ -452,6 +474,8 @@ class ContentsController extends Controller
 
 		activity()->on($content)->log('ContentTransformed');
 
+		ContentTransformed::dispatch($content, auth()->user());
+
 		return [
 			'message' => __('hierarchy::contents.transformed_content'),
 			'payload' => $content,
@@ -474,6 +498,8 @@ class ContentsController extends Controller
 		$content->save();
 
 		activity()->on($content)->log('ContentTranslated');
+
+		ContentTranslated::dispatch($content, auth()->user());
 
 		return [
 			'message' => __('hierarchy::contents.translated'),
@@ -506,6 +532,8 @@ class ContentsController extends Controller
 
 		activity()->withProperties(compact('title'))->log('ContentTranslationDestroyed');
 
+		ContentTranslationDestroyed::dispatch($content, auth()->user());
+
 		return [
 			'message' => __('foundation::general.deleted_translation'),
 			'fallback' => ['name' => 'contents.edit', 'params' => ['id' => $content->id]],
@@ -529,6 +557,8 @@ class ContentsController extends Controller
 
 		activity()->withProperties(compact('names'))->log('ContentsDestroyedBulk');
 
+		ContentsBulkDestroyed::dispatch($names, auth()->user());
+
 		return [
 			'message' => __('hierarchy::contents.deleted_multiple'),
 			'event' => 'content-tree-modified'
@@ -550,6 +580,8 @@ class ContentsController extends Controller
 		$content->deleteSubtree(true);
 
 		activity()->withProperties(compact('name'))->log('ContentDestroyed');
+
+		ContentDestroyed::dispatch($content, auth()->user());
 
 		return [
 			'message' => __('hierarchy::contents.deleted'),
@@ -595,6 +627,8 @@ class ContentsController extends Controller
 		$clone = $content->duplicate();
 
 		activity()->on($content)->log('ContentDuplicated');
+
+		ContentDuplicated::dispatch($content, auth()->user());
 
 		return [
 			'message' => __('hierarchy::contents.duplicated'),
