@@ -551,13 +551,14 @@ class ContentsController extends Controller
 	{
 		$items = $this->validate($request, ['items' => 'required|array'])['items'];
 		
-		$names = Content::whereIn('id', $items)->where('is_locked', false)->pluck('title')->toArray();
+		$contents = Content::whereIn('id', $items)->where('is_locked', false)->get();
+		$names = $contents->pluck('title')->all();
 		
 		Content::whereIn('id', $items)->where('is_locked', false)->delete();
 
 		activity()->withProperties(compact('names'))->log('ContentsDestroyedBulk');
 
-		ContentsBulkDestroyed::dispatch($names, auth()->user());
+		ContentsBulkDestroyed::dispatch($contents, auth()->user());
 
 		return [
 			'message' => __('hierarchy::contents.deleted_multiple'),

@@ -9,19 +9,19 @@ use Illuminate\Broadcasting\PrivateChannel;
 use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
 use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Queue\SerializesModels;
-use Nuclear\Hierarchy\Content;
 use Nuclear\Reactor\Auth\User;
+use Illuminate\Database\Eloquent\Collection;
 
 class ContentsBulkDestroyed
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
 
     /**
-     * The content instance.
+     * The content collection.
      *
-     * @var array
+     * @var Collection
      */
-    public array $names;
+    public $contents;
 
     /**
      * The content instance.
@@ -34,13 +34,13 @@ class ContentsBulkDestroyed
     /**
      * Create a new event instance.
      *
-     * @param array $names
+     * @param Collection $contents
      * @param User $user
      * @return void
      */
-    public function __construct(array $names, User $user)
+    public function __construct(Collection $contents, User $user)
     {
-        $this->names = $names;
+        $this->contents = $contents;
         $this->user = $user;
     }
 

@@ -4,6 +4,7 @@ namespace Nuclear\Hierarchy;
 
 use Carbon\Carbon;
 use Franzose\ClosureTable\Models\Entity;
+use Illuminate\Database\Eloquent\SoftDeletes;
 use Spatie\Translatable\HasTranslations;
 use Spatie\Tags\HasTags;
 use Spatie\Searchable\Searchable;
@@ -16,7 +17,7 @@ use GeneaLabs\LaravelModelCaching\Traits\Cachable;
 
 class Content extends Entity implements Searchable, Viewable {
 
-    use InteractsWithViews, HasSlug, HasTags, HasTranslations, Cloneable, Cachable {
+    use SoftDeletes, InteractsWithViews, HasSlug, HasTags, HasTranslations, Cloneable, Cachable {
         getAttributeValue as _getAttributeValue;
     }
 
