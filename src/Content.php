@@ -88,7 +88,13 @@ class Content extends Entity implements Searchable, Viewable {
         'meta_title' => 'array',
         'meta_description' => 'array',
         'meta_author' => 'array',
-        'cover_image' => 'array'
+        'cover_image' => 'array',
+        'is_visible' => 'boolean',
+        'is_sterile' => 'boolean',
+        'is_locked' => 'boolean',
+        'status' => 'integer',
+        'hides_children' => 'boolean',
+        'priority' => 'float',
     ];
 
     /**
@@ -194,13 +200,12 @@ class Content extends Entity implements Searchable, Viewable {
     public function getSiteURLsAttribute()
     {
         $locales = $this->getLocalesAttribute();
-        $ancestors = $this->getAncestorsAttribute();
 
         $urls = [];
 
         foreach($locales as $locale)
         {
-            if($url = $this->getSiteURL($locale, $ancestors)) $urls[$locale] = $url;
+            if($url = $this->getSiteURL($locale)) $urls[$locale] = $url;
         }
 
         return $urls;

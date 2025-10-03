@@ -17,7 +17,7 @@ class ContentType extends Model implements Searchable {
      *
      * @var array
      */
-    protected $fillable = ['name', 'is_visible', 'hides_children', 'color', 'is_taggable', 'allowed_children_types'];
+    protected $fillable = ['name', 'is_visible', 'hides_children', 'color', 'is_taggable', 'allowed_children_types',];
 
     /**
 	 * Casts
@@ -26,7 +26,10 @@ class ContentType extends Model implements Searchable {
 	 */
 	protected $casts = [
 		'color' => 'array',
-		'allowed_children_types' => 'array'
+		'allowed_children_types' => 'array',
+		'is_visible' => 'boolean',
+		'hides_children' => 'boolean',
+		'is_taggable' => 'boolean',
 	];
 
 	/**
