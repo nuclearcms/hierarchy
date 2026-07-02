@@ -325,6 +325,8 @@ class Content extends Entity implements Searchable, Viewable {
     {
         if($extension = $this->extensions->firstWhere('name', $name)) return $extension;
 
+        if(!isset($this->getSchema()['fields'][$name])) return null;
+        
         $field = $this->getSchema()['fields'][$name];
 
         return $this->extensions()->save(new ContentExtension([
